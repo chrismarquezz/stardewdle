@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom";
+import { scrollbarStyles } from "../utils/scrollbarStyles";
 
 export default function HelpModal({ isMuted, onClose, scaleFactor }) {
   const playCloseSound = () => {
@@ -22,7 +23,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8"
+          className="justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8 "
 
           style={{
             backgroundImage: "url('/images/help-bg.webp')",
@@ -40,7 +41,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
             How to Play
           </h2>
 
-          <div className="space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2">
+          <div className={`space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 mb-4 ${scrollbarStyles}`}>
             <p>- Select a crop from the grid</p>
             <p>- Click "Submit" to guess the crop of the day</p>
             <p>- You get 6 tries to guess correctly</p>

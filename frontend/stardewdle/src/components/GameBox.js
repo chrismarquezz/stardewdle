@@ -10,7 +10,7 @@ import HintsModal from "./HintsModal";
 import { formatName } from "../utils/formatString";
 
 const DAILY_RESET_ENABLED = true;
-const MOST_RECENT_UPDATE = "2025-12-30T00:00:00Z";
+const MOST_RECENT_UPDATE = "2026-03-12T22:10:00Z";
 
 function todaysDate() {
   const today = new Date(new Date().toUTCString());

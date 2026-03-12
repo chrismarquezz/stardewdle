@@ -20,6 +20,9 @@ module.exports = {
       animation: {
         bounceHard: "bounceHard 1s ease-in-out infinite",
       },
+      plugins: [
+        require('tailwind-scrollbar'),
+      ],
     },
   },
   plugins: [],

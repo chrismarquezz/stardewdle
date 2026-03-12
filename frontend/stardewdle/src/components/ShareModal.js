@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
+//import { scrollbarStyles } from "../utils/scrollbarStyles";
 
 export default function ShareModal({
   shareText,

@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom";
+import { scrollbarStyles } from "../../utils/scrollbarStyles";
 
 export default function CollectionsModal({ isMuted, onClose, scaleFactor }) {
   const playCloseSound = () => {
@@ -40,7 +41,7 @@ export default function CollectionsModal({ isMuted, onClose, scaleFactor }) {
             Collections Page
           </h2>
 
-          <div className="space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto">
+          <div className={`space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 mb-4 ${scrollbarStyles}`}>
             <p>- Browse through all the crops from Stardew Valley</p>
             <p>- Click on any crop to view information such as:</p>
             <ul className="list-disc ml-6 md:ml-10">

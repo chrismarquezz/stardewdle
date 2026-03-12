@@ -105,6 +105,30 @@ export default function Landing() {
                 />
               </button>
 
+<button
+                onClick={() => {
+                  if (!isMuted) {
+                    new Audio("/sounds/mouseClick.mp3").play();
+                  }
+                  window.open(
+                    "https://discord.gg/Fg56gpXXBK",
+                    "_blank"
+                  );
+                }}
+                className="buttonMain w-[75px] h-[75px] clickable"
+              >
+                <img
+                  src="/images/discord.webp"
+                  alt="Discord"
+                  className="buttonBase"
+                />
+                <img
+                  src="/images/discord-hover.webp"
+                  alt="Discord Hover"
+                  className="buttonHover"
+                />
+              </button>
+
               <button
                 onClick={() => {
                   if (!isMuted) {

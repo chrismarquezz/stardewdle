@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom";
+import { scrollbarStyles } from "../utils/scrollbarStyles";
 
 export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
   const playCloseSound = () => {
@@ -39,7 +40,25 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             What's New
           </h2>
 
-          <div className="space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2">
+          <div className={`space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
+            <div>
+              <p className="font-semibold">v1.3.1 — February 2026</p>
+              <ul className="list-disc ml-6 md:ml-10">
+                <li>
+                  We decided to create a Discord server!
+                </li>
+                <li>
+                  Join if you want share your guesses, talk about the game, or just want to say hi.
+                </li>
+                <li>
+                  It's also the best spot to give feedback and any suggestions you may have.
+                </li>
+                <li>
+                  If you'd like to join, check out the button in the home page!
+                </li>
+              </ul>
+            </div>
+            
             <div>
               <p className="font-semibold">v1.3.0 — December 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
@@ -54,7 +73,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
                 </li>
               </ul>
             </div>
-            
+
             <div>
               <p className="font-semibold">v1.2.0 — October 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
@@ -94,12 +113,11 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
                 <li>Released the first version of Stardewdle</li>
               </ul>
             </div>
-
-            <div className="mt-4 italic">
-              <p>
-                Future updates will appear here as new changes are made!
-              </p>
-            </div>
+          </div>
+          <div className="space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none mt-4 italic ">
+            <p>
+              Future updates will appear here as new changes are made!
+            </p>
           </div>
         </div>
       </div>
