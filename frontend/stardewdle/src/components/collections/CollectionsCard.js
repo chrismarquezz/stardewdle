@@ -17,19 +17,22 @@ export default function CollectionsCard({
 
         onClick(crop);
       }}
-      className={`relative w-16 h-16 clickable p-1 flex items-center justify-center group ${isSelected ? "border-4 border-green-400" : "border-0 border-transparent"
-        }`}
+      className={`relative w-16 h-16 clickable p-1 flex items-center justify-center group`}
       style={{
         backgroundImage: "url('/images/collections/collectionsItemBoxAlt.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
+      <div
+        className={`absolute w-[60px] h-[60px] top-0 right-0 opacity-50 mix-blend-multiply ${isSelected ? "bg-green-400" : ""}`}
+      />
+
       {/* Crop Image */}
       <img
         src={crop.image_url}
         alt={crop.name}
-        className="w-[80%] h-[80%] object-contain"
+        className={`object-contain w-full h-full p-[2px] pl-[6px] pb-[6px] z-10`}
       />
 
       {/* Custom Label Tooltip */}

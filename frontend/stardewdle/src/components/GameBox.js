@@ -14,9 +14,8 @@ const MOST_RECENT_UPDATE = "2025-12-30T00:00:00Z";
 
 function todaysDate() {
   const today = new Date(new Date().toUTCString());
-  return `${
-    today.getUTCMonth() + 1
-  }/${today.getUTCDate()}/${today.getUTCFullYear()}`;
+  return `${today.getUTCMonth() + 1
+    }/${today.getUTCDate()}/${today.getUTCFullYear()}`;
 }
 
 function getTimeUntilMidnightUTC() {
@@ -78,8 +77,6 @@ export default function GameBox({ isMobilePortrait }) {
 
   const { isMuted, toggleMute } = useSound();
 
-  const isFinalGuess = guesses.length === 5;
-
   const [hints, setHints] = useState(() => {
     const saved = localStorage.getItem("stardewdle-hints");
     return saved
@@ -91,15 +88,15 @@ export default function GameBox({ isMobilePortrait }) {
         type: false,
         season: false,
       };
-    });
+  });
   const [constraints, setConstraints] = useState(() => {
     const saved = localStorage.getItem("stardewdle-constraints");
     if (JSON.parse(saved)) {
       if (JSON.parse(saved).growth_time.length !== 2) {
         return {
           name: [],
-          growth_time: [0,99],
-          base_price: [0,9999],
+          growth_time: [0, 99],
+          base_price: [0, 9999],
           regrows: [],
           type: [],
           season: [],
@@ -109,13 +106,13 @@ export default function GameBox({ isMobilePortrait }) {
     return saved
       ? JSON.parse(saved)
       : {
-          name: [],
-          growth_time: [0,99],
-          base_price: [0,9999],
-          regrows: [],
-          type: [],
-          season: [],
-        };
+        name: [],
+        growth_time: [0, 99],
+        base_price: [0, 9999],
+        regrows: [],
+        type: [],
+        season: [],
+      };
   });
 
   const addConstraints = (crop) => {
@@ -128,28 +125,28 @@ export default function GameBox({ isMobilePortrait }) {
           if (key === "growth_time" || key === "base_price") {
             newConstraints[key] =
               crop[key] === correctCrop[key] ? [correctCrop[key] - 1, correctCrop[key] + 1] :
-              [correctCrop[key] > crop[key] && crop[key] > prevArray[0] ? crop[key] : prevArray[0],
-              correctCrop[key] < crop[key] && crop[key] < prevArray[1] ? crop[key] : prevArray[1]] 
+                [correctCrop[key] > crop[key] && crop[key] > prevArray[0] ? crop[key] : prevArray[0],
+                correctCrop[key] < crop[key] && crop[key] < prevArray[1] ? crop[key] : prevArray[1]]
             continue;
           }
           const newValue =
             key === "season" && (correctCrop["season"][0] === "all" || (correctCrop["season"].length > 1 && correctCrop["season"].includes(crop["season"][0])))
               ? null
               : key === "season" && crop["season"][0] === "all"
-              ? ["spring", "summer", "fall", "winter"]
-              : JSON.stringify(crop[key]) === JSON.stringify(correctCrop[key])
-              ? key === "regrows"
-                ? !correctCrop["regrows"]
-                : key === "type"
-                ? ["fruit", "vegetable", "flower", "forage"].filter(
-                  (type) => type !== crop["type"]
-                  )
-                : key === "season" && crop["season"].length === 1
-                ? [["spring"], ["summer"], ["fall"], ["winter"]].filter(
-                    (season) => season[0] !== crop["season"][0]
-                  )
-                : null
-              : crop[key];
+                ? ["spring", "summer", "fall", "winter"]
+                : JSON.stringify(crop[key]) === JSON.stringify(correctCrop[key])
+                  ? key === "regrows"
+                    ? !correctCrop["regrows"]
+                    : key === "type"
+                      ? ["fruit", "vegetable", "flower", "forage"].filter(
+                        (type) => type !== crop["type"]
+                      )
+                      : key === "season" && crop["season"].length === 1
+                        ? [["spring"], ["summer"], ["fall"], ["winter"]].filter(
+                          (season) => season[0] !== crop["season"][0]
+                        )
+                        : null
+                  : crop[key];
           if (newValue === null) continue;
           if (Array.isArray(newValue) && newValue.length === 3) {
             newValue.forEach((val) => {
@@ -168,26 +165,6 @@ export default function GameBox({ isMobilePortrait }) {
       return newConstraints;
     });
   };
-
-  function generateShareText(resultGrid, win) {
-    const header = win
-      ? "I solved today's Stardewdle!"
-      : "I couldn't solve today's Stardewdle.";
-
-    const grid = resultGrid
-      .map((row) =>
-        Object.values(row.result)
-          .map((val) => {
-            if (val === "match") return "🟩";
-            if (val === "partial") return "🟨";
-            return "🟥";
-          })
-          .join("")
-      )
-      .join("\n");
-
-    return `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`;
-  }
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -252,22 +229,10 @@ export default function GameBox({ isMobilePortrait }) {
   }, []);
 
   useEffect(() => {
-    if (gameOver && !shareText && guesses.length > 0) {
-      const isWin = guesses.some(
-        (g) =>
-          g.crop.name.toLowerCase() === correctCrop?.name.toLowerCase() &&
-          Object.values(g.result).every((val) => val === "match")
-      );
-      const text = generateShareText(guesses, isWin);
-      setShareText(text);
-    }
-  }, [gameOver, shareText, guesses, correctCrop]);
-
-  useEffect(() => {
-    if (guesses.length >= 6) {
+    if (gameOver) {
       setSelectedCrop(correctCrop);
     }
-  }, [guesses, correctCrop]);
+  }, [gameOver, correctCrop]);
 
   useEffect(() => {
     if (!DAILY_RESET_ENABLED) return;
@@ -298,8 +263,8 @@ export default function GameBox({ isMobilePortrait }) {
     setStoredDate(new Date().toISOString().split("T")[0]);
     setConstraints({
       name: [],
-      growth_time: [0,99],
-      base_price: [0,9999],
+      growth_time: [0, 99],
+      base_price: [0, 9999],
       regrows: [],
       type: [],
       season: [],
@@ -312,6 +277,7 @@ export default function GameBox({ isMobilePortrait }) {
 
   useEffect(() => {
     if (!showShareModal) return;
+
     const updateGuessStats = async () => {
       try {
         const res = await fetch(process.env.REACT_APP_API_URL + "/word");
@@ -323,8 +289,35 @@ export default function GameBox({ isMobilePortrait }) {
       }
     };
 
+    function getColor(key, guessValue, correctValue) {
+      if (key === "season") {
+        const g = guessValue[0] === "all" ? ["winter", "spring", "summer", "fall"] : guessValue;
+        const c = correctValue[0] === "all" ? ["winter", "spring", "summer", "fall"] : correctValue;
+        return (g.length === c.length && g.every((s) => c.includes(s))) ? "🟩" : g.some((s) => c.includes(s)) ? "🟨" : "🟥";
+      }
+
+      return guessValue === correctValue ? "🟩" : "🟥";
+    }
+
+    function generateShareText(resultGrid, win) {
+      const header = win
+        ? "I solved today's Stardewdle!"
+        : "I couldn't solve today's Stardewdle.";
+      const grid = resultGrid
+        .map((row) =>
+          ["growth_time", "base_price", "regrows", "type", "season"]
+            .map((key) => getColor(key, row.crop[key], correctCrop[key]))
+            .join("")
+        )
+        .join("\n");
+
+      return `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`;
+    }
+
+    setShareText(generateShareText(guesses, guesses[guesses.length-1].crop.name === correctCrop.name));
     updateGuessStats();
-  }, [showShareModal]);
+
+  }, [showShareModal, guesses, correctCrop,]);
 
   useEffect(() => {
     if (!DAILY_RESET_ENABLED) return;
@@ -392,11 +385,37 @@ export default function GameBox({ isMobilePortrait }) {
     if (
       storedDate !== today ||
       (correctCrop != null &&
+        correctCrop.date === undefined) ||
+      (correctCrop != null &&
         correctCrop.date !== undefined &&
         correctCrop.date !== today)
     ) {
-      console.log("Resetting game due to date change");
+      console.log("Resetting game due to date change"); // make message visible to user
       resetStored(true);
+      return;
+    }
+
+    const updatedGuesses = [...guesses, { crop: selectedCrop }];
+    setGuesses(updatedGuesses);
+    addConstraints(selectedCrop);
+
+    if (!gameOver && updatedGuesses.length < 6) setSelectedCrop(null);
+
+    const isFullMatch = ["growth_time", "base_price", "regrows", "type", "season"].every((key) => {
+      const guessVal = selectedCrop?.[key];
+      const answerVal = correctCrop?.[key];
+
+      if (key === "season") {
+        const g = Array.isArray(guessVal) ? guessVal : [];
+        const a = Array.isArray(answerVal) ? answerVal : [];
+        return g.length === a.length && g.every((s) => a.includes(s));
+      }
+
+      return guessVal === answerVal;
+    });
+
+    if (!isFullMatch && updatedGuesses.length < 6) {
+      if (!isMuted) new Audio("/sounds/sell.mp3").play();
       return;
     }
 
@@ -406,40 +425,24 @@ export default function GameBox({ isMobilePortrait }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guess: selectedCrop.name,
-          guessNum: guesses.length + 1,
+          guessNum: updatedGuesses.length,
         }),
       });
 
       const data = await response.json();
       const result = data.result;
 
-      const newGuess = { crop: selectedCrop, result };
-      const updatedGuesses = [...guesses, newGuess];
-      const isWin =
-        result && Object.values(result).every((val) => val === "match");
-
-      setGuesses(updatedGuesses);
-      addConstraints(selectedCrop);
-
-      if (!gameOver && guesses.length < 6) setSelectedCrop(null);
+      const isWin = result && Object.values(result).every((val) => val === "match");
 
       if (isWin) {
-        setGameOver(true);
         if (!isMuted) new Audio("/sounds/reward.mp3").play();
-        setSelectedCrop(correctCrop);
-        const text = generateShareText([...guesses, newGuess], true);
-        setShareText(text);
-        setShowShareModal(true);
-      } else if (isFinalGuess) {
-        setGameOver(true);
-        if (!isMuted) new Audio("/sounds/lose.mp3").play();
-
-        const text = generateShareText([...guesses, newGuess], false);
-        setShareText(text);
-        setShowShareModal(true);
       } else {
-        if (!isMuted) new Audio("/sounds/sell.mp3").play();
+        if (!isMuted) new Audio("/sounds/lose.mp3").play();
       }
+
+      setGameOver(true);
+      setShowShareModal(true);
+
     } catch (error) {
       console.error("Error submitting guess:", error);
     }
@@ -455,11 +458,10 @@ export default function GameBox({ isMobilePortrait }) {
 
   return (
     <div
-      className={`relative shadow-xl bg-no-repeat bg-center ${
-        isMobilePortrait
-          ? "gamebox-mobile-layout"
-          : "flex flex-row justify-between w-full pl-3 mt-3"
-      }`}
+      className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait
+        ? "gamebox-mobile-layout"
+        : "flex flex-row justify-between w-full pl-3 mt-3"
+        }`}
       style={{
         backgroundImage: isMobilePortrait
           ? "url('/images/box-bg-sm.webp')"
@@ -479,7 +481,7 @@ export default function GameBox({ isMobilePortrait }) {
         <CropGrid
           selectedCrop={selectedCrop}
           onSelect={
-            !gameOver && guesses.length < 6 ? setSelectedCrop : () => {}
+            !gameOver && guesses.length < 6 ? setSelectedCrop : () => { }
           }
           crops={crops}
           isMuted={!gameOver && guesses.length < 6 ? isMuted : true}
@@ -490,14 +492,12 @@ export default function GameBox({ isMobilePortrait }) {
       </div>
 
       <div
-        className={`flex flex-col align-center w-full place-items-center ${
-          isMobilePortrait ? "content-counter-rotate-mobile" : ""
-        }`}
+        className={`flex flex-col align-center w-full place-items-center ${isMobilePortrait ? "content-counter-rotate-mobile" : ""
+          }`}
       >
         <div
-          className={`flex flex-row items-center h-full ${
-            isMobilePortrait ? "mr-6 mt-[96px]" : "mr-24 mt-[80px]"
-          }  gap-4`}
+          className={`flex flex-row items-center h-full ${isMobilePortrait ? "mr-6 mt-[96px]" : "mr-24 mt-[80px]"
+            }  gap-4`}
         >
           <div
             className="relative bg-no-repeat bg-contain"
@@ -530,7 +530,7 @@ export default function GameBox({ isMobilePortrait }) {
             </div>
             {/*JSON.stringify(constraints)*/}
             {gameOver &&
-            (guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
+              (guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
               <div className="mt-4 flex items-center justify-center gap-4">
                 <p className="text-green-700 text-5xl font-bold whitespace-nowrap">
                   You guessed it!
@@ -595,11 +595,10 @@ export default function GameBox({ isMobilePortrait }) {
                   if (!selectedCrop || guesses.length >= 6 || gameOver) return;
                   handleSubmit();
                 }}
-                className={`relative mt-4 group ${
-                  !selectedCrop || guesses.length >= 6 || gameOver
-                    ? "opacity-40 pointer-events-none"
-                    : "clickable hover:scale-105 transition-transform"
-                }`}
+                className={`relative mt-4 group ${!selectedCrop || guesses.length >= 6 || gameOver
+                  ? "opacity-40 pointer-events-none"
+                  : "clickable hover:scale-105 transition-transform"
+                  }`}
                 style={{
                   width: "216px",
                   height: "80px",
@@ -620,9 +619,8 @@ export default function GameBox({ isMobilePortrait }) {
           </div>
         </div>
         <div
-          className={`${
-            isMobilePortrait ? "ml-2 pl-6 pb-2" : "pl-9 mr-[78px]"
-          } mb-[84px] bg-center bg-no-repeat bg-contain min-h-[440px]`}
+          className={`${isMobilePortrait ? "ml-2 pl-6 pb-2" : "pl-9 mr-[78px]"
+            } mb-[84px] bg-center bg-no-repeat bg-contain min-h-[440px]`}
           style={{
             backgroundImage: "url('/images/guesses.webp')",
             width: isMobilePortrait ? "750px" : "772px",
@@ -633,16 +631,14 @@ export default function GameBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute ${
-          isMobilePortrait
-            ? "h-[50px] w-[165px] bottom-[75px] -right-[120px] content-counter-rotate-mobile"
-            : "-top-[55px] right-0"
-        } `}
+        className={`absolute ${isMobilePortrait
+          ? "h-[50px] w-[165px] bottom-[75px] -right-[120px] content-counter-rotate-mobile"
+          : "-top-[55px] right-0"
+          } `}
       >
         <div
-          className={`absolute right-0 w-[50px] h-[50px] group clickable z-10 transition-transform duration-200 hover:scale-110 ${
-            shouldPulse ? "animate-bounceHard" : ""
-          }`}
+          className={`absolute right-0 w-[50px] h-[50px] group clickable z-10 transition-transform duration-200 hover:scale-110 ${shouldPulse ? "animate-bounceHard" : ""
+            }`}
           onClick={() => {
             if (!isMuted) {
               new Audio("/sounds/modal.mp3").play();

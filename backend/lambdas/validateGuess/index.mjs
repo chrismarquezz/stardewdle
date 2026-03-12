@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
-const cropsResponse = await fetch("https://2vo847ggnb.execute-api.us-east-1.amazonaws.com/crops");
+const cropsResponse = await fetch(process.env.CROPS_API_URL + "/crops");
 if (!cropsResponse.ok) {
     throw new Error(`Failed to fetch crops from Lambda: ${cropsResponse.statusText}`);
 }

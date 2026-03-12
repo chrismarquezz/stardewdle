@@ -18,6 +18,24 @@ After each guess, the game provides color-coded feedback based on five key attri
 
 ---
 
+## Press
+
+**Stardewdle** was featured on a Screen Rant article. Check out what they had to say below!
+
+"It's a great daily challenge for any fan of Stardew Valley" — [Screen Rant](https://screenrant.com/stardew-valley-wordle-stardewdle/)
+
+---
+
+## Screenshots
+
+![Game Screenshot 1](https://github.com/user-attachments/assets/b2aaffd4-cb23-4fb7-b491-64afa6862eee)
+
+![Game Screenshot 2](https://github.com/user-attachments/assets/88495f41-8df5-4283-bd3e-6d9d7db33899)
+
+![Game Screenshot 3](https://github.com/user-attachments/assets/6f4f30cf-b60e-476f-90a2-70c63e266016)
+
+---
+
 ## Tech Stack
 
 **Frontend Development**  
@@ -44,16 +62,6 @@ After each guess, the game provides color-coded feedback based on five key attri
 
 ---
 
-## Screenshots
-
-![Game Screenshot 1](https://github.com/user-attachments/assets/b2aaffd4-cb23-4fb7-b491-64afa6862eee)
-
-![Game Screenshot 2](https://github.com/user-attachments/assets/88495f41-8df5-4283-bd3e-6d9d7db33899)
-
-![Game Screenshot 3](https://github.com/user-attachments/assets/6f4f30cf-b60e-476f-90a2-70c63e266016)
-
----
-
 ## Authors
 
 **Chris Marquez**  
@@ -67,6 +75,7 @@ After each guess, the game provides color-coded feedback based on five key attri
 **Omar Siddiqui**  
 <p align="left">
   <a href="mailto:2004.osid54@gmail.com" target="_blank"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail Badge"/></a>
+  <a href="https://www.linkedin.com/in/omar-siddiqui-6296363b0/" target="_blank"><img src="https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
   <a href="https://github.com/osid54" target="_blank"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" /></a>
   <a href="https://www.osid.dev/" target="_blank"><img src="https://img.shields.io/badge/Portfolio-555555?style=for-the-badge&logoColor=white" /></a>
 </p>

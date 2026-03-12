@@ -41,7 +41,7 @@ export default function CollectionsGrid({ selectedCrop, onSelect, isMuted, class
       className={`flex justify-center items-center h-full w-[90%] mt-[2px] ${className}`}
     >
       <div
-        className="grid gap-[6px] place-items-center"
+        className="grid gap-[6px] place-items-center border-r-[4px] border-t-[4px] border-[#FFF2D5] p-[2px]"
         style={gridStyles}
 
       >

@@ -11,6 +11,7 @@ import './App.css';
 import Landing from "./pages/Landing";
 import Game from "./pages/Game";
 import Collections from "./pages/Collections";
+import Count from "./pages/Count";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/game" element={<Game />} />
           <Route path="/collections" element={<Collections />} />
+          <Route path="/count" element={<Count />} />
         </Routes>
       </Router>
     </SoundProvider>
