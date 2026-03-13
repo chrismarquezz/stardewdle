@@ -20,9 +20,11 @@ After each guess, the game provides color-coded feedback based on five key attri
 
 ## Press
 
-**Stardewdle** was featured on a Screen Rant article. Check out what they had to say below!
+**Stardewdle** has been featured in a couple articles. Check out what they had to say below!
 
 "It's a great daily challenge for any fan of Stardew Valley" — [Screen Rant](https://screenrant.com/stardew-valley-wordle-stardewdle/)
+
+"It's a cute way to pass the time while we wait for Stardew Valley 1.7" — [PC Gamer](https://www.pcgamer.com/games/life-sim/stardew-valley-and-wordle-sure-do-make-for-a-cute-combination-in-this-daily-guessing-game-on-the-farm-sims-crops/)
 
 ---
 
