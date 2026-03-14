@@ -1,10 +1,11 @@
-import fetch from "node-fetch";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
-const cropsResponse = await fetch(process.env.CROPS_API_URL + "/crops");
+const CROPS_URL = process.env.CROPS_URL;
+
+const cropsResponse = await fetch(CROPS_URL);
 if (!cropsResponse.ok) {
-    throw new Error(`Failed to fetch crops from Lambda: ${cropsResponse.statusText}`);
+  throw new Error(`Failed to fetch crops from R2: ${cropsResponse.statusText}`);
 }
 const crops = await cropsResponse.json();
 
@@ -51,10 +52,10 @@ export const handler = async (event) => {
     }
 
     if (guessNum !== undefined && (typeof guessNum !== 'number' || guessNum < 1)) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: "Invalid 'guessNum'. Must be a positive number." }),
-        };
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Invalid 'guessNum'. Must be a positive number." }),
+      };
     }
 
     const guessedCrop = crops.find(c => c.name === guess.toLowerCase());
@@ -108,19 +109,19 @@ export const handler = async (event) => {
     }
 
     if (isFullyCorrect || guessNum === 6) {
-        UpdateExpressions.push("totalAttempts = if_not_exists(totalAttempts, :zeroTotal) + :incTotal");
-        ExpressionAttributeValues[":incTotal"] = 1;
-        ExpressionAttributeValues[":zeroTotal"] = 0;
+      UpdateExpressions.push("totalAttempts = if_not_exists(totalAttempts, :zeroTotal) + :incTotal");
+      ExpressionAttributeValues[":incTotal"] = 1;
+      ExpressionAttributeValues[":zeroTotal"] = 0;
     }
 
     if (UpdateExpressions.length > 0) {
-        await ddb.send(new UpdateCommand({
-            TableName: "daily_words",
-            Key: { date: today },
-            UpdateExpression: UpdateExpression + UpdateExpressions.join(", "),
-            ExpressionAttributeValues: ExpressionAttributeValues,
-            ExpressionAttributeNames: Object.keys(ExpressionAttributeNames).length > 0 ? ExpressionAttributeNames : undefined,
-        }));
+      await ddb.send(new UpdateCommand({
+        TableName: "daily_words",
+        Key: { date: today },
+        UpdateExpression: UpdateExpression + UpdateExpressions.join(", "),
+        ExpressionAttributeValues: ExpressionAttributeValues,
+        ExpressionAttributeNames: Object.keys(ExpressionAttributeNames).length > 0 ? ExpressionAttributeNames : undefined,
+      }));
     }
 
     return {

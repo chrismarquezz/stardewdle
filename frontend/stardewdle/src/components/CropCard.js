@@ -3,11 +3,22 @@ import { formatName } from "../utils/formatString";
 
 export default function CropCard({ crop, isSelected, onClick, isMuted, guessable, isMobilePortrait }) {
   const formattedName = formatName(crop.name);
-  const [isHovering, setIsHovering] = useState(false)
+  const [isHovering, setIsHovering] = useState(false);
 
   async function handleEndHover() {
     await new Promise((resolve) => setTimeout(resolve, 100));
     setIsHovering(false);
+  };
+
+  const x_pos = parseInt(crop.crop_index) * 48;
+
+  const spriteStyle = {
+    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundPosition: `-${x_pos}px 0px`,
+    backgroundSize: '3456px 48px',
+    width: '48px',
+    height: '48px',
+    imageRendering: 'pixelated',
   };
 
   return (
@@ -29,15 +40,15 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => handleEndHover()}
     >
-      
+
       <div
         className={`absolute w-full h-full opacity-50 mix-blend-multiply ${isSelected ? "bg-green-400" : ""}`}
       />
 
-      <img
-        src={crop.image_url}
-        alt={crop.name}
-        className={`object-contain w-full h-full p-[2px] pl-[6px] pb-[6px] z-10`}
+      <div
+        style={spriteStyle}
+        className="w-full h-full m-[2px] ml-[6px] mb-[6px] z-10"
+        title={formattedName}
       />
 
       <div
@@ -51,7 +62,6 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
           backgroundRepeat: "no-repeat",
           height: "28px",
         }}
-
       >
         {formattedName}
       </div>

@@ -1,874 +1,722 @@
 [
-    {
-        "name": "amaranth",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 150,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/f6/Amaranth.png",
-        "type": "vegetable",
-        "infodetail": "A purple grain cultivated by an ancient civilization."
-    },
-    {
-        "name": "ancient_fruit",
-        "growth_time": 28,
-        "season": [
-            "spring",
-            "summer",
-            "fall"
-        ],
-        "base_price": 550,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/0/01/Ancient_Fruit.png",
-        "type": "fruit",
-        "infodetail": "It's been dormant for eons."
-    },
-    {
-        "name": "apple",
-        "growth_time": 28,
-        "season": [
-            "fall"
-        ],
-        "base_price": 100,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/7/7d/Apple.png",
-        "type": "fruit",
-        "infodetail": "A crisp fruit used for juice and cider."
-    },
-    {
-        "name": "apricot",
-        "growth_time": 28,
-        "season": [
-            "spring"
-        ],
-        "base_price": 50,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/fc/Apricot.png",
-        "type": "fruit",
-        "infodetail": "A tender little fruit with a rock-hard pit."
-    },
-    {
-        "name": "artichoke",
-        "growth_time": 8,
-        "season": [
-            "fall"
-        ],
-        "base_price": 160,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/dd/Artichoke.png",
-        "type": "vegetable",
-        "infodetail": "The bud of a thistle plant. The spiny outer leaves conceal a fleshy, filling interior."
-    },
-    {
-        "name": "banana",
-        "growth_time": 28,
-        "season": [
-            "summer"
-        ],
-        "base_price": 150,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/6/69/Banana.png",
-        "type": "fruit",
-        "infodetail": "A sweet, starchy tropical fruit."
-    },
-    {
-        "name": "beet",
-        "growth_time": 6,
-        "season": [
-            "fall"
-        ],
-        "base_price": 100,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/a/a4/Beet.png",
-        "type": "vegetable",
-        "infodetail": "A sweet and earthy root vegetable. As a bonus, the leaves make a great salad."
-    },
-    {
-        "name": "blackberry",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 20,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/25/Blackberry.png",
-        "type": "fruit",
-        "infodetail": "An early-fall treat."
-    },
-    {
-        "name": "blue_jazz",
-        "growth_time": 7,
-        "season": [
-            "spring"
-        ],
-        "base_price": 50,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/2f/Blue_Jazz.png",
-        "type": "flower",
-        "infodetail": "The flower grows in a sphere to invite as many butterflies as possible."
-    },
-    {
-        "name": "blueberry",
-        "growth_time": 13,
-        "season": [
-            "summer"
-        ],
-        "base_price": 50,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/9/9e/Blueberry.png",
-        "type": "fruit",
-        "infodetail": "A popular berry reported to have many health benefits. The blue skin has the highest nutrient concentration."
-    },
-    {
-        "name": "bok_choy",
-        "growth_time": 4,
-        "season": [
-            "fall"
-        ],
-        "base_price": 80,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/4/40/Bok_Choy.png",
-        "type": "vegetable",
-        "infodetail": "The leafy greens and fibrous stalks are healthy and delicious."
-    },
-    {
-        "name": "broccoli",
-        "growth_time": 8,
-        "season": [
-            "fall"
-        ],
-        "base_price": 70,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/f1/Broccoli.png",
-        "type": "vegetable",
-        "infodetail": "The flowering head of a broccoli plant. The tiny buds give it a unique texture."
-    },
-    {
-        "name": "cactus_fruit",
-        "growth_time": 12,
-        "season": [
-            "all"
-        ],
-        "base_price": 75,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/32/Cactus_Fruit.png",
-        "type": "fruit",
-        "infodetail": "The sweet fruit of the prickly pear cactus."
-    },
-    {
-        "name": "carrot",
-        "growth_time": 3,
-        "season": [
-            "spring"
-        ],
-        "base_price": 35,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/c3/Carrot.png",
-        "type": "vegetable",
-        "infodetail": "A fast-growing, colorful tuber that makes for a great snack."
-    },
-    {
-        "name": "cauliflower",
-        "growth_time": 12,
-        "season": [
-            "spring"
-        ],
-        "base_price": 175,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/a/aa/Cauliflower.png",
-        "type": "vegetable",
-        "infodetail": "Valuable, but slow-growing. Despite its pale color, the florets are packed with nutrients."
-    },
-    {
-        "name": "chanterelle",
-        "growth_time": 4,
-        "season": [
-            "all"
-        ],
-        "base_price": 160,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/1/1d/Chanterelle.png",
-        "type": "forage",
-        "infodetail": "A tasty mushroom with a fruity smell and slightly peppery flavor."
-    },
-    {
-        "name": "cherry",
-        "growth_time": 28,
-        "season": [
-            "spring"
-        ],
-        "base_price": 80,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/20/Cherry.png",
-        "type": "fruit",
-        "infodetail": "It's popular, and ripens sooner than most other fruits."
-    },
-    {
-        "name": "coffee_bean",
-        "growth_time": 10,
-        "season": [
-            "spring",
-            "summer"
-        ],
-        "base_price": 15,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/33/Coffee_Bean.png",
-        "type": "fruit",
-        "infodetail": "Plant in spring or summer to grow a coffee plant. Place five beans in a keg to make coffee."
-    },
-    {
-        "name": "common_mushroom",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 40,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/2e/Common_Mushroom.png",
-        "type": "forage",
-        "infodetail": "Slightly nutty, with good texture."
-    },
-    {
-        "name": "corn",
-        "growth_time": 14,
-        "season": [
-            "summer",
-            "fall"
-        ],
-        "base_price": 50,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/f8/Corn.png",
-        "type": "vegetable",
-        "infodetail": "One of the most popular grains. The sweet, fresh cobs are a summer favorite."
-    },
-    {
-        "name": "cranberries",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 75,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/6/6e/Cranberries.png",
-        "type": "fruit",
-        "infodetail": "These tart red berries are a traditional winter food."
-    },
-    {
-        "name": "crocus",
-        "growth_time": 7,
-        "season": [
-            "winter"
-        ],
-        "base_price": 60,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/2f/Crocus.png",
-        "type": "flower",
-        "infodetail": "A flower that can bloom in the winter."
-    },
-    {
-        "name": "crystal_fruit",
-        "growth_time": 7,
-        "season": [
-            "winter"
-        ],
-        "base_price": 150,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/1/16/Crystal_Fruit.png",
-        "type": "forage",
-        "infodetail": "A delicate fruit that pops up from the snow."
-    },
-    {
-        "name": "daffodil",
-        "growth_time": 7,
-        "season": [
-            "spring"
-        ],
-        "base_price": 30,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/4/4b/Daffodil.png",
-        "type": "forage",
-        "infodetail": "A traditional spring flower that makes a nice gift."
-    },
-    {
-        "name": "dandelion",
-        "growth_time": 7,
-        "season": [
-            "spring"
-        ],
-        "base_price": 40,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/b/b1/Dandelion.png",
-        "type": "forage",
-        "infodetail": "Not the prettiest flower, but the leaves make a good salad."
-    },
-    {
-        "name": "eggplant",
-        "growth_time": 5,
-        "season": [
-            "fall"
-        ],
-        "base_price": 60,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/8/8f/Eggplant.png",
-        "type": "vegetable",
-        "infodetail": "A rich and wholesome relative of the tomato. Delicious fried or stewed."
-    },
-    {
-        "name": "fairy_rose",
-        "growth_time": 12,
-        "season": [
-            "fall"
-        ],
-        "base_price": 290,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/5c/Fairy_Rose.png",
-        "type": "flower",
-        "infodetail": "An old folk legend suggests that the sweet smell of this flower attracts fairies."
-    },
-    {
-        "name": "garlic",
-        "growth_time": 4,
-        "season": [
-            "spring"
-        ],
-        "base_price": 60,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/cc/Garlic.png",
-        "type": "vegetable",
-        "infodetail": "Adds a wonderful zestiness to dishes. High quality garlic can be pretty spicy."
-    },
-    {
-        "name": "grape",
-        "growth_time": 10,
-        "season": [
-            "fall"
-        ],
-        "base_price": 80,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/c2/Grape.png",
-        "type": "fruit",
-        "infodetail": "A sweet cluster of fruit."
-    },
-    {
-        "name": "green_bean",
-        "growth_time": 10,
-        "season": [
-            "spring"
-        ],
-        "base_price": 40,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/5c/Green_Bean.png",
-        "type": "vegetable",
-        "infodetail": "A juicy little bean with a cool, crisp snap."
-    },
-    {
-        "name": "hazelnut",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 90,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/31/Hazelnut.png",
-        "type": "forage",
-        "infodetail": "That's one big hazelnut!"
-    },
-    {
-        "name": "hops",
-        "growth_time": 11,
-        "season": [
-            "summer"
-        ],
-        "base_price": 25,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/59/Hops.png",
-        "type": "vegetable",
-        "infodetail": "A bitter, tangy flower used to flavor beer."
-    },
-    {
-        "name": "hot_pepper",
-        "growth_time": 5,
-        "season": [
-            "summer"
-        ],
-        "base_price": 40,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/f1/Hot_Pepper.png",
-        "type": "fruit",
-        "infodetail": "Fiery hot with a hint of sweetness."
-    },
-    {
-        "name": "kale",
-        "growth_time": 6,
-        "season": [
-            "spring"
-        ],
-        "base_price": 110,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/d1/Kale.png",
-        "type": "vegetable",
-        "infodetail": "The waxy leaves are great in soups and stir fries."
-    },
-    {
-        "name": "leek",
-        "growth_time": 7,
-        "season": [
-            "spring"
-        ],
-        "base_price": 60,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/57/Leek.png",
-        "type": "forage",
-        "infodetail": "A tasty relative of the onion."
-    },
-    {
-        "name": "mango",
-        "growth_time": 28,
-        "season": [
-            "summer"
-        ],
-        "base_price": 130,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/38/Mango.png",
-        "type": "fruit",
-        "infodetail": "A big, sweet tropical fruit with a unique flavor."
-    },
-    {
-        "name": "melon",
-        "growth_time": 12,
-        "season": [
-            "summer"
-        ],
-        "base_price": 250,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/1/19/Melon.png",
-        "type": "fruit",
-        "infodetail": "A cool, sweet summer treat."
-    },
-    {
-        "name": "morel",
-        "growth_time": 4,
-        "season": [
-            "all"
-        ],
-        "base_price": 150,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/b/b1/Morel.png",
-        "type": "forage",
-        "infodetail": "Sought after for its unique nutty flavor."
-    },
-    {
-        "name": "orange",
-        "growth_time": 28,
-        "season": [
-            "summer"
-        ],
-        "base_price": 100,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/4/43/Orange.png",
-        "type": "fruit",
-        "infodetail": "Juicy, tangy, and bursting with sweet summer aroma."
-    },
-    {
-        "name": "parsnip",
-        "growth_time": 4,
-        "season": [
-            "spring"
-        ],
-        "base_price": 35,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/db/Parsnip.png",
-        "type": "vegetable",
-        "infodetail": "A spring tuber closely related to the carrot. It has an earthy taste and is full of nutrients."
-    },
-    {
-        "name": "peach",
-        "growth_time": 28,
-        "season": [
-            "summer"
-        ],
-        "base_price": 140,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/e/e2/Peach.png",
-        "type": "fruit",
-        "infodetail": "It's almost fuzzy to the touch."
-    },
-    {
-        "name": "pineapple",
-        "growth_time": 14,
-        "season": [
-            "summer"
-        ],
-        "base_price": 300,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/fb/Pineapple.png",
-        "type": "fruit",
-        "infodetail": "A sweet and tangy tropical treat."
-    },
-    {
-        "name": "pomegranate",
-        "growth_time": 28,
-        "season": [
-            "fall"
-        ],
-        "base_price": 140,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/1/1b/Pomegranate.png",
-        "type": "fruit",
-        "infodetail": "Within the fruit are clusters of juicy seeds."
-    },
-    {
-        "name": "poppy",
-        "growth_time": 7,
-        "season": [
-            "summer"
-        ],
-        "base_price": 140,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/37/Poppy.png",
-        "type": "flower",
-        "infodetail": "In addition to its colorful flower, the Poppy has culinary and medicinal uses."
-    },
-    {
-        "name": "potato",
-        "growth_time": 6,
-        "season": [
-            "spring"
-        ],
-        "base_price": 80,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/c2/Potato.png",
-        "type": "vegetable",
-        "infodetail": "A widely cultivated tuber."
-    },
-    {
-        "name": "powdermelon",
-        "growth_time": 7,
-        "season": [
-            "winter"
-        ],
-        "base_price": 60,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/a/aa/Powdermelon.png",
-        "type": "fruit",
-        "infodetail": "Named for the powdery coating that forms on the surface, this melon is crisp and sweet, with a delicate flavor."
-    },
-    {
-        "name": "pumpkin",
-        "growth_time": 13,
-        "season": [
-            "fall"
-        ],
-        "base_price": 320,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/6/64/Pumpkin.png",
-        "type": "vegetable",
-        "infodetail": "A fall favorite, grown for its crunchy seeds and delicately flavored flesh. As a bonus, the hollow shell can be carved into a festive decoration."
-    },
-    {
-        "name": "purple_mushroom",
-        "growth_time": 4,
-        "season": [
-            "all"
-        ],
-        "base_price": 250,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/4/4b/Purple_Mushroom.png",
-        "type": "forage",
-        "infodetail": "A rare mushroom found deep in caves."
-    },
-    {
-        "name": "qi_fruit",
-        "growth_time": 4,
-        "season": [
-            "all"
-        ],
-        "base_price": 1,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/b/b9/Qi_Fruit.png",
-        "type": "fruit",
-        "infodetail": "Mr. Qi has challenged you to ship 500 of these strange melons."
-    },
-    {
-        "name": "radish",
-        "growth_time": 6,
-        "season": [
-            "summer"
-        ],
-        "base_price": 90,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/d5/Radish.png",
-        "type": "vegetable",
-        "infodetail": "A crisp and refreshing root vegetable with hints of pepper when eaten raw."
-    },
-    {
-        "name": "red_cabbage",
-        "growth_time": 9,
-        "season": [
-            "summer"
-        ],
-        "base_price": 260,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/2/2d/Red_Cabbage.png",
-        "type": "vegetable",
-        "infodetail": "Often used in salads and coleslaws. The color can range from purple to blue to green-yellow depending on soil conditions."
-    },
-    {
-        "name": "red_mushroom",
-        "growth_time": 4,
-        "season": [
-            "all"
-        ],
-        "base_price": 75,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/e/e1/Red_Mushroom.png",
-        "type": "forage",
-        "infodetail": "A spotted mushroom sometimes found in caves."
-    },
-    {
-        "name": "rhubarb",
-        "growth_time": 13,
-        "season": [
-            "spring"
-        ],
-        "base_price": 220,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/6/6e/Rhubarb.png",
-        "type": "fruit",
-        "infodetail": "The stalks are extremely tart, but make a great dessert when sweetened."
-    },
-    {
-        "name": "snow_yam",
-        "growth_time": 7,
-        "season": [
-            "winter"
-        ],
-        "base_price": 100,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/3f/Snow_Yam.png",
-        "type": "forage",
-        "infodetail": "This little yam was hiding beneath the snow."
-    },
-    {
-        "name": "spice_berry",
-        "growth_time": 7,
-        "season": [
-            "summer"
-        ],
-        "base_price": 80,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/c6/Spice_Berry.png",
-        "type": "fruit",
-        "infodetail": "It fills the air with a pungent aroma."
-    },
-    {
-        "name": "starfruit",
-        "growth_time": 13,
-        "season": [
-            "summer"
-        ],
-        "base_price": 750,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/db/Starfruit.png",
-        "type": "fruit",
-        "infodetail": "An extremely juicy fruit that grows in hot, humid weather. Slightly sweet with a sour undertone."
-    },
-    {
-        "name": "strawberry",
-        "growth_time": 8,
-        "season": [
-            "spring"
-        ],
-        "base_price": 120,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/6/6d/Strawberry.png",
-        "type": "fruit",
-        "infodetail": "A sweet, juicy favorite with an appealing red color."
-    },
-    {
-        "name": "summer_spangle",
-        "growth_time": 8,
-        "season": [
-            "summer"
-        ],
-        "base_price": 90,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/9/9f/Summer_Spangle.png",
-        "type": "flower",
-        "infodetail": "A tropical bloom that thrives in the humid summer air. Has a sweet, tangy aroma."
-    },
-    {
-        "name": "summer_squash",
-        "growth_time": 6,
-        "season": [
-            "summer"
-        ],
-        "base_price": 45,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/4/43/Summer_Squash.png",
-        "type": "vegetable",
-        "infodetail": "A curved yellow squash that is harvested while immature, and still tender."
-    },
-    {
-        "name": "sunflower",
-        "growth_time": 8,
-        "season": [
-            "summer",
-            "fall"
-        ],
-        "base_price": 80,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/8/81/Sunflower.png",
-        "type": "flower",
-        "infodetail": "A common misconception is that the flower turns so it's always facing the sun."
-    },
-    {
-        "name": "sweet_gem_berry",
-        "growth_time": 24,
-        "season": [
-            "fall"
-        ],
-        "base_price": 3000,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/8/88/Sweet_Gem_Berry.png",
-        "type": "fruit",
-        "infodetail": "It's by far the sweetest thing you've ever smelled."
-    },
-    {
-        "name": "sweet_pea",
-        "growth_time": 7,
-        "season": [
-            "summer"
-        ],
-        "base_price": 50,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/d/d9/Sweet_Pea.png",
-        "type": "flower",
-        "infodetail": "A fragrant summer flower."
-    },
-    {
-        "name": "taro_root",
-        "growth_time": 10,
-        "season": [
-            "summer"
-        ],
-        "base_price": 100,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/0/01/Taro_Root.png",
-        "type": "vegetable",
-        "infodetail": "This starchy root is one of the most ancient crops."
-    },
-    {
-        "name": "tea_leaves",
-        "growth_time": 20,
-        "season": [
-            "spring",
-            "summer",
-            "fall"
-        ],
-        "base_price": 50,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/5b/Tea_Leaves.png",
-        "type": "vegetable",
-        "infodetail": "The young leaves of the tea plant. Can be brewed into the popular, energizing beverage."
-    },
-    {
-        "name": "tomato",
-        "growth_time": 11,
-        "season": [
-            "summer"
-        ],
-        "base_price": 60,
-        "regrows": true,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/9/9d/Tomato.png",
-        "type": "vegetable",
-        "infodetail": "Rich and slightly tangy, the Tomato has a wide variety of culinary uses."
-    },
-    {
-        "name": "tulip",
-        "growth_time": 6,
-        "season": [
-            "spring"
-        ],
-        "base_price": 30,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/c/cf/Tulip.png",
-        "type": "flower",
-        "infodetail": "The most popular spring flower. Has a very faint sweet smell."
-    },
-    {
-        "name": "unmilled_rice",
-        "growth_time": 8,
-        "season": [
-            "spring"
-        ],
-        "base_price": 30,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/f/fe/Unmilled_Rice.png",
-        "type": "vegetable",
-        "infodetail": "Rice in its rawest form. Run this through a mill to increase the value."
-    },
-    {
-        "name": "wheat",
-        "growth_time": 4,
-        "season": [
-            "summer",
-            "fall"
-        ],
-        "base_price": 25,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/e/e2/Wheat.png",
-        "type": "vegetable",
-        "infodetail": "One of the most widely cultivated grains. Makes a great flour for breads and cakes."
-    },
-    {
-        "name": "wild_horseradish",
-        "growth_time": 7,
-        "season": [
-            "spring"
-        ],
-        "base_price": 50,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/9/90/Wild_Horseradish.png",
-        "type": "forage",
-        "infodetail": "A spicy root found in the spring."
-    },
-    {
-        "name": "wild_plum",
-        "growth_time": 7,
-        "season": [
-            "fall"
-        ],
-        "base_price": 80,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/3/3b/Wild_Plum.png",
-        "type": "fruit",
-        "infodetail": "Tart and juicy with a pungent aroma."
-    },
-    {
-        "name": "winter_root",
-        "growth_time": 7,
-        "season": [
-            "winter"
-        ],
-        "base_price": 70,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/1/11/Winter_Root.png",
-        "type": "forage",
-        "infodetail": "A starchy tuber."
-    },
-    {
-        "name": "yam",
-        "growth_time": 10,
-        "season": [
-            "fall"
-        ],
-        "base_price": 160,
-        "regrows": false,
-        "image_url": "https://stardewvalleywiki.com/mediawiki/images/5/52/Yam.png",
-        "type": "vegetable",
-        "infodetail": "A starchy tuber with a lot of culinary versatility."
-    }
+  {
+    "name": "amaranth",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 150,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A purple grain cultivated by an ancient civilization.",
+    "crop_index": 0
+  },
+  {
+    "name": "ancient_fruit",
+    "growth_time": 28,
+    "season": ["spring", "summer", "fall"],
+    "base_price": 550,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "It's been dormant for eons.",
+    "crop_index": 1
+  },
+  {
+    "name": "apple",
+    "growth_time": 28,
+    "season": ["fall"],
+    "base_price": 100,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A crisp fruit used for juice and cider.",
+    "crop_index": 2
+  },
+  {
+    "name": "apricot",
+    "growth_time": 28,
+    "season": ["spring"],
+    "base_price": 50,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A tender little fruit with a rock-hard pit.",
+    "crop_index": 3
+  },
+  {
+    "name": "artichoke",
+    "growth_time": 8,
+    "season": ["fall"],
+    "base_price": 160,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "The bud of a thistle plant. The spiny outer leaves conceal a fleshy, filling interior.",
+    "crop_index": 4
+  },
+  {
+    "name": "banana",
+    "growth_time": 28,
+    "season": ["summer"],
+    "base_price": 150,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A sweet, starchy tropical fruit.",
+    "crop_index": 5
+  },
+  {
+    "name": "beet",
+    "growth_time": 6,
+    "season": ["fall"],
+    "base_price": 100,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A sweet and earthy root vegetable. As a bonus, the leaves make a great salad.",
+    "crop_index": 6
+  },
+  {
+    "name": "blackberry",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 20,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "An early-fall treat.",
+    "crop_index": 7
+  },
+  {
+    "name": "blue_jazz",
+    "growth_time": 7,
+    "season": ["spring"],
+    "base_price": 50,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "The flower grows in a sphere to invite as many butterflies as possible.",
+    "crop_index": 8
+  },
+  {
+    "name": "blueberry",
+    "growth_time": 13,
+    "season": ["summer"],
+    "base_price": 50,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A popular berry reported to have many health benefits. The blue skin has the highest nutrient concentration.",
+    "crop_index": 9
+  },
+  {
+    "name": "bok_choy",
+    "growth_time": 4,
+    "season": ["fall"],
+    "base_price": 80,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "The leafy greens and fibrous stalks are healthy and delicious.",
+    "crop_index": 10
+  },
+  {
+    "name": "broccoli",
+    "growth_time": 8,
+    "season": ["fall"],
+    "base_price": 70,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "The flowering head of a broccoli plant. The tiny buds give it a unique texture.",
+    "crop_index": 11
+  },
+  {
+    "name": "cactus_fruit",
+    "growth_time": 12,
+    "season": ["all"],
+    "base_price": 75,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "The sweet fruit of the prickly pear cactus.",
+    "crop_index": 12
+  },
+  {
+    "name": "carrot",
+    "growth_time": 3,
+    "season": ["spring"],
+    "base_price": 35,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A fast-growing, colorful tuber that makes for a great snack.",
+    "crop_index": 13
+  },
+  {
+    "name": "cauliflower",
+    "growth_time": 12,
+    "season": ["spring"],
+    "base_price": 175,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "Valuable, but slow-growing. Despite its pale color, the florets are packed with nutrients.",
+    "crop_index": 14
+  },
+  {
+    "name": "chanterelle",
+    "growth_time": 4,
+    "season": ["all"],
+    "base_price": 160,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A tasty mushroom with a fruity smell and slightly peppery flavor.",
+    "crop_index": 15
+  },
+  {
+    "name": "cherry",
+    "growth_time": 28,
+    "season": ["spring"],
+    "base_price": 80,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "It's popular, and ripens sooner than most other fruits.",
+    "crop_index": 16
+  },
+  {
+    "name": "coffee_bean",
+    "growth_time": 10,
+    "season": ["spring", "summer"],
+    "base_price": 15,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "Plant in spring or summer to grow a coffee plant. Place five beans in a keg to make coffee.",
+    "crop_index": 17
+  },
+  {
+    "name": "common_mushroom",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 40,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "Slightly nutty, with good texture.",
+    "crop_index": 18
+  },
+  {
+    "name": "corn",
+    "growth_time": 14,
+    "season": ["summer", "fall"],
+    "base_price": 50,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "One of the most popular grains. The sweet, fresh cobs are a summer favorite.",
+    "crop_index": 19
+  },
+  {
+    "name": "cranberries",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 75,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "These tart red berries are a traditional winter food.",
+    "crop_index": 20
+  },
+  {
+    "name": "crocus",
+    "growth_time": 7,
+    "season": ["winter"],
+    "base_price": 60,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "A flower that can bloom in the winter.",
+    "crop_index": 21
+  },
+  {
+    "name": "crystal_fruit",
+    "growth_time": 7,
+    "season": ["winter"],
+    "base_price": 150,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A delicate fruit that pops up from the snow.",
+    "crop_index": 22
+  },
+  {
+    "name": "daffodil",
+    "growth_time": 7,
+    "season": ["spring"],
+    "base_price": 30,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A traditional spring flower that makes a nice gift.",
+    "crop_index": 23
+  },
+  {
+    "name": "dandelion",
+    "growth_time": 7,
+    "season": ["spring"],
+    "base_price": 40,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "Not the prettiest flower, but the leaves make a good salad.",
+    "crop_index": 24
+  },
+  {
+    "name": "eggplant",
+    "growth_time": 5,
+    "season": ["fall"],
+    "base_price": 60,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "A rich and wholesome relative of the tomato. Delicious fried or stewed.",
+    "crop_index": 25
+  },
+  {
+    "name": "fairy_rose",
+    "growth_time": 12,
+    "season": ["fall"],
+    "base_price": 290,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "An old folk legend suggests that the sweet smell of this flower attracts fairies.",
+    "crop_index": 26
+  },
+  {
+    "name": "garlic",
+    "growth_time": 4,
+    "season": ["spring"],
+    "base_price": 60,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "Adds a wonderful zestiness to dishes. High quality garlic can be pretty spicy.",
+    "crop_index": 27
+  },
+  {
+    "name": "grape",
+    "growth_time": 10,
+    "season": ["fall"],
+    "base_price": 80,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A sweet cluster of fruit.",
+    "crop_index": 28
+  },
+  {
+    "name": "green_bean",
+    "growth_time": 10,
+    "season": ["spring"],
+    "base_price": 40,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "A juicy little bean with a cool, crisp snap.",
+    "crop_index": 29
+  },
+  {
+    "name": "hazelnut",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 90,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "That's one big hazelnut!",
+    "crop_index": 30
+  },
+  {
+    "name": "hops",
+    "growth_time": 11,
+    "season": ["summer"],
+    "base_price": 25,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "A bitter, tangy flower used to flavor beer.",
+    "crop_index": 31
+  },
+  {
+    "name": "hot_pepper",
+    "growth_time": 5,
+    "season": ["summer"],
+    "base_price": 40,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "Fiery hot with a hint of sweetness.",
+    "crop_index": 32
+  },
+  {
+    "name": "kale",
+    "growth_time": 6,
+    "season": ["spring"],
+    "base_price": 110,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "The waxy leaves are great in soups and stir fries.",
+    "crop_index": 33
+  },
+  {
+    "name": "leek",
+    "growth_time": 7,
+    "season": ["spring"],
+    "base_price": 60,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A tasty relative of the onion.",
+    "crop_index": 34
+  },
+  {
+    "name": "mango",
+    "growth_time": 28,
+    "season": ["summer"],
+    "base_price": 130,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A big, sweet tropical fruit with a unique flavor.",
+    "crop_index": 35
+  },
+  {
+    "name": "melon",
+    "growth_time": 12,
+    "season": ["summer"],
+    "base_price": 250,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "A cool, sweet summer treat.",
+    "crop_index": 36
+  },
+  {
+    "name": "morel",
+    "growth_time": 4,
+    "season": ["all"],
+    "base_price": 150,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "Sought after for its unique nutty flavor.",
+    "crop_index": 37
+  },
+  {
+    "name": "orange",
+    "growth_time": 28,
+    "season": ["summer"],
+    "base_price": 100,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "Juicy, tangy, and bursting with sweet summer aroma.",
+    "crop_index": 38
+  },
+  {
+    "name": "parsnip",
+    "growth_time": 4,
+    "season": ["spring"],
+    "base_price": 35,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A spring tuber closely related to the carrot. It has an earthy taste and is full of nutrients.",
+    "crop_index": 39
+  },
+  {
+    "name": "peach",
+    "growth_time": 28,
+    "season": ["summer"],
+    "base_price": 140,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "It's almost fuzzy to the touch.",
+    "crop_index": 40
+  },
+  {
+    "name": "pineapple",
+    "growth_time": 14,
+    "season": ["summer"],
+    "base_price": 300,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A sweet and tangy tropical treat.",
+    "crop_index": 41
+  },
+  {
+    "name": "pomegranate",
+    "growth_time": 28,
+    "season": ["fall"],
+    "base_price": 140,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "Within the fruit are clusters of juicy seeds.",
+    "crop_index": 42
+  },
+  {
+    "name": "poppy",
+    "growth_time": 7,
+    "season": ["summer"],
+    "base_price": 140,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "In addition to its colorful flower, the Poppy has culinary and medicinal uses.",
+    "crop_index": 43
+  },
+  {
+    "name": "potato",
+    "growth_time": 6,
+    "season": ["spring"],
+    "base_price": 80,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A widely cultivated tuber.",
+    "crop_index": 44
+  },
+  {
+    "name": "powdermelon",
+    "growth_time": 7,
+    "season": ["winter"],
+    "base_price": 60,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "Named for the powdery coating that forms on the surface, this melon is crisp and sweet, with a delicate flavor.",
+    "crop_index": 45
+  },
+  {
+    "name": "pumpkin",
+    "growth_time": 13,
+    "season": ["fall"],
+    "base_price": 320,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A fall favorite, grown for its crunchy seeds and delicately flavored flesh. As a bonus, the hollow shell can be carved into a festive decoration.",
+    "crop_index": 46
+  },
+  {
+    "name": "purple_mushroom",
+    "growth_time": 4,
+    "season": ["all"],
+    "base_price": 250,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A rare mushroom found deep in caves.",
+    "crop_index": 47
+  },
+  {
+    "name": "qi_fruit",
+    "growth_time": 4,
+    "season": ["all"],
+    "base_price": 1,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "Mr. Qi has challenged you to ship 500 of these strange melons.",
+    "crop_index": 48
+  },
+  {
+    "name": "radish",
+    "growth_time": 6,
+    "season": ["summer"],
+    "base_price": 90,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A crisp and refreshing root vegetable with hints of pepper when eaten raw.",
+    "crop_index": 49
+  },
+  {
+    "name": "red_cabbage",
+    "growth_time": 9,
+    "season": ["summer"],
+    "base_price": 260,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "Often used in salads and coleslaws. The color can range from purple to blue to green-yellow depending on soil conditions.",
+    "crop_index": 50
+  },
+  {
+    "name": "red_mushroom",
+    "growth_time": 4,
+    "season": ["all"],
+    "base_price": 75,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A spotted mushroom sometimes found in caves.",
+    "crop_index": 51
+  },
+  {
+    "name": "rhubarb",
+    "growth_time": 13,
+    "season": ["spring"],
+    "base_price": 220,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "The stalks are extremely tart, but make a great dessert when sweetened.",
+    "crop_index": 52
+  },
+  {
+    "name": "snow_yam",
+    "growth_time": 7,
+    "season": ["winter"],
+    "base_price": 100,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "This little yam was hiding beneath the snow.",
+    "crop_index": 53
+  },
+  {
+    "name": "spice_berry",
+    "growth_time": 7,
+    "season": ["summer"],
+    "base_price": 80,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "It fills the air with a pungent aroma.",
+    "crop_index": 54
+  },
+  {
+    "name": "starfruit",
+    "growth_time": 13,
+    "season": ["summer"],
+    "base_price": 750,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "An extremely juicy fruit that grows in hot, humid weather. Slightly sweet with a sour undertone.",
+    "crop_index": 55
+  },
+  {
+    "name": "strawberry",
+    "growth_time": 8,
+    "season": ["spring"],
+    "base_price": 120,
+    "regrows": true,
+    "type": "fruit",
+    "infodetail": "A sweet, juicy favorite with an appealing red color.",
+    "crop_index": 56
+  },
+  {
+    "name": "summer_spangle",
+    "growth_time": 8,
+    "season": ["summer"],
+    "base_price": 90,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "A tropical bloom that thrives in the humid summer air. Has a sweet, tangy aroma.",
+    "crop_index": 57
+  },
+  {
+    "name": "summer_squash",
+    "growth_time": 6,
+    "season": ["summer"],
+    "base_price": 45,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "A curved yellow squash that is harvested while immature, and still tender.",
+    "crop_index": 58
+  },
+  {
+    "name": "sunflower",
+    "growth_time": 8,
+    "season": ["summer", "fall"],
+    "base_price": 80,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "A common misconception is that the flower turns so it's always facing the sun.",
+    "crop_index": 59
+  },
+  {
+    "name": "sweet_gem_berry",
+    "growth_time": 24,
+    "season": ["fall"],
+    "base_price": 3000,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "It's by far the sweetest thing you've ever smelled.",
+    "crop_index": 60
+  },
+  {
+    "name": "sweet_pea",
+    "growth_time": 7,
+    "season": ["summer"],
+    "base_price": 50,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "A fragrant summer flower.",
+    "crop_index": 61
+  },
+  {
+    "name": "taro_root",
+    "growth_time": 10,
+    "season": ["summer"],
+    "base_price": 100,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "This starchy root is one of the most ancient crops.",
+    "crop_index": 62
+  },
+  {
+    "name": "tea_leaves",
+    "growth_time": 20,
+    "season": ["spring", "summer", "fall"],
+    "base_price": 50,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "The young leaves of the tea plant. Can be brewed into the popular, energizing beverage.",
+    "crop_index": 63
+  },
+  {
+    "name": "tomato",
+    "growth_time": 11,
+    "season": ["summer"],
+    "base_price": 60,
+    "regrows": true,
+    "type": "vegetable",
+    "infodetail": "Rich and slightly tangy, the Tomato has a wide variety of culinary uses.",
+    "crop_index": 64
+  },
+  {
+    "name": "tulip",
+    "growth_time": 6,
+    "season": ["spring"],
+    "base_price": 30,
+    "regrows": false,
+    "type": "flower",
+    "infodetail": "The most popular spring flower. Has a very faint sweet smell.",
+    "crop_index": 65
+  },
+  {
+    "name": "unmilled_rice",
+    "growth_time": 8,
+    "season": ["spring"],
+    "base_price": 30,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "Rice in its rawest form. Run this through a mill to increase the value.",
+    "crop_index": 66
+  },
+  {
+    "name": "wheat",
+    "growth_time": 4,
+    "season": ["summer", "fall"],
+    "base_price": 25,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "One of the most widely cultivated grains. Makes a great flour for breads and cakes.",
+    "crop_index": 67
+  },
+  {
+    "name": "wild_horseradish",
+    "growth_time": 7,
+    "season": ["spring"],
+    "base_price": 50,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A spicy root found in the spring.",
+    "crop_index": 68
+  },
+  {
+    "name": "wild_plum",
+    "growth_time": 7,
+    "season": ["fall"],
+    "base_price": 80,
+    "regrows": false,
+    "type": "fruit",
+    "infodetail": "Tart and juicy with a pungent aroma.",
+    "crop_index": 69
+  },
+  {
+    "name": "winter_root",
+    "growth_time": 7,
+    "season": ["winter"],
+    "base_price": 70,
+    "regrows": false,
+    "type": "forage",
+    "infodetail": "A starchy tuber.",
+    "crop_index": 70
+  },
+  {
+    "name": "yam",
+    "growth_time": 10,
+    "season": ["fall"],
+    "base_price": 160,
+    "regrows": false,
+    "type": "vegetable",
+    "infodetail": "A starchy tuber with a lot of culinary versatility.",
+    "crop_index": 71
+  }
 ]

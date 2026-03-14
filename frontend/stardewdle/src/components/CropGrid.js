@@ -59,7 +59,7 @@ export default function CropGrid({
       const fetchInitialData = async () => {
         try {
           const cropResponse = await fetch(
-            process.env.REACT_APP_API_URL + "/crops"
+            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json`
           );
 
           if (!cropResponse.ok) {
@@ -67,15 +67,18 @@ export default function CropGrid({
           }
 
           const cropList = await cropResponse.json();
+          
           setCrops(cropList);
+
         } catch (error) {
-          console.error("Failed to fetch crop data from Lambda:", error);
+          console.error("Failed to fetch crop data from R2:", error);
         }
       };
 
       fetchInitialData();
     }
   }, [crops]);
+
 
   const gridStyles = isMobilePortrait
     ? {

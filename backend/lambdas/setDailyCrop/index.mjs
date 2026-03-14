@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   DynamoDBDocumentClient,
@@ -14,8 +13,14 @@ const ddb = DynamoDBDocumentClient.from(client);
 const ANALYTICS_TABLE = "stardewdleCounts";
 const WORDS_TABLE = "daily_words";
 
+const CROPS_URL = process.env.CROPS_URL;
+
 export const handler = async () => {
   try {
+    const cropsResponse = await fetch(CROPS_URL);
+    if (!cropsResponse.ok) throw new Error("Failed to fetch crops from R2");
+    const crops = await cropsResponse.json();
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayISO = today.toISOString().split("T")[0];
@@ -50,12 +55,6 @@ export const handler = async () => {
       ]);
       console.log(`Archived ${yesterdayPlays} plays for ${yesterdayItem.word} from ${yesterdayISO}`);
     }
-
-    const cropsResponse = await fetch(process.env.CROPS_API_URL + "/crops");
-    if (!cropsResponse.ok) {
-      throw new Error(`Failed to fetch crops: ${cropsResponse.statusText}`);
-    }
-    const crops = await cropsResponse.json();
 
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(today.getDate() - 7);

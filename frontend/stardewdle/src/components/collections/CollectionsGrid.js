@@ -5,24 +5,27 @@ export default function CollectionsGrid({ selectedCrop, onSelect, isMuted, class
   const [crops, setCrops] = useState([]);
 
   useEffect(() => {
-  if (crops.length === 0) {
-    const fetchInitialData = async () => {
-      try {
-        const cropResponse = await fetch(process.env.REACT_APP_API_URL + "/crops");
+    if (crops.length === 0) {
+      const fetchInitialData = async () => {
+        try {
+          const cropResponse = await fetch(
+            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json`
+          );
 
-        if (!cropResponse.ok) {
-          throw new Error(`HTTP error! status: ${cropResponse.status}`);
+          if (!cropResponse.ok) {
+            throw new Error(`HTTP error! status: ${cropResponse.status}`);
+          }
+
+          const cropList = await cropResponse.json();
+
+          setCrops(cropList);
+        } catch (error) {
+          console.error("Failed to fetch crop data from R2:", error);
         }
+      };
 
-        const cropList = await cropResponse.json();
-        setCrops(cropList);
-      } catch (error) {
-        console.error("Failed to fetch crop data from Lambda:", error);
-      }
-    };
-
-    fetchInitialData();
-  }
+      fetchInitialData();
+    }
   }, [crops]);
 
 

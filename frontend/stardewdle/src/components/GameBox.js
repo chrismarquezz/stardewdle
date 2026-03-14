@@ -328,7 +328,7 @@ export default function GameBox({ isMobilePortrait }) {
       try {
         if (crops.length === 0) {
           const cropResponse = await fetch(
-            process.env.REACT_APP_API_URL + "/crops"
+            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json`
           );
           if (!cropResponse.ok) {
             throw new Error(`HTTP error! status: ${cropResponse.status}`);
@@ -456,6 +456,15 @@ export default function GameBox({ isMobilePortrait }) {
     );
   }
 
+  const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;
+
+  const spriteStyle = {
+    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundPosition: `${x_pos}% 0%`,
+    backgroundSize: '7200% 100%',
+    imageRendering: 'pixelated',
+  };
+
   return (
     <div
       className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait
@@ -508,10 +517,10 @@ export default function GameBox({ isMobilePortrait }) {
             }}
           >
             {selectedCrop && (
-              <img
-                src={selectedCrop.image_url}
-                alt={selectedCrop.name}
-                className="absolute top-1/2 left-1/2 object-contain -translate-x-1/2 -translate-y-1/2 h-[60%] w-[60%]"
+              <div
+                style={spriteStyle}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[98.4px] w-[98.4px] bg-no-repeat"
+                title={selectedCrop.name}
               />
             )}
           </div>

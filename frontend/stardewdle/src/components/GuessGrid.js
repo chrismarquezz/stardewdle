@@ -112,6 +112,17 @@ export default function GuessGrid({ guesses, answer, className }) {
         : guessEntry
           ? "red"
           : "gray";
+    
+    const x_pos = parseInt(crop?.crop_index) * 40;
+
+    const spriteStyle = {
+      backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+      backgroundPosition: `-${x_pos}px 0px`,
+      backgroundSize: '2880px 40px',
+      width: '40px',
+      height: '40px',
+      imageRendering: 'pixelated',
+    };
 
     return (
       <div
@@ -119,7 +130,7 @@ export default function GuessGrid({ guesses, answer, className }) {
         className="grid gap-1 items-center w-full"
         style={{ gridTemplateColumns: COL_DIST }}
       >
-        {/* Crop image */}
+        {/* Frame image */}
         <div
           className="relative h-[60px] flex items-center justify-center"
           style={{
@@ -141,12 +152,12 @@ export default function GuessGrid({ guesses, answer, className }) {
           />
 
           {/* Crop image */}
-          {crop?.image_url && (
+          {crop?.crop_index > -1 && (
             <div className="relative group w-[40px] h-[40px] flex items-center justify-center">
-              <img
-                src={crop.image_url}
-                alt={crop.name}
-                className="relative z-10 w-[40px] h-[40px] object-contain"
+              <div
+                style={spriteStyle}
+                className="relative z-10 w-[40px] h-[40px]"
+                title={crop.name}
               />
               {/* Tooltip label */}
               <div

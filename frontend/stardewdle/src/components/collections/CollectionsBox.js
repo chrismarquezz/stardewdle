@@ -28,7 +28,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
       const fetchInitialData = async () => {
         try {
           const cropResponse = await fetch(
-            process.env.REACT_APP_API_URL + "/crops"
+            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json`
           );
 
           if (!cropResponse.ok) {
@@ -38,7 +38,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
           const cropList = await cropResponse.json();
           setCrops(cropList);
         } catch (error) {
-          console.error("Failed to fetch crop data from Lambda /crops:", error);
+          console.error("Failed to fetch crop data from R2:", error);
         }
 
         try {
@@ -68,6 +68,15 @@ export default function CollectionsBox({ isMobilePortrait }) {
       />
     );
   }
+
+  const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;
+
+  const spriteStyle = {
+    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundPosition: `${x_pos}% 0%`,
+    backgroundSize: '7200% 100%',
+    imageRendering: 'pixelated',
+  };
 
   return (
     <div
@@ -125,10 +134,10 @@ export default function CollectionsBox({ isMobilePortrait }) {
                   }}
                 >
                   {selectedCrop && (
-                    <img
-                      src={selectedCrop.image_url}
-                      alt={selectedCrop.name}
-                      className="absolute top-1/2 left-1/2 object-contain -translate-x-1/2 -translate-y-1/2 h-[60%] w-[60%]"
+                    <div
+                      style={spriteStyle}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[60%] w-[60%] bg-no-repeat"
+                      title={selectedCrop.name}
                     />
                   )}
                 </div>
