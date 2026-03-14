@@ -58,8 +58,9 @@ export default function CropGrid({
     if (crops.length === 0) {
       const fetchInitialData = async () => {
         try {
+          const version = "1.0.1";
           const cropResponse = await fetch(
-            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json`
+            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json?v=${version}`
           );
 
           if (!cropResponse.ok) {
