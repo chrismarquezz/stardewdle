@@ -75,6 +75,11 @@ export default function GameBox({ isMobilePortrait }) {
   const [showUpdates, setShowUpdates] = useState(false);
   const [shouldPulse, setShouldPulse] = useState(false);
 
+  const [selectionOffset, setSelectionOffset] = useState(0);
+  useEffect(() => {
+    setSelectionOffset(parseInt(selectedCrop?.crop_index) / 71 * 100);
+  }, [selectedCrop]);
+
   const { isMuted, toggleMute } = useSound();
 
   const [hints, setHints] = useState(() => {
@@ -456,11 +461,9 @@ export default function GameBox({ isMobilePortrait }) {
     );
   }
 
-  const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;
-
   const spriteStyle = {
     backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
-    backgroundPosition: `${x_pos}% 0%`,
+    backgroundPosition: `${selectionOffset}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
   };
