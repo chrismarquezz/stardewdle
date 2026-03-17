@@ -63,7 +63,29 @@ export default function GameBox({ isMobilePortrait }) {
   });
   const [crops, setCrops] = useState(() => {
     const saved = localStorage.getItem("stardewdle-crops");
-    return saved ? JSON.parse(saved) : [];
+
+    if (saved) {
+      try {
+        const parsedCrops = JSON.parse(saved);
+
+        if (parsedCrops.length === 0) return [];
+
+        const hasCropIndex = Object.hasOwn(parsedCrops[0], 'crop_index');
+
+        if (!hasCropIndex) {
+          console.log("Legacy schema detected (missing crop_index). Purging cache...");
+          localStorage.removeItem("stardewdle-crops");
+          return [];
+        }
+
+        return parsedCrops;
+      } catch (e) {
+        console.error("Error parsing saved crops:", e);
+        return [];
+      }
+    }
+
+    return [];
   });
   const [showHints, setShowHints] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
