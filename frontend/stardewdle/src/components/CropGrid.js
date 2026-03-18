@@ -80,15 +80,18 @@ export default function CropGrid({
     }
   }, [crops]);
 
+  const spriteUrl = `${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png`;
 
   const gridStyles = isMobilePortrait
     ? {
       gridTemplateColumns: "repeat(9, 66px)",
       gridAutoRows: "66px",
+      '--sprite-url': `url(${spriteUrl})`
     }
     : {
       gridTemplateColumns: "repeat(8, 60px)",
       gridAutoRows: "60px",
+      '--sprite-url': `url(${spriteUrl})`
     };
 
   return (

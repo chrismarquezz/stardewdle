@@ -11,7 +11,7 @@ export default function CollectionsCard({
   const x_pos = parseInt(crop.crop_index) * 48;
 
   const spriteStyle = {
-    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundImage: 'var(--sprite-url)',
     backgroundPosition: `-${x_pos}px 0px`,
     backgroundSize: '3456px 48px',
     width: '48px',
