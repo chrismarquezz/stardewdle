@@ -41,7 +41,7 @@ export const handler = async (event) => {
         word: wordData.Item.word,
         correct_guesses: wordData.Item.correct_guesses ?? 0,
         total_guesses: wordData.Item.totalAttempts ?? 0,
-
+        correct_date: today,
         global_total_plays: statsData.Item?.occurrences ?? 0
       }),
     };

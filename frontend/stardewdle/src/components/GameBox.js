@@ -349,8 +349,6 @@ export default function GameBox({ isMobilePortrait }) {
   useEffect(() => {
     if (!DAILY_RESET_ENABLED) return;
 
-    const today = new Date().toISOString().split("T")[0];
-
     const fetchNewCrop = async () => {
       try {
         if (crops.length === 0) {
@@ -369,13 +367,14 @@ export default function GameBox({ isMobilePortrait }) {
         const response = await fetch(process.env.REACT_APP_API_URL + "/word");
         const data = await response.json();
         const word = data.word;
+        const cropDate = data.correct_date;
 
         const cropData = crops.find(
           (crop) => crop.name.toLowerCase() === word.toLowerCase()
         );
 
         if (cropData) {
-          const cropDataWithDate = { ...cropData, date: today };
+          const cropDataWithDate = { ...cropData, date: cropDate };
           setCorrectCrop(cropDataWithDate);
         } else {
           console.warn("Crop not found for word:", word);
@@ -384,6 +383,8 @@ export default function GameBox({ isMobilePortrait }) {
         console.error("Failed to fetch crop data or word:", error);
       }
     };
+
+    const today = new Date().toISOString().split("T")[0];
 
     if (
       !correctCrop ||
