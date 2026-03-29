@@ -4,6 +4,8 @@ import {
   Route,
 } from "react-router-dom";
 
+import { useEffect } from "react";
+
 import { SoundProvider } from "./context/SoundContext";
 
 import './App.css';
@@ -14,6 +16,14 @@ import Collections from "./pages/Collections";
 import Count from "./pages/Count";
 
 export default function App() {
+  useEffect(() => {
+    const spriteUrl = process.env.REACT_APP_BUCKET_URL + "/sprites/crops.png";
+
+    if (spriteUrl) {
+      document.documentElement.style.setProperty('--sprite-url', `url(${spriteUrl})`);
+    }
+  }, []);
+
   return (
     <SoundProvider>
       <Router>

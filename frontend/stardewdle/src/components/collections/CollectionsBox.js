@@ -72,7 +72,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
   const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;
 
   const spriteStyle = {
-    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundImage: 'var(--sprite-url)',
     backgroundPosition: `${x_pos}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',

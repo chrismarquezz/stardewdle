@@ -116,7 +116,7 @@ export default function GuessGrid({ guesses, answer, className }) {
     const x_pos = parseInt(crop?.crop_index) * 40;
 
     const spriteStyle = {
-      backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+      backgroundImage: 'var(--sprite-url)',
       backgroundPosition: `-${x_pos}px 0px`,
       backgroundSize: '2880px 40px',
       width: '40px',

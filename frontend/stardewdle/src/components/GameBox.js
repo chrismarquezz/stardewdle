@@ -485,7 +485,7 @@ export default function GameBox({ isMobilePortrait }) {
   }
 
   const spriteStyle = {
-    backgroundImage: `url('${process.env.REACT_APP_BUCKET_URL}/sprites/crops.png')`,
+    backgroundImage: 'var(--sprite-url)',
     backgroundPosition: `${selectionOffset}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
