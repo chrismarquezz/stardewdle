@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import CropCard from "./CropCard";
 
 function checkConstraints(constraints, crop, hints) {
@@ -47,38 +46,11 @@ export default function CropGrid({
   selectedCrop,
   onSelect,
   isMuted,
-  className,
+  crops,
   isMobilePortrait,
   constraints,
   hints,
 }) {
-  const [crops, setCrops] = useState([]);
-
-  useEffect(() => {
-    if (crops.length === 0) {
-      const fetchInitialData = async () => {
-        try {
-          const version = "1.0.1";
-          const cropResponse = await fetch(
-            `${process.env.REACT_APP_BUCKET_URL}/data/crops.json?v=${version}`
-          );
-
-          if (!cropResponse.ok) {
-            throw new Error(`HTTP error! status: ${cropResponse.status}`);
-          }
-
-          const cropList = await cropResponse.json();
-          
-          setCrops(cropList);
-
-        } catch (error) {
-          console.error("Failed to fetch crop data from R2:", error);
-        }
-      };
-
-      fetchInitialData();
-    }
-  }, [crops]);
 
   const gridStyles = isMobilePortrait
     ? {
@@ -92,7 +64,7 @@ export default function CropGrid({
 
   return (
     <div
-      className={`flex justify-center items-center h-full w-[90%] mt-[2px] ${className}`}
+      className={`flex justify-center items-center h-full w-[90%] mt-[2px]`}
       style={{
         backgroundImage: "url('/images/cropgrid-bg.webp')",
         backgroundSize: isMobilePortrait ? "100% 100%" : "90% 80%",

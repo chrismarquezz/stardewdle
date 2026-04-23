@@ -72,8 +72,8 @@ export default function GameBox({ isMobilePortrait }) {
 
         const hasCropIndex = Object.hasOwn(parsedCrops[0], 'crop_index');
 
-        if (!hasCropIndex) {
-          console.log("Legacy schema detected (missing crop_index). Purging cache...");
+        if (!hasCropIndex || parsedCrops[22]["type"] !== "fruit") {
+          console.log("Outdated crop data, resetting crops");
           localStorage.removeItem("stardewdle-crops");
           return [];
         }
