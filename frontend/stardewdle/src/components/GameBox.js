@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../context/SoundContext";
+import { formatName } from "../utils/formatString";
+
 import CropGrid from "./CropGrid";
 import GuessGrid from "./GuessGrid";
 import CropLoader from "../components/CropLoader";
@@ -7,7 +9,8 @@ import ShareModal from "./ShareModal";
 import HelpModal from "./HelpModal";
 import UpdatesModal from "./UpdatesModal";
 import HintsModal from "./HintsModal";
-import { formatName } from "../utils/formatString";
+
+import CustomButton from "../components/CustomButton";
 
 const DAILY_RESET_ENABLED = true;
 const MOST_RECENT_UPDATE = "2026-03-12T22:10:00Z";
@@ -341,7 +344,7 @@ export default function GameBox({ isMobilePortrait }) {
       return `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`;
     }
 
-    setShareText(generateShareText(guesses, guesses[guesses.length-1].crop.name === correctCrop.name));
+    setShareText(generateShareText(guesses, guesses[guesses.length - 1].crop.name === correctCrop.name));
     updateGuessStats();
 
   }, [showShareModal, guesses, correctCrop,]);
@@ -570,29 +573,16 @@ export default function GameBox({ isMobilePortrait }) {
                 <p className="text-green-700 text-5xl font-bold whitespace-nowrap">
                   You guessed it!
                 </p>
-
-                <div
-                  onClick={() => {
-                    if (!isMuted) {
-                      new Audio("/sounds/modal.mp3").play();
-                    }
-                    setShowShareModal(true);
-                  }}
-                  className="w-[40px] h-[40px] cursor-pointer z-10"
-                >
-                  <div className="clickable w-full h-full relative group">
-                    <img
-                      src="/images/share-button.webp"
-                      alt="Share"
-                      className="w-full h-full transition-opacity duration-200 group-hover:opacity-0"
-                    />
-                    <img
-                      src="/images/share-button-hover.webp"
-                      alt="Share Hover"
-                      className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                    />
-                  </div>
-                </div>
+                  <CustomButton
+                    variant="share"
+                    icon={"images/share-button.webp"}
+                    label={"Share"}
+                    soundPath={"/sounds/modal.mp3"}
+                    onClick={() => {
+                      setShowShareModal(true);
+                    }}
+                    isMobilePortrait={isMobilePortrait}
+                  />
               </div>
             ) : guesses.length >= 6 ? (
               <>
@@ -625,31 +615,21 @@ export default function GameBox({ isMobilePortrait }) {
                 </div>
               </>
             ) : (
-              <div
+              <CustomButton
+                variant="submit"
+                icon={"images/submit-button.webp"}
+                label={"Submit"}
+                isMuted={true}
                 onClick={() => {
                   if (!selectedCrop || guesses.length >= 6 || gameOver) return;
                   handleSubmit();
                 }}
-                className={`relative mt-4 group ${!selectedCrop || guesses.length >= 6 || gameOver
-                  ? "opacity-40 pointer-events-none"
-                  : "clickable hover:scale-105 transition-transform"
-                  }`}
-                style={{
-                  width: "216px",
-                  height: "80px",
-                }}
-              >
-                <img
-                  src="/images/submit-button.webp"
-                  alt="Submit"
-                  className="w-full h-full transition-opacity duration-200 group-hover:opacity-0"
-                />
-                <img
-                  src="/images/submit-button-hover.webp"
-                  alt="Submit Hover"
-                  className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                />
-              </div>
+                isMobilePortrait={isMobilePortrait}
+                    className={`mt-4 ${!selectedCrop || guesses.length >= 6 || gameOver
+                      ? "opacity-40 pointer-events-none"
+                      : ""
+                      }`}
+              />
             )}
           </div>
         </div>
@@ -666,18 +646,58 @@ export default function GameBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute ${isMobilePortrait
-          ? "h-[50px] w-[165px] bottom-[75px] -right-[120px] content-counter-rotate-mobile"
+        className={`absolute flex gap-[5px] ${isMobilePortrait
+          ? " bottom-[100px] -right-[145px] content-counter-rotate-mobile"
           : "-top-[55px] right-0"
           } `}
       >
-        <div
-          className={`absolute right-0 w-[50px] h-[50px] group clickable z-10 transition-transform duration-200 hover:scale-110 ${shouldPulse ? "animate-bounceHard" : ""
-            }`}
+        <CustomButton
+          variant="icon"
+          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          label={isMuted ? "Unmute" : "Mute"}
+          isMuted={true}
           onClick={() => {
-            if (!isMuted) {
-              new Audio("/sounds/modal.mp3").play();
+            if (isMuted) {
+              new Audio("/sounds/pluck.mp3").play();
             }
+            toggleMute();
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon={Object.values(hints).some((value) => value) ? "/images/hint-on.webp" : "/images/hint-off.webp"}
+          label="View Hints"
+          isMuted={isMuted}
+          onClick={() => {
+            setShowHints(true);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon={"/images/question-mark.webp"}
+          label={"Help"}
+          isMuted={isMuted}
+          onClick={() => {
+            setShowHelp(true);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/info.webp"
+          label="Updates"
+          isMuted={isMuted}
+          onClick={() => {
             setShowUpdates(true);
 
             localStorage.setItem(
@@ -686,145 +706,30 @@ export default function GameBox({ isMobilePortrait }) {
             );
             setShouldPulse(false);
           }}
-        >
-          <img
-            src="/images/info.webp"
-            alt="Updates"
-            className="w-full h-full transition-opacity duration-200"
-          />
-          <img
-            src="/images/info-hover.webp"
-            alt="Updates Hover"
-            className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"Updates"}
-          </div>
-        </div>
-        {showUpdates && (
-          <UpdatesModal
-            isMuted={isMuted}
-            onClose={() => setShowUpdates(false)}
-          />
-        )}
+          shouldPulse={shouldPulse}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
 
-        <div
-          className={`group absolute right-[110px] w-[50px] h-[50px] clickable z-10 transition-transform duration-200 hover:scale-110`}
-          onClick={() => {
-            if (!isMuted) {
-              new Audio("/sounds/pluck.mp3").play();
-            }
-            setShowHints(true);
-          }}
-        >
-          <img
-            src={Object.values(hints).some((value) => value) ? "/images/hint-on.webp" : "/images/hint-off.webp"}
-            alt="Toggle Hints"
-            className="w-full h-full"
-          />
-          <img
-            src={Object.values(hints).some((value) => value) ? "/images/hint-on-hover.webp" : "/images/hint-off-hover.webp"}
-            alt="Hint Hover"
-            className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"View Hints"}
-          </div>
-        </div>
-        {showHints && (
-          <HintsModal
-            isMuted={isMuted}
-            onClose={() => setShowHints(false)}
-            setHints={setHints}
-            hints={hints}
-          />
-        )}
-        <div
-          onClick={() => {
-            if (isMuted) {
-              new Audio("/sounds/pluck.mp3").play();
-            }
-            toggleMute();
-          }}
-          className={`group absolute right-[165px] w-[50px] h-[50px] clickable z-10 transition-transform duration-200 hover:scale-110`}
-        >
-          <img
-            src={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
-            alt="Toggle Sound"
-            className="w-full h-full transition-opacity duration-200"
-          />
-          <img
-            src={
-              isMuted
-                ? "/images/muted-hover.webp"
-                : "/images/unmuted-hover.webp"
-            }
-            alt="Sound Hover"
-            className="absolute top-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"Mute/Unmute"}
-          </div>
-        </div>
-
-        <div
-          onClick={() => {
-            if (!isMuted) {
-              new Audio("/sounds/modal.mp3").play();
-            }
-            setShowHelp(true);
-          }}
-          className={`absolute right-[55px] w-[50px] h-[50px] group clickable z-10 transition-transform duration-200 hover:scale-110`}
-        >
-          <img
-            src="/images/question-mark.webp"
-            alt="Help"
-            className="w-full h-full transition-opacity duration-200"
-          />
-          <img
-            src="/images/question-mark-hover.webp"
-            alt="Help Hover"
-            className="absolute top-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"Help"}
-          </div>
-        </div>
       </div>
+
+      {showUpdates && (
+        <UpdatesModal
+          isMuted={isMuted}
+          onClose={() => setShowUpdates(false)}
+        />
+      )}
       {showHelp && (
         <HelpModal isMuted={isMuted} onClose={() => setShowHelp(false)} />
+      )}
+      {showHints && (
+        <HintsModal
+          isMuted={isMuted}
+          onClose={() => setShowHints(false)}
+          setHints={setHints}
+          hints={hints}
+        />
       )}
       {showShareModal && (
         <ShareModal

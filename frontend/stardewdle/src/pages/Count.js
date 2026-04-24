@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
 import { useState, useEffect } from "react";
+import CustomButton from "../components/CustomButton";
 
 export default function Count() {
     const { isMuted } = useSound();
@@ -24,7 +25,6 @@ export default function Count() {
 
     return (
         <div className="relative min-h-screen w-full overflow-y-auto flex justify-center">
-            {/* Background Image */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat "
                 style={{ backgroundImage: "url('/images/count/ocean.webp')"}}
@@ -38,29 +38,15 @@ export default function Count() {
                 }}
             />
             
-            {/* Scaled Content */}
-            <div
-                onClick={() => {
-                    if (!isMuted) {
-                        new Audio("/sounds/mouseClick.mp3").play();
-                    }
-                    navigate("/");
-                }}
-                className="buttonMain w-[624px] h-[114px] clickable"
-            >
-                <img
-                    src="/images/stardewdleLogo.webp"
-                    alt="Stardewdle Home"
-                    className="buttonBase"
-                />
-                <img
-                    src="/images/stardewdleLogo.webp"
-                    alt="Stardewdle Home Hover"
-                    className="buttonHover"
-                />
-            </div>
+            <CustomButton
+                variant="title"
+                icon="/images/stardewdleLogo.webp"
+                label="Stardewdle Home"
+                isMuted={isMuted}
+                onClick={() => navigate("/")}
+                soundPath={"/sounds/mouseClick.mp3"}
+            />
 
-            {/* Display */}
             <div className="absolute bottom-0 w-full text-center flex flex-col justify-center items-center gap-5" >
                 <div className="relative text-4xl font-bold text-[#615E56] bg-contain bg-center bg-no-repeat w-[300px] flex items-center justify-center text-center p-10 pt-8"
                     style={{ backgroundImage: "url('/images/count/speech.webp')" }}

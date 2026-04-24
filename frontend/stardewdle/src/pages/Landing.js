@@ -3,6 +3,8 @@ import { useSound } from "../context/SoundContext";
 import { useState } from "react";
 import { useResponsiveScale } from "../hooks/useResponsiveScale";
 
+import CustomButton from "../components/CustomButton";
+
 export default function Landing() {
   const { isMuted } = useSound();
   const navigate = useNavigate();
@@ -11,13 +13,11 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen w-full overflow-y-auto">
-      {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
       />
 
-      {/* Scaled Content */}
       <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden">
         <div
           style={{
@@ -28,127 +28,51 @@ export default function Landing() {
           }}
           className="flex flex-col items-center"
         >
-          {/* Title near top */}
           <img
             src="/images/stardewdleTitle.webp"
             alt="Stardewdle Title"
             className="mt-10 max-w-[800px]"
           />
 
-          {/* Button group */}
           <div className="flex flex-col items-center gap-4 mt-[140px]">
-            {/* Play Button */}
-            <div
-              onClick={() => {
-                if (!isMuted) {
-                  new Audio("/sounds/menu-select.mp3").play();
-                }
-                navigate("/game");
-              }}
-              className="buttonMain w-[370px] h-[75px] clickable"
-            >
-              <img
-                src="/images/play-button.webp"
-                alt="Play"
-                className="buttonBase"
-              />
-              <img
-                src="/images/play-button-hover.webp"
-                alt="Play Hover"
-                className="buttonHover"
-              />
-            </div>
-
-            {/* Collections Button */}
-            <div
-              onClick={() => {
-                if (!isMuted) {
-                  new Audio("/sounds/menu-select.mp3").play();
-                }
-                navigate("/collections");
-              }}
-              className="buttonMain w-[370px] h-[75px] clickable"
-            >
-              <img
-                src="/images/collections-button.webp"
-                alt="Collections"
-                className="buttonBase"
-              />
-              <img
-                src="/images/collections-button-hover.webp"
-                alt="Collections Hover"
-                className="buttonHover"
-              />
-            </div>
+            <CustomButton
+              variant="menu"
+              icon="/images/play-button.webp"
+              label="Play"
+              isMuted={isMuted}
+              onClick={() => navigate("/game")}
+            />
+            <CustomButton
+              variant="menu"
+              icon="/images/collections-button.webp"
+              label="Collections"
+              isMuted={isMuted}
+              onClick={() => navigate("/collections")}
+            />
             <div className="flex gap-4">
-              <button
-                onClick={() => {
-                  if (!isMuted) {
-                    new Audio("/sounds/mouseClick.mp3").play();
-                  }
-                  window.open(
-                    "https://github.com/chrismarquezz/Stardewdle",
-                    "_blank"
-                  );
-                }}
-                className="buttonMain w-[75px] h-[75px] clickable"
-              >
-                <img
-                  src="/images/github.webp"
-                  alt="GitHub"
-                  className="buttonBase"
-                />
-                <img
-                  src="/images/github-hover.webp"
-                  alt="GitHub Hover"
-                  className="buttonHover"
-                />
-              </button>
+              <CustomButton
+                variant="square"
+                icon="/images/github.webp"
+                label="GitHub"
+                isMuted={isMuted}
+                onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
+              />
 
-<button
-                onClick={() => {
-                  if (!isMuted) {
-                    new Audio("/sounds/mouseClick.mp3").play();
-                  }
-                  window.open(
-                    "https://discord.gg/Fg56gpXXBK",
-                    "_blank"
-                  );
-                }}
-                className="buttonMain w-[75px] h-[75px] clickable"
-              >
-                <img
-                  src="/images/discord.webp"
-                  alt="Discord"
-                  className="buttonBase"
-                />
-                <img
-                  src="/images/discord-hover.webp"
-                  alt="Discord Hover"
-                  className="buttonHover"
-                />
-              </button>
+              <CustomButton
+                variant="square"
+                icon="/images/discord.webp"
+                label="Discord"
+                isMuted={isMuted}
+                onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
+              />
 
-              <button
-                onClick={() => {
-                  if (!isMuted) {
-                    new Audio("/sounds/mouseClick.mp3").play();
-                  }
-                  setShowModal(true);
-                }}
-                className="buttonMain w-[75px] h-[75px] clickable"
-              >
-                <img
-                  src="/images/credits.webp"
-                  alt="Info"
-                  className="buttonBase"
-                />
-                <img
-                  src="/images/credits-hover.webp"
-                  alt="Info Hover"
-                  className="buttonHover"
-                />
-              </button>
+              <CustomButton
+                variant="square"
+                icon="/images/credits.webp"
+                label="Credits"
+                isMuted={isMuted}
+                onClick={() => setShowModal(true)}
+              />
             </div>
           </div>
         </div>

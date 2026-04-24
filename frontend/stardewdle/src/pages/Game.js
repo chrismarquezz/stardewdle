@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
 import { useState, useEffect } from "react";
-import GameBox from "../components/GameBox";
 import { useResponsiveScale } from "../hooks/useResponsiveScale";
+
+import GameBox from "../components/GameBox";
+import CustomButton from "../components/CustomButton";
 
 export default function Game() {
   const { isMuted } = useSound();
@@ -52,28 +54,15 @@ export default function Game() {
             transformOrigin: "center center",
           }}
         >
-          <div className={`relative ${isMobilePortrait ? "top-[-480px] right-[120px]" : ""}`}>
-            <div
-              onClick={() => {
-                if (!isMuted) {
-                  new Audio("/sounds/mouseClick.mp3").play();
-                }
-                navigate("/");
-              }}
-              className="buttonMain w-[624px] h-[114px] clickable"
-            >
-              <img
-                src="/images/stardewdleLogo.webp"
-                alt="Stardewdle Home"
-                className="buttonBase"
-              />
-              <img
-                src="/images/stardewdleLogo.webp"
-                alt="Stardewdle Home Hover"
-                className="buttonHover"
-              />
-            </div>
-          </div>
+          <CustomButton
+            variant="title"
+            icon="/images/stardewdleLogo.webp"
+            label="Stardewdle Home"
+            isMuted={isMuted}
+            onClick={() => navigate("/")}
+            className={isMobilePortrait ? "top-[-480px] right-[120px]" : ""}
+            soundPath={"/sounds/mouseClick.mp3"}
+          />
 
           <div className="gamebox-wrapper">
             <GameBox isMobilePortrait={isMobilePortrait} />

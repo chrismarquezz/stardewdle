@@ -2,6 +2,8 @@ import ReactDOM from "react-dom";
 import { formatName } from "../utils/formatString";
 import { scrollbarStyles } from "../utils/scrollbarStyles";
 
+import CustomButton from "./CustomButton";
+
 function ToggleHint({ hintName, hintValue, setHints, isMuted }) {
     let displayName = formatName(hintName);
     if (hintName === "growth_time") displayName = "Growth";
@@ -11,44 +13,19 @@ function ToggleHint({ hintName, hintValue, setHints, isMuted }) {
     return (
         <div className="flex flex-col items-center mb-2 space-y-1">
             <p className="text-center">{formatName(displayName)}</p>
-            <div
-                className={`group w-[30px] h-[30px] md:w-[50px] md:h-[50px] clickable z-10 transition-transform duration-200 hover:scale-110`}
+            <CustomButton
+                variant="toggle"
+                icon={hintValue ? "/images/toggle-on.webp" : "/images/toggle-off.webp"}
+                label={`Toggle ${hintName} Hint`}
+                isMuted={isMuted}
                 onClick={() => {
-                    if (!isMuted) {
-                        new Audio("/sounds/pluck.mp3").play();
-                    }
                     setHints((prevHints => ({
                         ...prevHints,
                         [hintName]: !hintValue,
                     })));
                 }}
-            >
-                <img
-                    src={hintValue ? "/images/toggle-on.webp" : "/images/toggle-off.webp"}
-                    alt={`Toggle ${hintName} Hint`}
-                    className="w-full h-full"
-                />
-                <img
-                    src={
-                        hintValue
-                            ? "/images/toggle-on-hover.webp"
-                            : "/images/toggle-off-hover.webp"
-                    }
-                    alt={`Hover ${hintName} Hint`}
-                    className="-translate-y-[100%] w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                />
-                {/*<div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-                backgroundImage: "url('/images/label.webp')",
-                backgroundSize: "100% 100%",
-                backgroundRepeat: "no-repeat",
-                height: "28px",
-            }}
-        >
-            {"Toggle Hints"}
-        </div>*/}
-            </div>
+            />
+            
         </div>
     );
 }

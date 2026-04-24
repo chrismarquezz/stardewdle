@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
+import { formatName } from "../../utils/formatString";
+
 import CollectionsGrid from "./CollectionsGrid";
 import CollectionsModal from "./CollectionsModal";
 import CropLoader from "../CropLoader";
-import { formatName } from "../../utils/formatString";
+import CustomButton from "../CustomButton";
 
 export default function CollectionsBox({ isMobilePortrait }) {
   const [selectedCrop, setSelectedCrop] = useState(null);
@@ -192,71 +194,37 @@ export default function CollectionsBox({ isMobilePortrait }) {
           )}
         </div>
       </div>
-      <div className={`absolute ${isMobilePortrait ? "h-[50px] w-[110px] bottom-[50px] -right-[90px] content-counter-rotate-mobile" : "-top-[10px] right-[10px]"} `}>
-        <div
-          className={`group absolute w-[50px] h-[50px] clickable z-10 transition-transform duration-200 hover:scale-110 bottom-[0px] right-[55px]`}
+      <div
+        className={`absolute flex gap-[5px] ${isMobilePortrait
+          ? "bottom-[50px] -right-[90px] content-counter-rotate-mobile"
+          : "-top-[60px] right-[10px]"
+          } `}
+      >
+        <CustomButton
+          variant="icon"
+          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          label={isMuted ? "Unmute" : "Mute"}
+          isMuted={true}
           onClick={() => {
             if (isMuted) {
               new Audio("/sounds/pluck.mp3").play();
             }
             toggleMute();
           }}
-        >
-          <img
-            src={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
-            alt="Toggle Sound"
-            className="w-full h-full"
-          />
-          <img
-            src={
-              isMuted ? "/images/muted-hover.webp" : "/images/unmuted-hover.webp"
-            }
-            alt="Sound Hover"
-            className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"Mute/Unmute"}
-          </div>
-        </div>
-        <div
-          className={`group absolute w-[50px] h-[50px] clickable z-10 transition-transform duration-200 hover:scale-110 bottom-[0px] right-[0px]`}
+          showLabel={true}
+        />
+        
+        <CustomButton
+          variant="icon"
+          icon={"/images/question-mark.webp"}
+          label={"Help"}
+          isMuted={isMuted}
           onClick={() => {
-            if (!isMuted) {
-              new Audio("/sounds/modal.mp3").play();
-            }
             setShowCollectionsModal(true);
           }}
-        >
-          <img
-            src="/images/question-mark.webp"
-            alt="Collections Modal"
-            className="w-full h-full"
-          />
-          <img
-            src="/images/question-mark-hover.webp"
-            alt="Collections Modal Hover"
-            className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          />
-          <div
-            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-[#BC6131] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-            style={{
-              backgroundImage: "url('/images/label.webp')",
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              height: "28px",
-            }}
-          >
-            {"Help"}
-          </div>
-        </div>
+          showLabel={true}
+          soundPath={"/sounds/modal.mp3"}
+        />
       </div>
       {showCollectionsModal && (
         <CollectionsModal
