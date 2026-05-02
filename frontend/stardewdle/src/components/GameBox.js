@@ -567,57 +567,32 @@ export default function GameBox({ isMobilePortrait }) {
               </p>
             </div>
             {/*JSON.stringify(constraints)*/}
-            {gameOver &&
-              (guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
+            {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
-                <p className="text-green-700 text-5xl font-bold whitespace-nowrap">
-                  You guessed it!
-                </p>
-                  <CustomButton
-                    variant="share"
-                    icon={"images/share-button.webp"}
-                    label={"Share"}
-                    soundPath={"/sounds/modal.mp3"}
-                    onClick={() => {
-                      setShowShareModal(true);
-                    }}
-                    isMobilePortrait={isMobilePortrait}
-                  />
-              </div>
-            ) : guesses.length >= 6 ? (
-              <>
-                <div className="mt-4 flex items-center justify-center gap-4">
+                {(guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
+                  <p className="text-green-700 text-5xl font-bold whitespace-nowrap">
+                    You guessed it!
+                  </p>
+                ) : (
                   <p className="text-red-600 text-5xl font-bold whitespace-nowrap">
                     Better luck next time!
                   </p>
-                  <div
-                    onClick={() => {
-                      if (!isMuted) {
-                        new Audio("/sounds/modal.mp3").play();
-                      }
-                      setShowShareModal(true);
-                    }}
-                    className="w-[40px] h-[40px] cursor-pointer z-10"
-                  >
-                    <div className="clickable w-full h-full relative group">
-                      <img
-                        src="/images/share-button.webp"
-                        alt="Share"
-                        className="w-full h-full transition-opacity duration-200 group-hover:opacity-0"
-                      />
-                      <img
-                        src="/images/share-button-hover.webp"
-                        alt="Share Hover"
-                        className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </>
+                )}
+                <CustomButton
+                  variant="share"
+                  icon={"/images/share-button.webp"}
+                  label={"Share"}
+                  soundPath={"/sounds/modal.mp3"}
+                  onClick={() => {
+                    setShowShareModal(true);
+                  }}
+                  isMobilePortrait={isMobilePortrait}
+                />
+              </div>
             ) : (
               <CustomButton
                 variant="submit"
-                icon={"images/submit-button.webp"}
+                icon={"/images/submit-button.webp"}
                 label={"Submit"}
                 isMuted={true}
                 onClick={() => {
@@ -625,10 +600,10 @@ export default function GameBox({ isMobilePortrait }) {
                   handleSubmit();
                 }}
                 isMobilePortrait={isMobilePortrait}
-                    className={`mt-4 ${!selectedCrop || guesses.length >= 6 || gameOver
-                      ? "opacity-40 pointer-events-none"
-                      : ""
-                      }`}
+                className={`mt-4 ${!selectedCrop || guesses.length >= 6 || gameOver
+                  ? "opacity-40 pointer-events-none"
+                  : ""
+                  }`}
               />
             )}
           </div>
