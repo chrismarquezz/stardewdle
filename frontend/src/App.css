@@ -1,0 +1,51 @@
+body {
+  font-family: 'Stardew', sans-serif;
+  cursor: url('/images/cursor.webp'), auto;
+}
+
+html, body {
+  overflow: hidden; 
+  margin: 0;      
+  padding: 0;      
+  height: 100%;   
+  width: 100%;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;   
+}
+
+.clickable {
+  cursor: url('/images/cursor-hover.webp'), pointer;
+}
+
+.buttonMain {
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.buttonMain:hover {
+  transform: scale(1.125);
+}
+
+.buttonBase,
+.buttonHover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 200ms;
+}
+
+.buttonBase {
+  z-index: 1;
+  opacity: 1;
+}
+
+.buttonHover {
+  z-index: 2;
+  opacity: 0;
+}
+
+.buttonMain:hover .buttonHover {
+  opacity: 1;
+}

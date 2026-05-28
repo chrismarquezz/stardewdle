@@ -9,7 +9,7 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: build
+        baseDirectory: dist
         files:
           - '**/*'
         customHeaders:
@@ -20,4 +20,4 @@ applications:
       cache:
         paths:
           - .npm/**/*
-    appRoot: frontend/stardewdle
+    appRoot: frontend
