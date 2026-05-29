@@ -10,11 +10,11 @@ const ATTRIBUTE_KEYS = [
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
 
 const BOX_IMAGE_MAP = {
-  growth_time: "boxSmall.webp", //106px
-  season: "boxLarge.webp", //192px
-  base_price: "boxSmall.webp", //106px
-  regrows: "boxSquare.webp", //64px
-  type: "boxSmall.webp", //150px
+  growth_time: "Small", //106px
+  season: "Large", //192px
+  base_price: "Small", //106px
+  regrows: "Square", //64px
+  type: "Small", //150px
 };
 
 const W_STRETCH_MAP = {
@@ -112,7 +112,7 @@ export default function GuessGrid({ guesses, answer, className }) {
         : guessEntry
           ? "red"
           : "gray";
-    
+
     const x_pos = parseInt(crop?.crop_index) * 40;
 
     const spriteStyle = {
@@ -142,13 +142,26 @@ export default function GuessGrid({ guesses, answer, className }) {
         >
           {/* Color overlay */}
           <div
-            className={`w-[75%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${
-              cropColor === "green"
+            className={`w-full h-full absolute inset-0 m-auto z-0 rounded-sm opacity-20 mix-blend-multiply`}
+            style={{
+              backgroundImage: `url('/images/colorblind/Square/${cropColor === "green"
+                ? "correct.webp"
+                : cropColor === "red"
+                  ? "wrong.webp"
+                  : ""
+                }')`,
+              backgroundSize: "100% 100%",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          />
+          <div
+            className={`w-[75%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${cropColor === "green"
                 ? "bg-green-500"
                 : cropColor === "red"
                   ? "bg-red-500"
                   : "bg-white"
-            }`}
+              }`}
           />
 
           {/* Crop image */}
@@ -191,9 +204,8 @@ export default function GuessGrid({ guesses, answer, className }) {
               key={j}
               className="relative h-full flex items-center justify-center text-2xl leading-none"
               style={{
-                backgroundImage: `url('/images/${
-                  BOX_IMAGE_MAP[key] || "boxLarge.webp"
-                }')`,
+                backgroundImage: `url('/images/box${BOX_IMAGE_MAP[key] || "Large"
+                  }.webp')`,
                 backgroundSize: "100% 100%",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -201,24 +213,37 @@ export default function GuessGrid({ guesses, answer, className }) {
             >
               {/* Color Overlay */}
               <div
-                className={`w-[${
-                  W_STRETCH_MAP[key]
-                }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${
-                  color === "green"
+                className={`w-full h-full absolute inset-0 m-auto z-0 rounded-sm opacity-20 mix-blend-multiply`}
+                style={{
+                  backgroundImage: `url('/images/colorblind/${BOX_IMAGE_MAP[key]}/${color === "green"
+                    ? "correct.webp"
+                    : color === "yellow"
+                      ? "partial.webp"
+                      : color === "red"
+                        ? "wrong.webp"
+                        : ""
+                    }')`,
+                  backgroundSize: "100% 100%",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+              <div
+                className={`w-[${W_STRETCH_MAP[key]
+                  }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${color === "green"
                     ? "bg-green-500"
                     : color === "yellow"
                       ? "bg-yellow-400"
                       : color === "red"
                         ? "bg-red-500"
                         : "bg-white"
-                }`}
+                  }`}
               />
 
               {/* Content */}
               <div
-                className={`relative z-10 flex items-center justify-center ${
-                  color === "yellow" ? "text-black" : "text-white"
-                }`}
+                className={`relative z-10 flex items-center justify-center ${color === "yellow" ? "text-black" : "text-white"
+                  }`}
               >
                 {guessEntry ? (
                   key === "season" ? (
