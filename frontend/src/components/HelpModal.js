@@ -51,15 +51,15 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
               <div className="flex flex-row items-center gap-4 md:gap-10 text-nowrap">
                 <div className="ml-6 md:ml-10 mt-2 md:mt-4 space-y-3 md:space-y-5">
                   <div className="flex items-center gap-2 md:gap-4">
-                    <div className="w-4 h-4 md:w-8 md:h-8 bg-green-500 border md:border-2 border-green-700 rounded-sm" />
+                    <div className="w-4 h-4 md:w-8 md:h-8 bg-cyan-500 border md:border-2 border-cyan-600 rounded-sm mix-blend-multiply opacity-90" />
                     <span>Exact match</span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4">
-                    <div className="w-4 h-4 md:w-8 md:h-8 bg-yellow-400 border md:border-2 border-yellow-600 rounded-sm" />
+                    <div className="w-4 h-4 md:w-8 md:h-8 bg-amber-300 border md:border-2 border-amber-400 rounded-sm mix-blend-multiply opacity-90" />
                     <span>Partial match</span>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4">
-                    <div className="w-4 h-4 md:w-8 md:h-8 bg-red-500 border md:border-2 border-red-700 rounded-sm" />
+                    <div className="w-4 h-4 md:w-8 md:h-8 bg-red-700 border md:border-2 border-red-800 rounded-sm mix-blend-multiply opacity-90" />
                     <span>Incorrect</span>
                   </div>
                 </div>
@@ -69,7 +69,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
                     <img
                       src="/images/arrow4U.webp"
                       alt="Up Arrow"
-                      className="w-4 h-4 md:w-8 md:h-8"
+                      className="w-4 h-2 md:w-8 md:h-4"
                     />
                     <span>The correct value is higher</span>
                   </div>
@@ -77,7 +77,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
                     <img
                       src="/images/arrow4D.webp"
                       alt="Down Arrow"
-                      className="w-4 h-4 md:w-8 md:h-8"
+                      className="w-4 h-2 md:w-8 md:h-4"
                     />
                     <span>The correct value is lower</span>
                   </div>

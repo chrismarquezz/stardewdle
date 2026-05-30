@@ -42,7 +42,7 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
     >
 
       <div
-        className={`absolute w-full h-full opacity-50 mix-blend-multiply ${isSelected ? "bg-green-400" : ""}`}
+        className={`absolute w-full h-full opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
       />
 
       <div

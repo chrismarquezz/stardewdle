@@ -36,7 +36,7 @@ export default function CollectionsCard({
       }}
     >
       <div
-        className={`absolute w-[60px] h-[60px] top-0 right-0 opacity-50 mix-blend-multiply ${isSelected ? "bg-green-400" : ""}`}
+        className={`absolute w-[60px] h-[60px] top-0 right-0 opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
       />
 
       <div

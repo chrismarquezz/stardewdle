@@ -143,7 +143,7 @@ export default function GuessGrid({ guesses, answer, className }) {
           {/* Color overlay */}
           <div
             className={`w-full h-full absolute inset-0 m-auto z-0 rounded-sm opacity-20 mix-blend-multiply`}
-            style={{
+            /*style={{
               backgroundImage: `url('/images/colorblind/Square/${cropColor === "green"
                 ? "correct.webp"
                 : cropColor === "red"
@@ -153,13 +153,13 @@ export default function GuessGrid({ guesses, answer, className }) {
               backgroundSize: "100% 100%",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-            }}
+            }}*/
           />
           <div
-            className={`w-[75%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${cropColor === "green"
-                ? "bg-green-500"
+            className={`w-[75%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-90 mix-blend-multiply ${cropColor === "green"
+              ? "bg-cyan-500"
                 : cropColor === "red"
-                  ? "bg-red-500"
+                ? "bg-red-700"
                   : "bg-white"
               }`}
           />
@@ -214,11 +214,11 @@ export default function GuessGrid({ guesses, answer, className }) {
               {/* Color Overlay */}
               <div
                 className={`w-full h-full absolute inset-0 m-auto z-0 rounded-sm opacity-20 mix-blend-multiply`}
-                style={{
+                /*style={{
                   backgroundImage: `url('/images/colorblind/${BOX_IMAGE_MAP[key]}/${color === "green"
-                    ? "correct.webp"
+                    ? "" //"correct.webp"
                     : color === "yellow"
-                      ? "partial.webp"
+                      ? "" //"partial.webp"
                       : color === "red"
                         ? "wrong.webp"
                         : ""
@@ -226,16 +226,16 @@ export default function GuessGrid({ guesses, answer, className }) {
                   backgroundSize: "100% 100%",
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
-                }}
+                }}*/
               />
               <div
                 className={`w-[${W_STRETCH_MAP[key]
-                  }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-80 mix-blend-multiply ${color === "green"
-                    ? "bg-green-500"
+                  }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-90 mix-blend-multiply ${color === "green"
+                    ? "bg-cyan-500"
                     : color === "yellow"
-                      ? "bg-yellow-400"
+                      ? "bg-amber-300"
                       : color === "red"
-                        ? "bg-red-500"
+                        ? "bg-red-700"
                         : "bg-white"
                   }`}
               />

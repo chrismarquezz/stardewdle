@@ -570,7 +570,7 @@ export default function GameBox({ isMobilePortrait }) {
             {gameOver &&
               (guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
               <div className="mt-4 flex items-center justify-center gap-4">
-                <p className="text-green-700 text-5xl font-bold whitespace-nowrap">
+                <p className="text-cyan-700 text-5xl font-bold whitespace-nowrap mix-blend-multiply opacity-90">
                   You guessed it!
                 </p>
                   <CustomButton
@@ -587,7 +587,7 @@ export default function GameBox({ isMobilePortrait }) {
             ) : guesses.length >= 6 ? (
               <>
                 <div className="mt-4 flex items-center justify-center gap-4">
-                  <p className="text-red-600 text-5xl font-bold whitespace-nowrap">
+                    <p className="text-red-700 text-5xl font-bold whitespace-nowrap mix-blend-multiply opacity-90">
                     Better luck next time!
                   </p>
                   <div
