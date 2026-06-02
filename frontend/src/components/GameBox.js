@@ -570,11 +570,11 @@ export default function GameBox({ isMobilePortrait }) {
             {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
                 {(guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
-                  <p className="text-cyan-500 text-5xl font-bold whitespace-nowrap mix-blend-multiply opacity-90">
+                  <p className="text-[#1E9365] text-5xl font-bold whitespace-nowrap">
                     You guessed it!
                   </p>
                 ) : (
-                  <p className="text-red-700 text-5xl font-bold whitespace-nowrap mix-blend-multiply opacity-90">
+                    <p className="text-[#BE2617] text-5xl font-bold whitespace-nowrap">
                     Better luck next time!
                   </p>
                 )}
