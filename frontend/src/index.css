@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Stardew';
+  src: url('/fonts/StardewValley.ttf') format('truetype');
+  font-display: swap;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+
+  .gamebox-wrapper {
+    width: 1500px;
+    height: 1000px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%) rotate(-90deg);
+    transform-origin: center center;
+
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .gamebox-mobile-layout {
+    display: block !important;
+    position: relative;
+    padding-left: 0 !important;
+    margin-top: 0 !important;
+    background-size: 100% 100% !important;
+  }
+
+  .content-counter-rotate-mobile {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* GameBox */
+  .gamebox-mobile-layout {
+    display: block !important;
+    position: relative;
+    padding-left: 0 !important;
+    margin-top: 0 !important;
+    top: 3%;
+  }
+
+  .content-counter-rotate-mobile {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Right Side Container */
+  .gamebox-mobile-layout .flex.flex-col.align-center.w-full.place-items-center {
+    position: absolute;
+    top: 7%;
+    left: 40.5%;
+    width: 1000px;
+    height: 800px;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+   .collections-mobile-wrapper {
+    width: 1500px;
+    height: 1000px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-48%, -50%) rotate(-90deg); 
+    transform-origin: center center;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .collections-content-container {
+    display: block !important; 
+    position: relative;
+    padding-left: 0 !important;
+    margin-top: 0 !important;
+    top: 3%;
+  }
+
+  .collections-box-mobile-layout {
+    display: block !important;
+    position: relative;
+    padding-left: 0 !important;
+    margin-top: 0 !important;
+    background-size: 100% 100% !important;
+  }
+
+
+  .collections-box-mobile-layout .mobile-collections-grid-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 27%; 
+    transform: translate(-52%, -50%);
+    width: 900px;
+    height: 720px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Right Side Container for Collections Page */
+  .collections-box-mobile-layout .flex.flex-col.align-center.w-full.place-items-center {
+    position: absolute;
+    top: 7%;
+    left: 40.5%;
+    width: 1000px;
+    height: 800px; 
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
