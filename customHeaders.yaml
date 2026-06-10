@@ -1,0 +1,16 @@
+customHeaders:
+  # Images
+  - pattern: "**/*.{jpg,jpeg,png,gif,svg,webp,avif,ico}"
+    headers:
+      - key: "Cache-Control"
+        value: "public, max-age=2592000"
+  # Fonts
+  - pattern: "**/*.{woff,woff2,ttf,otf,eot}"
+    headers:
+      - key: "Cache-Control"
+        value: "public, max-age=2592000"
+  # Sounds
+  - pattern: "**/*.{mp3,wav,ogg,m4a,aac,flac}"
+    headers:
+      - key: "Cache-Control"
+        value: "public, max-age=2592000"
