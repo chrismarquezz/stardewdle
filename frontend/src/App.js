@@ -17,8 +17,7 @@ import Count from "./pages/Count";
 
 export default function App() {
   useEffect(() => {
-    //const spriteUrl = import.meta.env.VITE_BUCKET_URL + "/sprites/crops.png";
-    const spriteUrl = "https://pub-5d3c3bcc4a5f4d4eb8b05f3fa99546f9.r2.dev/sprites/crops.png";
+    const spriteUrl = import.meta.env.VITE_BUCKET_URL + "/sprites/crops.png";
 
     if (spriteUrl) {
       document.documentElement.style.setProperty('--sprite-url', `url(${spriteUrl})`);

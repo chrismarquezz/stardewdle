@@ -30,8 +30,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
       const fetchInitialData = async () => {
         try {
           const cropResponse = await fetch(
-            //`${import.meta.env.VITE_BUCKET_URL}/data/crops.json`
-            `https://pub-5d3c3bcc4a5f4d4eb8b05f3fa99546f9.r2.dev/data/crops.json`
+            `${import.meta.env.VITE_BUCKET_URL}/data/crops.json`
           );
 
           if (!cropResponse.ok) {
