@@ -1,36 +1,7 @@
 import { useEffect, useState } from "react";
 import CollectionsCard from "./CollectionsCard";
 
-export default function CollectionsGrid({ selectedCrop, onSelect, isMuted, className, isMobilePortrait }) {
-  const [crops, setCrops] = useState([]);
-
-  useEffect(() => {
-    if (crops.length === 0) {
-      const fetchInitialData = async () => {
-        try {
-          const version = "1.0.1";
-          const cropResponse = await fetch(
-            `${import.meta.env.VITE_BUCKET_URL}/data/crops.json?v=${version}`
-          );
-
-          if (!cropResponse.ok) {
-            throw new Error(`HTTP error! status: ${cropResponse.status}`);
-          }
-
-          const cropList = await cropResponse.json();
-
-          setCrops(cropList);
-        } catch (error) {
-          console.error("Failed to fetch crop data from R2:", error);
-        }
-      };
-
-      fetchInitialData();
-    }
-  }, [crops]);
-
-
-
+export default function CollectionsGrid({ selectedCrop, onSelect, isMuted, className, isMobilePortrait, cropList }) {
   const gridStyles = isMobilePortrait
     ? {
       gridTemplateColumns: "repeat(9, 66px)",
@@ -50,7 +21,7 @@ export default function CollectionsGrid({ selectedCrop, onSelect, isMuted, class
         style={gridStyles}
 
       >
-        {crops.map((crop) => (
+        {cropList.map((crop) => (
           <CollectionsCard
             key={crop.name}
             crop={crop}
