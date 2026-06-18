@@ -13,7 +13,7 @@ import HintsModal from "./HintsModal";
 import CustomButton from "../components/CustomButton";
 
 const DAILY_RESET_ENABLED = true;
-const MOST_RECENT_UPDATE = "2026-03-12T22:10:00Z";
+const MOST_RECENT_UPDATE = "2026-06-19T00:00:00Z";
 
 function todaysDate() {
   const today = new Date(new Date().toUTCString());
@@ -90,6 +90,25 @@ export default function GameBox({ isMobilePortrait }) {
 
     return [];
   });
+
+  const [storedStats, setStoredStats] = useState(() => {
+    const saved = localStorage.getItem("stardewdle-stats");
+    return saved ? JSON.parse(saved)
+      : {
+        streak: 0,
+        total: 0,
+        accuracy: {
+          0: 0,
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+          6: 0,
+        }
+      };
+  });
+
   const [showHints, setShowHints] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -275,6 +294,7 @@ export default function GameBox({ isMobilePortrait }) {
     localStorage.setItem("stardewdle-crops", JSON.stringify(crops));
     localStorage.setItem("stardewdle-hints", JSON.stringify(hints));
     localStorage.setItem("stardewdle-constraints", JSON.stringify(constraints));
+    localStorage.setItem("stardewdle-stats", JSON.stringify(storedStats));
   }, [
     guesses,
     correctCrop,
@@ -284,6 +304,7 @@ export default function GameBox({ isMobilePortrait }) {
     crops,
     hints,
     constraints,
+    storedStats
   ]);
 
   function resetStored(refresh = false) {
@@ -333,6 +354,7 @@ export default function GameBox({ isMobilePortrait }) {
       const header = win
         ? "I solved today's Stardewdle!"
         : "I couldn't solve today's Stardewdle.";
+      const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} streak!\n` : ""
       const grid = resultGrid
         .map((row) =>
           ["growth_time", "base_price", "regrows", "type", "season"]
@@ -341,7 +363,7 @@ export default function GameBox({ isMobilePortrait }) {
         )
         .join("\n");
 
-      return `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`;
+      return `${todaysDate()}\n${header}\n${streak}${grid}\nPlay at: https://stardewdle.com/`;
     }
 
     setShareText(generateShareText(guesses, guesses[guesses.length - 1].crop.name === correctCrop.name));
@@ -464,6 +486,16 @@ export default function GameBox({ isMobilePortrait }) {
       const result = data.result;
 
       const isWin = result && Object.values(result).every((val) => val === "match");
+
+      const guessCount = isWin ? updatedGuesses.length : 0;
+      setStoredStats((prev) => ({
+        streak: isWin ? prev.streak + 1 : 0,
+        total: prev.total + 1,
+        accuracy: {
+          ...prev.accuracy,
+          [guessCount]: prev.accuracy[guessCount] + 1,
+        },
+      }));
 
       if (isWin) {
         if (!isMuted) new Audio("/sounds/reward.mp3").play();
@@ -714,6 +746,7 @@ export default function GameBox({ isMobilePortrait }) {
           timeLeft={timeLeft}
           onClose={() => setShowShareModal(false)}
           isMuted={isMuted}
+          storedStats={storedStats}
         />
       )}
     </div>

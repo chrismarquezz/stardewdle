@@ -42,6 +42,27 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
 
           <div className={`space-y-2 md:space-y-4 text-[#BC6131] text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
             <div>
+              <p className="font-semibold">v1.4 — June 2026</p>
+              <ul className="list-disc ml-6 md:ml-10">
+                <li>
+                  We've added statistics!
+                </li>
+                <li>
+                  You can now see how many games you've played, what your win rate is, your average guess count, and your current streak.
+                </li>
+                <li>
+                  You can also see your guess distribution!
+                </li>
+                <li>
+                  You can see these in the same place you share your results (there's a new stats button).
+                </li>
+                <li>
+                  We also recently adjust colors to be a bit more color-blind friendly.
+                </li>
+              </ul>
+            </div>
+
+            <div>
               <p className="font-semibold">v1.3.1 — February 2026</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
@@ -60,7 +81,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             </div>
             
             <div>
-              <p className="font-semibold">v1.3.0 — December 2025</p>
+              <p className="font-semibold">v1.3 — December 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
                   Overhauled the hint system to provide useful hints
@@ -75,7 +96,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             </div>
 
             <div>
-              <p className="font-semibold">v1.2.0 — October 2025</p>
+              <p className="font-semibold">v1.2 — October 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
                   Implemented a "What's New" button to inform players of updates
@@ -94,7 +115,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             </div>
 
             <div>
-              <p className="font-semibold">v1.1.0 — June 2025</p>
+              <p className="font-semibold">v1.1 — June 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
                   Added the Collections page, where you can refresh your memory on crop
@@ -108,7 +129,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             </div>
 
             <div>
-              <p className="font-semibold">v1.0.0 — May 2025</p>
+              <p className="font-semibold">v1.0 — May 2025</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>Released the first version of Stardewdle</li>
               </ul>
