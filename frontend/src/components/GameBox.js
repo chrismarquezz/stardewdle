@@ -93,20 +93,33 @@ export default function GameBox({ isMobilePortrait }) {
 
   const [storedStats, setStoredStats] = useState(() => {
     const saved = localStorage.getItem("stardewdle-stats");
-    return saved ? JSON.parse(saved)
-      : {
-        streak: 0,
-        total: 0,
-        accuracy: {
-          0: 0,
-          1: 0,
-          2: 0,
-          3: 0,
-          4: 0,
-          5: 0,
-          6: 0,
-        }
-      };
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    let stats = {
+      streak: 0,
+      total: 0,
+      lastPlayedDate: null,
+      accuracy: {
+        0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+      }
+    };
+
+    if (saved) {
+      stats = { ...stats, ...JSON.parse(saved) };
+    }
+
+    if (stats.lastPlayedDate) {
+      const lastDate = new Date(stats.lastPlayedDate + "T00:00:00Z");
+      const todayDate = new Date(todayStr + "T00:00:00Z");
+
+      const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 1) {
+        stats.streak = 0;
+      }
+    }
+
+    return stats;
   });
 
   const [showHints, setShowHints] = useState(false);
@@ -488,14 +501,32 @@ export default function GameBox({ isMobilePortrait }) {
       const isWin = result && Object.values(result).every((val) => val === "match");
 
       const guessCount = isWin ? updatedGuesses.length : 0;
-      setStoredStats((prev) => ({
-        streak: isWin ? prev.streak + 1 : 0,
-        total: prev.total + 1,
-        accuracy: {
-          ...prev.accuracy,
-          [guessCount]: prev.accuracy[guessCount] + 1,
-        },
-      }));
+      const todayStr = new Date().toISOString().split("T")[0];
+
+      setStoredStats((prev) => {
+        let currentStreak = prev.streak;
+
+        if (prev.lastPlayedDate) {
+          const lastDate = new Date(prev.lastPlayedDate + "T00:00:00Z");
+          const todayDate = new Date(todayStr + "T00:00:00Z");
+          const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+
+          if (diffDays > 1) {
+            currentStreak = 0;
+          }
+        }
+
+        return {
+          ...prev,
+          lastPlayedDate: todayStr,
+          streak: isWin ? currentStreak + 1 : 0,
+          total: prev.total + 1,
+          accuracy: {
+            ...prev.accuracy,
+            [guessCount]: prev.accuracy[guessCount] + 1,
+          },
+        };
+      });
 
       if (isWin) {
         if (!isMuted) new Audio("/sounds/reward.mp3").play();
@@ -606,7 +637,7 @@ export default function GameBox({ isMobilePortrait }) {
                     You guessed it!
                   </p>
                 ) : (
-                    <p className="text-[#BE2617] text-5xl font-bold whitespace-nowrap">
+                  <p className="text-[#BE2617] text-5xl font-bold whitespace-nowrap">
                     Better luck next time!
                   </p>
                 )}
