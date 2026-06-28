@@ -12,11 +12,6 @@ applications:
         baseDirectory: dist
         files:
           - '**/*'
-        customHeaders:
-          - pattern: '**/*.webp'
-            headers:
-              - key: 'Content-Type'
-                value: 'image/webp'
       cache:
         paths:
           - .npm/**/*
