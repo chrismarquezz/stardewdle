@@ -646,6 +646,7 @@ export default function GameBox({ isMobilePortrait }) {
                   icon={"/images/share-button.webp"}
                   label={"Share"}
                   soundPath={"/sounds/modal.mp3"}
+                  isMuted={isMuted}
                   onClick={() => {
                     setShowShareModal(true);
                   }}

@@ -56,6 +56,8 @@ export default function Landing() {
                 label="GitHub"
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
+                showLabel={true}
+                label="Checkout the GitHub"
               />
 
               <CustomButton
@@ -64,6 +66,18 @@ export default function Landing() {
                 label="Discord"
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
+                showLabel={true}
+                label="Join the Discord"
+              />
+
+              <CustomButton
+                variant="square"
+                icon="/images/kofi.webp"
+                label="Discord"
+                isMuted={isMuted}
+                onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
+                showLabel={true}
+                label="Support the site"
               />
 
               <CustomButton
@@ -72,6 +86,8 @@ export default function Landing() {
                 label="Credits"
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
+                showLabel={true}
+                label="See the credits"
               />
             </div>
           </div>
