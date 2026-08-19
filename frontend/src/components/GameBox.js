@@ -391,7 +391,7 @@ export default function GameBox({ isMobilePortrait }) {
       try {
         if (crops.length === 0) {
           const cropResponse = await fetch(
-            `${import.meta.env.VITE_BUCKET_URL}/data/crops.json`
+            `${import.meta.env.VITE_BUCKET_URL}/data/crops.json?v=20260819`
           );
           if (!cropResponse.ok) {
             throw new Error(`HTTP error! status: ${cropResponse.status}`);
