@@ -714,7 +714,7 @@ export default function GameBox({ isMobilePortrait }) {
       </div>
       <div
         className={`absolute flex gap-[5px] ${isMobilePortrait
-          ? " bottom-[100px] -right-[145px] content-counter-rotate-mobile"
+          ? " bottom-[116px] -right-[175px] content-counter-rotate-mobile"
           : "-top-[55px] right-0"
           } `}
       >
