@@ -50,6 +50,9 @@ export default function CropGrid({
   isMobilePortrait,
   constraints,
   hints,
+  disableMode,
+  manualDisables,
+  onToggleDisable,
 }) {
 
   const gridStyles = isMobilePortrait
@@ -76,17 +79,25 @@ export default function CropGrid({
         className={`grid gap-[6px] place-items-center ${isMobilePortrait ? "content-counter-rotate-mobile" : ""}`}
         style={gridStyles}
       >
-        {crops.map((crop) => (
-          <CropCard
-            key={crop.name}
-            crop={crop}
-            isSelected={selectedCrop?.name === crop.name}
-            onClick={onSelect}
-            isMuted={isMuted}
-            guessable={!checkConstraints(constraints, crop, hints)}
-            isMobilePortrait={isMobilePortrait}
-          />
-        ))}
+        {crops.map((crop) => {
+          const hintEliminated = checkConstraints(constraints, crop, hints);
+          const manuallyDisabled = manualDisables.includes(crop.name);
+
+          return (
+            <CropCard
+              key={crop.name}
+              crop={crop}
+              isSelected={selectedCrop?.name === crop.name}
+              onClick={disableMode ? onToggleDisable : onSelect}
+              isMuted={isMuted}
+              guessable={!hintEliminated && !manuallyDisabled}
+              manuallyDisabled={manuallyDisabled}
+              interactable={disableMode ? !hintEliminated : !hintEliminated && !manuallyDisabled}
+              playClickSound={!disableMode}
+              isMobilePortrait={isMobilePortrait}
+            />
+          );
+        })}
       </div>
     </div>
   );

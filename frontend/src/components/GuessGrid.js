@@ -170,7 +170,6 @@ export default function GuessGrid({ guesses, answer, className }) {
               <div
                 style={spriteStyle}
                 className="relative z-10 w-[40px] h-[40px]"
-                title={crop.name}
               />
               {/* Tooltip label */}
               <div
