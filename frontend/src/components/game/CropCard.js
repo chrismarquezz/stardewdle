@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { formatName } from "../../utils/formatString";
+import { playSound } from "../../utils/playSound";
 
 export default function CropCard({ crop, isSelected, onClick, isMuted, guessable, isMobilePortrait }) {
   const formattedName = formatName(crop.name);
@@ -26,7 +27,7 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
       onClick={() => {
         if (!guessable) return;
         if (!isMuted) {
-          new Audio("/sounds/select.mp3").play();
+          playSound("/sounds/select.mp3");
         }
         onClick(crop);
       }}

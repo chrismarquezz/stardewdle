@@ -3,6 +3,7 @@ import { GameDataProvider, useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { getSpriteStyle } from "../../utils/spriteUtils";
+import { playSound } from "../../utils/playSound";
 
 import CustomButton from "../CustomButton";
 
@@ -16,12 +17,10 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
 
-    if (!targetFood) {
-        console.log("NO FOOD");
-        console.log("Cooking Array:", cooking);
-        console.log("Target Index:", dailyData?.dailyItems?.cooking);
-        return null;
-    }
+    const unguessedFoods = useMemo(
+        () => cooking?.foods?.filter(food => !gameState.guesses.includes(food.name)) ?? [],
+        [cooking, gameState.guesses]
+    );
 
     const masterIngredientList = useMemo(() => {
         if (!cooking) return [];
@@ -53,7 +52,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
 
         setSelectedFood(null);
         setShowPicker(false);
-        if (!isMuted) new Audio(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3").play();
+        if (!isMuted) playSound(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3");
     };
 
     return (
@@ -251,7 +250,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
 
                                 <div className={`overflow-y-auto overflow-x-hidden flex-1 p-2 ${scrollbarStyles}`}>
                                     <div className={`flex flex-wrap gap-2 justify-center items-center px-4`}>
-                                        {cooking?.foods?.filter(food => !gameState.guesses.includes(food.name)).map(food => (
+                                        {unguessedFoods.map(food => (
                                             <button
                                                 key={food.name}
                                                 onClick={() => {

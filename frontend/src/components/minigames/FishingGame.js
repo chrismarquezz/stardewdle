@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
+import { playSound } from "../../utils/playSound";
 
 import CustomButton from "../CustomButton";
 
@@ -60,9 +61,9 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
         setSelectedLetter(null);
 
         if (!isMuted) {
-            new Audio(isCorrectGuess ? "/sounds/pluck.mp3" : "/sounds/sell.mp3").play();
-            if (hasWon) new Audio("/sounds/reward.mp3").play();
-            if (hasLost) new Audio("/sounds/lose.mp3").play();
+            playSound(isCorrectGuess ? "/sounds/pluck.mp3" : "/sounds/sell.mp3");
+            if (hasWon) playSound("/sounds/reward.mp3");
+            if (hasLost) playSound("/sounds/lose.mp3");
         }
     };
 

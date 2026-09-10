@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useResponsiveScale } from "../hooks/useResponsiveScale";
 
 import CustomButton from "../components/CustomButton";
+import { playSound } from "../utils/playSound";
 
 export default function Landing() {
   const { isMuted } = useSound();
@@ -60,6 +61,7 @@ export default function Landing() {
                 variant="square"
                 icon="/images/landing/github.webp"
                 label="GitHub"
+                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
               />
@@ -68,6 +70,7 @@ export default function Landing() {
                 variant="square"
                 icon="/images/landing/discord.webp"
                 label="Discord"
+                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
               />
@@ -75,7 +78,8 @@ export default function Landing() {
               <CustomButton
                 variant="square"
                 icon="/images/landing/kofi.webp"
-                label="Discord"
+                label="Support the Site"
+                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
               />
@@ -84,6 +88,7 @@ export default function Landing() {
                 variant="square"
                 icon="/images/landing/credits.webp"
                 label="Credits"
+                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
               />
@@ -97,7 +102,7 @@ export default function Landing() {
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40"
           onClick={() => {
             if (!isMuted) {
-              new Audio("/sounds/mouseClick.mp3").play();
+              playSound("/sounds/mouseClick.mp3");
             }
             setShowModal(false);
           }}
@@ -121,7 +126,7 @@ export default function Landing() {
               <button
                 onClick={() => {
                   if (!isMuted) {
-                    new Audio("/sounds/mouseClick.mp3").play();
+                    playSound("/sounds/mouseClick.mp3");
                   }
                   setShowModal(false);
                 }}

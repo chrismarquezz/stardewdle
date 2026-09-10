@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
 import { getTimeUntilMidnightUTC } from "../../utils/dateUtils";
+import { playSound } from "../../utils/playSound";
 
 import CookingGame from "./CookingGame";
 import FishingGame from "./FishingGame";
@@ -320,7 +321,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
             isMuted={true}
             onClick={() => {
               if (isMuted) {
-                new Audio("/sounds/pluck.mp3").play();
+                playSound("/sounds/pluck.mp3");
               }
               toggleMute();
             }}

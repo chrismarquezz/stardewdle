@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
+import { playSound } from "../../utils/playSound";
 
 import SpritePixelator from "./SpritePixelator";
 import CustomButton from "../CustomButton";
@@ -49,10 +50,13 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
         { label: 'R-Z', regex: /^[R-Z]/i },
     ];
 
-    const filteredMinerals = minerals.filter(item => {
-        const activeRegex = ALPHABET_GROUPS.find(g => g.label === activeTab).regex;
-        return activeRegex.test(item.name);
-    });
+    const filteredMinerals = useMemo(
+        () => minerals.filter(item => {
+            const activeRegex = ALPHABET_GROUPS.find(g => g.label === activeTab).regex;
+            return activeRegex.test(item.name);
+        }),
+        [minerals, activeTab]
+    );
 
     const handleSubmit = () => {
         if (!selectedItem || gameState.complete) return;
@@ -72,7 +76,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
         setShowPicker(false);
 
         if (!isMuted) {
-            new Audio(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3").play();
+            playSound(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3");
         }
     };
 

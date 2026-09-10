@@ -3,6 +3,8 @@ import { useSound } from "../../context/SoundContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
 import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
+import { playSound } from "../../utils/playSound";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 import CropGrid from "./CropGrid";
 import GuessGrid from "./GuessGrid";
@@ -31,83 +33,74 @@ export default function GameBox({ isMobilePortrait }) {
   const todayStr = new Date().toISOString().split("T")[0];
   const isNewDay = localStorage.getItem("stardewdle-date") !== todayStr;
 
-  const [selectedCrop, setSelectedCrop] = useState(() => {
-    if (isNewDay) return null;
-    const saved = localStorage.getItem("stardewdle-selectedCrop");
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [selectedCrop, setSelectedCrop] = useLocalStorage(
+    isNewDay ? null : "stardewdle-selectedCrop",
+    () => null
+  );
 
-  const [guesses, setGuesses] = useState(() => {
-    if (isNewDay) return [];
-    const saved = localStorage.getItem("stardewdle-guesses");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [guesses, setGuesses] = useLocalStorage(
+    isNewDay ? null : "stardewdle-guesses",
+    () => []
+  );
 
-  const [gameOver, setGameOver] = useState(() => {
-    if (isNewDay) return false;
-    const saved = localStorage.getItem("stardewdle-gameOver");
-    return saved ? JSON.parse(saved) : false;
-  });
+  const [gameOver, setGameOver] = useLocalStorage(
+    isNewDay ? null : "stardewdle-gameOver",
+    () => false
+  );
 
-  const [storedStats, setStoredStats] = useState(() => {
-    const saved = localStorage.getItem("stardewdle-stats");
-
-    let stats = {
+  const [storedStats, setStoredStats] = useLocalStorage(
+    "stardewdle-stats",
+    () => ({
       streak: 0,
       total: 0,
       lastPlayedDate: null,
-      accuracy: {
-        0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0,
+      accuracy: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
+    }),
+    (parsed) => {
+      const stats = {
+        streak: 0,
+        total: 0,
+        lastPlayedDate: null,
+        accuracy: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
+        ...parsed,
+      };
+
+      if (stats.lastPlayedDate) {
+        const lastDate = new Date(stats.lastPlayedDate + "T00:00:00Z");
+        const todayDate = new Date(todayStr + "T00:00:00Z");
+
+        const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 1) {
+          stats.streak = 0;
+        }
       }
-    };
 
-    if (saved) {
-      stats = { ...stats, ...JSON.parse(saved) };
+      return stats;
     }
-
-    if (stats.lastPlayedDate) {
-      const lastDate = new Date(stats.lastPlayedDate + "T00:00:00Z");
-      const todayDate = new Date(todayStr + "T00:00:00Z");
-
-      const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
-
-      if (diffDays > 1) {
-        stats.streak = 0;
-      }
-    }
-
-    return stats;
-  });
+  );
 
   const [showHints, setShowHints] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
   const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
-  const [correctGuesses, setCorrectGuesses] = useState(null);
-  const [totalGuesses, setTotalGuesses] = useState(null);
 
   const [selectionOffset, setSelectionOffset] = useState(0);
   useEffect(() => {
     setSelectionOffset(parseInt(selectedCrop?.crop_index) / 71 * 100);
   }, [selectedCrop]);
 
-  const [hints, setHints] = useState(() => {
-    if (isNewDay) return { growth_time: false, base_price: false, regrows: false, type: false, season: false };
-    const saved = localStorage.getItem("stardewdle-hints");
-    return saved ? JSON.parse(saved) : { growth_time: false, base_price: false, regrows: false, type: false, season: false };
-  });
+  const [hints, setHints] = useLocalStorage(
+    isNewDay ? null : "stardewdle-hints",
+    () => ({ growth_time: false, base_price: false, regrows: false, type: false, season: false })
+  );
 
-  const [constraints, setConstraints] = useState(() => {
-    const defaultConstraints = { name: [], growth_time: [0, 99], base_price: [0, 9999], regrows: [], type: [], season: [] };
-    if (isNewDay) return defaultConstraints;
-
-    const saved = localStorage.getItem("stardewdle-constraints");
-    if (JSON.parse(saved)?.growth_time?.length !== 2) {
-      return defaultConstraints;
-    }
-    return saved ? JSON.parse(saved) : defaultConstraints;
-  });
+  const [constraints, setConstraints] = useLocalStorage(
+    isNewDay ? null : "stardewdle-constraints",
+    () => ({ name: [], growth_time: [0, 99], base_price: [0, 9999], regrows: [], type: [], season: [] }),
+    (parsed) => (parsed?.growth_time?.length === 2 ? parsed : null)
+  );
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -147,34 +140,6 @@ export default function GameBox({ isMobilePortrait }) {
       setSelectedCrop(correctCrop);
     }
   }, [gameOver, correctCrop]);
-
-  useEffect(() => {
-    localStorage.setItem("stardewdle-guesses", JSON.stringify(guesses));
-    localStorage.setItem("stardewdle-gameOver", JSON.stringify(gameOver));
-    localStorage.setItem("stardewdle-selectedCrop", JSON.stringify(selectedCrop));
-    localStorage.setItem("stardewdle-hints", JSON.stringify(hints));
-    localStorage.setItem("stardewdle-constraints", JSON.stringify(constraints));
-    localStorage.setItem("stardewdle-stats", JSON.stringify(storedStats));
-  }, [guesses, gameOver, selectedCrop, hints, constraints, storedStats]);
-
-  function resetStored(refresh = false) {
-    setGuesses([]);
-    setSelectedCrop(null);
-    setGameOver(false);
-    setStoredDate(new Date().toISOString().split("T")[0]);
-    setConstraints({
-      name: [],
-      growth_time: [0, 99],
-      base_price: [0, 9999],
-      regrows: [],
-      type: [],
-      season: [],
-    });
-    if (refresh) {
-      window.location.reload();
-      console.log("Reloaded due to date change");
-    }
-  }
 
   useEffect(() => {
     if (!showShareModal || !correctCrop) return;
@@ -272,7 +237,7 @@ export default function GameBox({ isMobilePortrait }) {
     });
 
     if (!isFullMatch && updatedGuesses.length < 6) {
-      if (!isMuted) new Audio("/sounds/sell.mp3").play();
+      if (!isMuted) playSound("/sounds/sell.mp3");
       return;
     }
 
@@ -297,7 +262,7 @@ export default function GameBox({ isMobilePortrait }) {
         };
       });
 
-      if (!isMuted) new Audio(isWin ? "/sounds/reward.mp3" : "/sounds/lose.mp3").play();
+      if (!isMuted) playSound(isWin ? "/sounds/reward.mp3" : "/sounds/lose.mp3");
 
       setGameOver(true);
       setShowShareModal(true);
@@ -451,7 +416,7 @@ export default function GameBox({ isMobilePortrait }) {
           isMuted={true}
           onClick={() => {
             if (isMuted) {
-              new Audio("/sounds/pluck.mp3").play();
+              playSound("/sounds/pluck.mp3");
             }
             toggleMute();
           }}

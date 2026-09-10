@@ -7,7 +7,7 @@ import CollectionsBox from "../components/collections/CollectionsBox";
 import CustomButton from "../components/CustomButton";
 
 export default function Game() {
-  const { isMuted, toggleMute } = useSound();
+  const { isMuted } = useSound();
   const navigate = useNavigate();
   const [isMobilePortrait, setIsMobilePortrait] = useState(false);
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { playSound } from '../../utils/playSound';
 
 export default function BundleButton({
     variant = 1,
@@ -37,11 +38,11 @@ export default function BundleButton({
         }, frameRateMs);
 
         return () => clearInterval(timer);
-    }, [isAnimated, currentFrame, onAnimationComplete]);
+    }, [isAnimated, skipAnimation, currentFrame, onAnimationComplete]);
 
     const handleClick = () => {
         if (!isMuted) {
-            new Audio("/sounds/pluck.mp3").play().catch(() => { });
+            playSound("/sounds/pluck.mp3");
         }
         onClick();
     };

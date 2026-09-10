@@ -1,4 +1,5 @@
 import React from 'react';
+import { playSound } from '../utils/playSound';
 
 const CustomButton = ({
     icon,
@@ -35,7 +36,7 @@ const CustomButton = ({
     const handleClick = () => {
         if (!isMuted) {
             // Use passed soundPath or the default for that variant
-            new Audio(soundPath || defaultSound).play().catch(() => { });
+            playSound(soundPath || defaultSound);
         }
         onClick();
     };

@@ -1,69 +1,40 @@
-import ReactDOM from "react-dom";
 import { useState } from "react";
 
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
-import CustomButton from "../CustomButton";
+import CustomModal from "../CustomModal";
 
 export default function HelpModal({ isMuted, onClose, scaleFactor }) {
-  const playCloseSound = () => {
-    if (!isMuted) {
-      new Audio("/sounds/modal.mp3").play();
-    }
-    onClose();
-  };
-
   const [first, setFirst] = useState(true);
 
-  return ReactDOM.createPortal(
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40"
-      onClick={playCloseSound}
-    >
-      <div
-        className="relative max-w-[95vw] max-h-[50vh] flex flex-col"
-        style={{
-          transform: `scale(${scaleFactor})`,
-          transformOrigin: "center",
-        }}
-        onClick={(e) => e.stopPropagation()}
+  const pageToggle = (
+    <>
+      <button
+        onClick={() => setFirst(true)}
+        disabled={first}
+        className={`absolute top-6 md:top-10 right-12 md:right-24 ${first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
       >
-        <div
-          className="justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8 "
+        <img src="/images/arrow4L.webp" className="scale-[2] md:scale-[4]" />
+      </button>
 
-          style={{
-            backgroundImage: "url('/images/help-bg.webp')",
-            backgroundSize: "100% 100%",
-          }}
-        >
-          <button
-            onClick={playCloseSound}
-            className="clickable absolute top-0 left-3 md:left-6 text-main text-4xl md:text-7xl hover:text-red-500"
-          >
-            x
-          </button>
+      <button
+        onClick={() => setFirst(false)}
+        disabled={!first}
+        className={`absolute top-6 md:top-10 right-6 md:right-14 ${!first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
+      >
+        <img src="/images/arrow4R.webp" className="scale-[2] md:scale-[4]" />
+      </button>
+    </>
+  );
 
-          <button
-            onClick={() => setFirst(true)}
-            disabled={first}
-            className={`absolute top-6 md:top-10 right-12 md:right-24 ${first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
-          >
-            <img src="/images/arrow4L.webp" className="scale-[2] md:scale-[4]" />
-          </button>
-
-          <button
-            onClick={() => setFirst(false)}
-            disabled={!first}
-            className={`absolute top-6 md:top-10 right-6 md:right-14 ${!first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
-          >
-            <img src="/images/arrow4R.webp" className="scale-[2] md:scale-[4]" />
-          </button>
-
-
-          <h2 className="text-main text-center text-2xl md:text-5xl font-semibold mb-2">
-            How to Play
-          </h2>
-
-          {first ? (
+  return (
+    <CustomModal
+      title="How to Play"
+      isMuted={isMuted}
+      onClose={onClose}
+      scaleFactor={scaleFactor}
+      headerContent={pageToggle}
+    >
+      {first ? (
             <div className={`space-y-2 md:space-y-4 text-main text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] max-w-[900px] pr-2 mb-4 ${scrollbarStyles}`}>
               <p>- Select a crop from the grid</p>
               <p>- Click "Submit" to guess the crop of the day</p>
@@ -125,9 +96,6 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
               <p>- Crops have a week-long period in which they cannot be chosen again</p>
             </div>
           )}
-        </div>
-      </div>
-    </div>,
-    document.body
+    </CustomModal>
   );
 }

@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
 import CustomButton from "../CustomButton";
+import { playSound } from "../../utils/playSound";
 //import { scrollbarStyles } from "../utils/scrollbarStyles";
 
 export default function ShareModal({
@@ -19,7 +20,7 @@ export default function ShareModal({
 
   const playCloseSound = () => {
     if (!isMuted) {
-      new Audio("/sounds/modal.mp3").play();
+      playSound("/sounds/modal.mp3");
     }
     onClose();
   };

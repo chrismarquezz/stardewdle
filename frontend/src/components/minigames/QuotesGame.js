@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
+import { playSound } from "../../utils/playSound";
 
 import CustomButton from "../CustomButton";
 
@@ -16,6 +17,11 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     const [selectedVillager, setSelectedVillager] = useState(null);
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
+
+    const unguessedVillagers = useMemo(
+        () => quotes.filter(villager => !gameState.guesses.includes(villager.name)),
+        [quotes, gameState.guesses]
+    );
 
     if (!targetVillager) return null;
 
@@ -50,7 +56,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
         setShowPicker(false);
 
         if (!isMuted) {
-            new Audio(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3").play();
+            playSound(isCorrect ? "/sounds/reward.mp3" : "/sounds/sell.mp3");
         }
     };
 
@@ -233,7 +239,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
 
                                 <div className={`overflow-y-auto overflow-x-hidden flex-1 p-2 ${scrollbarStyles}`}>
                                     <div className={`flex flex-wrap gap-2 justify-center items-center px-4`}>
-                                        {quotes.filter(villager => !gameState.guesses.includes(villager.name)).map(villager => (
+                                        {unguessedVillagers.map(villager => (
                                             <button
                                                 key={villager.name}
                                                 onClick={() => {

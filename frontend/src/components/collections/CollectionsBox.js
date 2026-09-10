@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext"; // Import the hook
 import { formatName } from "../../utils/formatString";
+import { playSound } from "../../utils/playSound";
 
 import CollectionsGrid from "./CollectionsGrid";
 import CollectionsModal from "./CollectionsModal";
@@ -170,7 +171,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
           isMuted={true}
           onClick={() => {
             if (isMuted) {
-              new Audio("/sounds/pluck.mp3").play();
+              playSound("/sounds/pluck.mp3");
             }
             toggleMute();
           }}

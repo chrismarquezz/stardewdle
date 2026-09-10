@@ -1,45 +1,9 @@
-import ReactDOM from "react-dom";
 import { scrollbarStyles } from "../utils/scrollbarStyles";
+import CustomModal from "./CustomModal";
 
 export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
-  const playCloseSound = () => {
-    if (!isMuted) {
-      new Audio("/sounds/modal.mp3").play();
-    }
-    onClose();
-  };
-
-  return ReactDOM.createPortal(
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40"
-      onClick={playCloseSound}
-    >
-      <div
-        className="relative max-w-[95vw] max-h-[50vh] flex flex-col"
-        style={{
-          transform: `scale(${scaleFactor})`,
-          transformOrigin: "center",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          className="justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8"
-          style={{
-            backgroundImage: "url('/images/help-bg.webp')",
-            backgroundSize: "100% 100%",
-          }}
-        >
-          <button
-            onClick={playCloseSound}
-            className="clickable absolute top-0 left-3 md:left-6 text-main text-4xl md:text-7xl hover:text-red-500"
-          >
-            x
-          </button>
-
-          <h2 className="text-main text-center text-2xl md:text-5xl font-semibold mb-2">
-            What's New
-          </h2>
-
+    return (
+        <CustomModal title="What's New" isMuted={isMuted} onClose={onClose} scaleFactor={scaleFactor}>
           <div className={`space-y-2 md:space-y-4 text-main text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
             <div>
               <p className="font-semibold">v2.0 — August 2026</p>
@@ -150,9 +114,6 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
               Future updates will appear here as new changes are made!
             </p>
           </div>
-        </div>
-      </div>
-    </div>,
-    document.body
+        </CustomModal>
   );
 }

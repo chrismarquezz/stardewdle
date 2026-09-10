@@ -1,4 +1,5 @@
 import { formatName } from "../../utils/formatString";
+import { playSound } from "../../utils/playSound";
 
 export default function CollectionsCard({
   crop,
@@ -23,7 +24,7 @@ export default function CollectionsCard({
     <div
       onClick={() => {
         if (!isMuted) {
-          new Audio("/sounds/select.mp3").play();
+          playSound("/sounds/select.mp3");
         }
 
         onClick(crop);
