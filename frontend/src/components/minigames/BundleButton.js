@@ -6,8 +6,8 @@ export default function BundleButton({
     onClick,
     isMuted,
     isAnimated = false,
-    skipAnimation = false, // Instantly jump to the end
-    onAnimationComplete,    // Callback to tell the parent it finished
+    skipAnimation = false,
+    onAnimationComplete,
     positionClass = "",
 }) {
     const bundleScale = 4;
@@ -15,7 +15,6 @@ export default function BundleButton({
     const totalFrames = 16;
     const frameRateMs = 100;
 
-    // If skipAnimation is true, start at the last frame
     const [currentFrame, setCurrentFrame] = useState(skipAnimation && isAnimated ? totalFrames - 1 : 0);
 
     const xPos = -(currentFrame * baseSpriteWidth * bundleScale);
@@ -23,7 +22,7 @@ export default function BundleButton({
     const iconSize = baseSpriteWidth * bundleScale;
 
     useEffect(() => {
-        if (!isAnimated || currentFrame >= totalFrames - 1) return;
+        if (!isAnimated || skipAnimation || currentFrame > totalFrames - 1) return;
 
         const timer = setInterval(() => {
             setCurrentFrame((prevFrame) => {
@@ -32,7 +31,7 @@ export default function BundleButton({
                 }
 
                 clearInterval(timer);
-                if (onAnimationComplete) onAnimationComplete(); // Fire callback
+                if (onAnimationComplete) onAnimationComplete();
                 return prevFrame;
             });
         }, frameRateMs);

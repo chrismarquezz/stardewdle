@@ -165,7 +165,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                         label="Submit"
                         icon={"/images/submit-button.webp"}
                         onClick={handleSubmit}
-                        isMuted={isMuted}
+                        isMuted={true}
                         className={!selectedLetter ? "opacity-50 pointer-events-none" : ""}
                     >
                         <p className="text-main text-center text-xl italic">Guesses left: {livesRemaining}/{maxLives}</p>

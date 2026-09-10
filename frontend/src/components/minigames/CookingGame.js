@@ -76,7 +76,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                             const ingredientIndex = masterIngredientList.indexOf(ingName);
 
                             return (
-                                <div className="relative flex flex-col justify-center items-center p-2">
+                                <div key={ingName} className="relative flex flex-col justify-center items-center p-2">
                                     <div
                                         className={`w-18 h-18 p-1 flex items-center justify-center`}
                                         style={{

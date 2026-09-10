@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
 import { getTimeUntilMidnightUTC } from "../../utils/dateUtils";
-import { formatName } from "../../utils/formatString";
 
 import CookingGame from "./CookingGame";
 import FishingGame from "./FishingGame";
@@ -14,6 +13,7 @@ import CustomButton from "../CustomButton";
 import HelpModal from "../game/HelpModal";
 import UpdatesModal from "../UpdatesModal";
 import BundleButton from "./BundleButton";
+import GiftIcon from "./GiftIcon";
 
 const staticGameData =
     [
@@ -67,7 +67,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
     const [showHelp, setShowHelp] = useState(false);
     const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
 
-    const [selectedGame, setSelectedGame] = useState("minerals");
+    const [selectedGame, setSelectedGame] = useState("");
     const [selectedGameData, setSelectedGameData] = useState(null);
     const [isGameSelected, setIsGameSelected] = useState(false);
 
@@ -76,11 +76,11 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
     const [gameData, setGameData] = useState(() => {
         const defaultGameData = {
-            food: { complete: false, win: false, guesses: [], seenAnimation: false },
-            map: { complete: true, win: false, guesses: [], seenAnimation: false },
-            npc: { complete: false, win: false, guesses: [], hints: 0, seenAnimation: false },
-            minerals: { complete: false, win: false, guesses: [], hints: 0, seenAnimation: false },
-            fish: { complete: false, win: false, guesses: [], seenAnimation: false }
+            food: { complete: false, win: false, guesses: [], animationSeen: false },
+            //map: { complete: true, win: false, guesses: [], animationSeen: false },
+            npc: { complete: false, win: false, guesses: [], hints: 0, animationSeen: false },
+            minerals: { complete: false, win: false, guesses: [], hints: 0, animationSeen: false },
+            fish: { complete: false, win: false, guesses: [], animationSeen: false }
         };
 
         if (isNewDay) return defaultGameData;
@@ -99,21 +99,18 @@ export default function MinigamesBox({ isMobilePortrait }) {
     }, [selectedGame]);
 
     useEffect(() => {
-        // Only fire if everything is complete AND we haven't already synced it today
         if (allBundlesComplete && !gameData.apiSynced) {
 
             const recordCompletion = async () => {
                 try {
-                    // You will need to create this endpoint in your backend!
                     const response = await fetch(import.meta.env.VITE_API_URL + "/bundle-complete", {
                         method: "POST"
                     });
 
                     if (response.ok) {
                         const data = await response.json();
-                        setGlobalCompletions(data.newTotal); // Assuming API returns the updated count
+                        setGlobalCompletions(data.newTotal);
 
-                        // Mark as synced so we don't spam the database
                         setGameData(prev => {
                             const updated = { ...prev, apiSynced: true };
                             localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
@@ -247,20 +244,18 @@ export default function MinigamesBox({ isMobilePortrait }) {
             </h2>
 
 
-            {/* --- COMPLETION UI --- */}
             {allBundlesComplete && !isGameSelected && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 bg-[#ffdfa6] border-4 border-[#d5a05a] px-6 py-2 rounded-xl">
-                    {/* Stardew Star / Junimo Icon */}
-                    <div
-                        className="w-12 h-12 bg-no-repeat bg-contain"
-                        style={{ backgroundImage: "url('/images/stardrop.webp')" }}
-                    />
-                    <div className="flex flex-col text-left">
-                        <span className="text-xl font-bold text-correct">Community Center Restored!</span>
-                        <span className="text-md text-main font-medium">
-                            Total Restorations Today: {globalCompletions}
-                        </span>
-                    </div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
+                    <span className="text-3xl text-correct">Community Center Restored!</span>
+                    <GiftIcon />
+
+                    <span className="text-3xl text-main ">
+                        Total Restorations Today: {globalCompletions}
+                    </span>
+
+                    <span className="text-3xl text-main ">
+                        Time until new bundles: {getTimeUntilMidnightUTC}
+                    </span>
                 </div>
             )}
 
@@ -289,7 +284,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
                                 label="Return"
                                 isMuted={isMuted}
                                 onClick={() => {
-                                    if (gameData[selectedGame].complete) markAnimationSeen(selectedGame);
                                     setSelectedGame("");
                                 }}
                                 isMobilePortrait={isMobilePortrait}
@@ -303,6 +297,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
                     <div
                         className="flex flex-col gap-2 h-full w-full items-center justify-center"
                     >
+
                         {staticGameData.map((bundle) => (
                             <BundleButton
                                 key={bundle.name}
@@ -312,7 +307,8 @@ export default function MinigamesBox({ isMobilePortrait }) {
                                 isMuted={isMuted}
                                 positionClass={bundle.pos}
                                 isAnimated={gameData[bundle.name].complete}
-                                skipAnimation={gameData[bundle.name].seenAnimation}
+                                skipAnimation={gameData[bundle.name].animationSeen}
+                                onAnimationComplete={() => markAnimationSeen(bundle.name)}
                             />
                         ))}
                     </div>

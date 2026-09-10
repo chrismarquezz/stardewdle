@@ -16,7 +16,6 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     const [selectedVillager, setSelectedVillager] = useState(null);
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
-    const [cols, setCols] = useState(4);
 
     if (!targetVillager) return null;
 
