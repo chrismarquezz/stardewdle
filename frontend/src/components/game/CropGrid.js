@@ -64,16 +64,16 @@ export default function CropGrid({
 
   return (
     <div
-      className={`flex justify-center items-center h-full w-[90%] mt-[2px]`}
+      className={`flex justify-center items-center ${isMobilePortrait ? "w-full -mt-[92px] h-[98%]" : "w-[90%] h-full mt-[2px]"}`}
       style={{
-        backgroundImage: "url('/images/game/cropgrid-bg.webp')",
+        backgroundImage: `url('/images/game/cropgrid-bg${isMobilePortrait ? "-mobile.jpg" : ".webp"}')`,
         backgroundSize: isMobilePortrait ? "100% 100%" : "90% 80%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
     >
       <div
-        className={`grid gap-[6px] place-items-center ${isMobilePortrait ? "content-counter-rotate-mobile" : ""}`}
+        className="grid gap-[6px] place-items-center"
         style={gridStyles}
       >
         {crops.map((crop) => (

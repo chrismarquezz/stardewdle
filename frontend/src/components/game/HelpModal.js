@@ -20,7 +20,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
       onClick={playCloseSound}
     >
       <div
-        className="relative max-w-[95vw] max-h-[95vh] flex flex-col"
+        className="relative max-w-[95vw] max-h-[50vh] flex flex-col"
         style={{
           transform: `scale(${scaleFactor})`,
           transformOrigin: "center",

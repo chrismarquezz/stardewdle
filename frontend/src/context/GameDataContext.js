@@ -122,7 +122,8 @@ export const GameDataProvider = ({ children }) => {
                         stats: {
                             correctGuesses: lambdaData.correct_guesses,
                             totalGuesses: lambdaData.total_guesses
-                        }
+                        },
+                        bundleCompletions: lambdaData.bundle_completions ?? 0
                     });
                 }
 

@@ -43,7 +43,8 @@ export const handler = async (event) => {
         total_guesses: wordData.Item.totalAttempts ?? 0,
         correct_date: today,
         global_total_plays: statsData.Item?.occurrences ?? 0,
-        daily_items: wordData.Item.daily_items
+        daily_items: wordData.Item.daily_items,
+        bundle_completions: wordData.Item.bundle_completions ?? 0
       }),
     };
   } catch (err) {

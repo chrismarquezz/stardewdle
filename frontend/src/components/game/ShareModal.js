@@ -85,7 +85,7 @@ export default function ShareModal({
               {correctGuesses ?? 0} out of {totalGuesses ?? 0} people have solved today's puzzle!
             </p>
 
-            <p className="min-h-40 bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full">
+            <p className=" bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full">
               {shareText}
             </p>
 

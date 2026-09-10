@@ -44,12 +44,12 @@ export default function Game() {
         }}
       />
 
-      <div className={`absolute z-10 w-full h-full flex justify-center items-center ${isMobilePortrait ? "top-2" : "-top-4"}`}>
+      <div className={`absolute z-10 w-full h-full flex justify-center items-center`}>
         <div
           className="flex flex-col items-center"
           style={{
-            width: "1600px",
-            height: isMobilePortrait ? "800px" : "900px",
+            width: isMobilePortrait ? `${designHeight}px` : `${designWidth}px`,
+            height: isMobilePortrait ? `${designWidth}px` : `${designHeight}px`,
             transform: `scale(${scaleFactor})`,
             transformOrigin: "center center",
           }}
@@ -60,13 +60,11 @@ export default function Game() {
             label="Stardewdle Home"
             isMuted={isMuted}
             onClick={() => navigate("/")}
-            className={isMobilePortrait ? "top-[-480px] right-[120px]" : ""}
+            className={isMobilePortrait ? "mr-[196px] mb-2" : ""}
             soundPath={"/sounds/mouseClick.mp3"}
           />
 
-          <div className="gamebox-wrapper">
-            <GameBox isMobilePortrait={isMobilePortrait} />
-          </div>
+          <GameBox isMobilePortrait={isMobilePortrait} />
         </div>
       </div>
     </div>

@@ -55,8 +55,8 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     };
 
     return (
-        <div className={`flex flex-row items-center h-full gap-4`}>
-            <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 relative gap-2">
+        <div className={`flex items-center h-full gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
+            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-2 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
                 <div className="relative bg-no-repeat bg-cover w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
                     <div
                         style={{
@@ -73,7 +73,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                             const isRevealed = idx < revealedCount || gameState.complete;
                             if (idx >= revealedCount + 1 && !gameState.complete) return <></>;
                             return (
-                                <div key={idx} className={`text-main text-center px-1 bg-white bg-opacity-30 ${isRevealed ? 'w-full' : ''}`}>
+                                <div key={idx} className={`text-main text-center px-1 bg-white ${isRevealed ? 'bg-opacity-30 w-full' : 'bg-opacity-15'}`}>
                                     {isRevealed ? (
                                         <p className="text-2xl">{quoteText}</p>
                                     ) : (
@@ -85,7 +85,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 relative"
+            <div className={`flex flex-col justify-center items-center h-full p-4 relative ${isMobilePortrait ? "w-full" : "w-1/2"}`}
                 style={{
                     backgroundImage: "url('/images/game/cropgrid-bg.webp')",
                     backgroundSize: "90% 90%",

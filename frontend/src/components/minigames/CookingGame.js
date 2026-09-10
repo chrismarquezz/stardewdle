@@ -57,8 +57,8 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
     };
 
     return (
-        <div className={`flex flex-row items-center h-full gap-4`}>
-            <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 relative gap-4">
+        <div className={`flex items-center h-full gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
+            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
                 <div className="relative bg-no-repeat bg-cover w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
                     <div
                         style={{
@@ -104,7 +104,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col justify-center items-center w-1/2 h-full p-4 relative gap-4"
+            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}
                 style={{
                     backgroundImage: "url('/images/game/cropgrid-bg.webp')",
                     backgroundSize: "90% 90%",

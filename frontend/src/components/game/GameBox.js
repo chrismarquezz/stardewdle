@@ -308,7 +308,7 @@ export default function GameBox({ isMobilePortrait }) {
   };
 
   if (!isReady || !correctCrop || crops.length === 0) {
-    return <CropLoader className={isMobilePortrait ? "content-counter-rotate-mobile" : ""} />;
+    return <CropLoader />;
   }
 
   const spriteStyle = {
@@ -320,23 +320,23 @@ export default function GameBox({ isMobilePortrait }) {
 
   return (
     <div
-      className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait
-        ? "gamebox-mobile-layout"
-        : "flex flex-row justify-between w-full pl-3 mt-3"
+      className={`relative shadow-xl bg-no-repeat bg-center flex ${isMobilePortrait
+        ? "flex-col-reverse items-center w-full"
+        : "flex-row justify-between w-full pl-3 mt-3"
         }`}
       style={{
         backgroundImage: isMobilePortrait
-          ? "url('/images/game/box-bg-sm.webp')"
+          ? "url('/images/game/box-bg-sm.jpg')"
           : "url('/images/game/box-bg.webp')",
         backgroundSize: "100% 100%",
-        width: isMobilePortrait ? "1500px" : "1600px",
-        height: isMobilePortrait ? "940px" : "800px",
+        width: isMobilePortrait ? "940px" : "1600px",
+        height: isMobilePortrait ? "1500px" : "800px",
       }}
     >
       <div
         className={
           isMobilePortrait
-            ? "flex justify-center items-center h-[76%] w-[47%] translate-y-[16%] translate-x-[6.5%]"
+            ? "flex justify-center items-center w-[76%] h-[47%] py-6"
             : "flex justify-center items-center h-full w-[90%] mt-[2px]"
         }
       >
@@ -353,13 +353,9 @@ export default function GameBox({ isMobilePortrait }) {
         />
       </div>
 
-      <div
-        className={`flex flex-col align-center w-full place-items-center ${isMobilePortrait ? "content-counter-rotate-mobile" : ""
-          }`}
-      >
+      <div className="flex flex-col align-center w-full place-items-center">
         <div
-          className={`flex flex-row items-center h-full ${isMobilePortrait ? "mr-6 mt-[96px]" : "mr-24 mt-[80px]"
-            }  gap-4`}
+          className={`flex flex-row items-center h-full ${isMobilePortrait ? "mt-20" : "mr-24 mt-[80px]"} gap-4`}
         >
           <div
             className="relative bg-no-repeat bg-contain"
@@ -446,10 +442,7 @@ export default function GameBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute flex gap-[5px] ${isMobilePortrait
-          ? " bottom-[100px] -right-[145px] content-counter-rotate-mobile"
-          : "-top-[55px] right-0"
-          } `}
+        className={`absolute flex gap-[5px] -top-[55px] right-0`}
       >
         <CustomButton
           variant="icon"

@@ -12,7 +12,7 @@ export default function Landing() {
   const scaleFactor = useResponsiveScale(1080, 720);
 
   return (
-    <div className="relative min-h-screen w-full overflow-y-auto">
+    <div className="relative h-screen w-full overflow-y-auto">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
@@ -24,17 +24,16 @@ export default function Landing() {
             width: "1080px",
             height: `${720 * scaleFactor}px`,
             transform: `scale(${scaleFactor})`,
-            transformOrigin: "top center",
           }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center justify-center gap-32"
         >
           <img
             src="/images/landing/stardewdleTitle.webp"
             alt="Stardewdle Title"
-            className="mt-10 max-w-[800px]"
+            className="max-w-[800px]"
           />
 
-          <div className="flex flex-col items-center gap-4 mt-[140px]">
+          <div className="flex flex-col items-center gap-4">
             <CustomButton
               variant="menu"
               icon="/images/landing/play-button.webp"

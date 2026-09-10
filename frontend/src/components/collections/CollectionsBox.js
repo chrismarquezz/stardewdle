@@ -36,7 +36,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
   }, []);
 
   if (!isReady || crops.length === 0) {
-    return <CropLoader className={isMobilePortrait ? "content-counter-rotate-mobile" : ""} />;
+    return <CropLoader />;
   }
 
   const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;
@@ -50,22 +50,24 @@ export default function CollectionsBox({ isMobilePortrait }) {
 
   return (
     <div
-      className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait
-        ? "collections-box-mobile-layout"
-        : "relative flex flex-row mt-3 justify-between w-full pl-3"
+      className={`relative shadow-xl bg-no-repeat bg-center flex ${isMobilePortrait
+        ? "flex-col-reverse items-center w-full"
+        : "flex-row mt-3 justify-between w-full pl-3"
         }`}
       style={{
-        backgroundImage: "url('/images/collections/collectionsBG.webp')",
+        backgroundImage: isMobilePortrait
+          ? "url('/images/collections/collectionsBG-mobile.jpg')"
+          : "url('/images/collections/collectionsBG.webp')",
         backgroundSize: "100% 100%",
-        width: isMobilePortrait ? "1500px" : "1600px",
-        height: isMobilePortrait ? "940px" : "800px",
+        width: isMobilePortrait ? "940px" : "1600px",
+        height: isMobilePortrait ? "1500px" : "800px",
       }}
     >
       <div
         className={
           isMobilePortrait
-            ? "mobile-collections-grid-wrapper content-counter-rotate-mobile"
-            : "relative flex flex-row bg-no-repeat mt-3 justify-center w-full pl-3"
+            ? "flex justify-center items-center h-full pt-[80px]"
+            : "relative flex flex-row mt-3 justify-center w-full pl-3"
         }
       >
         <CollectionsGrid
@@ -73,18 +75,13 @@ export default function CollectionsBox({ isMobilePortrait }) {
           onSelect={setSelectedCrop}
           crops={crops}
           isMuted={isMuted}
-          className={isMobilePortrait ? "content-counter-rotate-mobile" : ""}
           isMobilePortrait={isMobilePortrait}
           cropList={crops}
         />
       </div>
-      <div
-        className={`flex flex-col align-center w-full place-items-center h-full justify-center ${isMobilePortrait ? "content-counter-rotate-mobile" : ""
-          }`}
-      >
+      <div className="flex flex-col align-center w-full place-items-center h-full justify-center ">
         <div
-          className={`flex flex-col items-center ${isMobilePortrait ? "" : "mr-12 mt-[20px]"
-            } gap-4`}
+          className={`flex flex-col items-center ${isMobilePortrait ? "mt-12" : "mr-12 mt-[20px]"} gap-4`}
         >
           {selectedCrop ? (
             <>
@@ -164,10 +161,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute flex gap-[5px] ${isMobilePortrait
-          ? "bottom-[50px] -right-[90px] content-counter-rotate-mobile"
-          : "-top-[60px] right-[10px]"
-          } `}
+        className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}
       >
         <CustomButton
           variant="icon"

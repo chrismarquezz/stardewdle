@@ -67,8 +67,9 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
     };
 
     return (
-        <div className={`flex flex-row justify-center items-center h-full gap-4`}>
-            <div className="flex w-1/4 justify-center items-center">
+        <div className={`flex flex-row justify-center items-center h-full gap-4 ${isMobilePortrait ? "w-full" : ""}`}>
+            <div className={isMobilePortrait ? "flex flex-col w-3/4 h-full justify-center items-center gap-4" : "contents"}>
+            <div className={`flex justify-center items-center ${isMobilePortrait ? "w-full" : "w-1/4"}`}>
                 <div className="relative bg-no-repeat bg-contain w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')] justify-center items-center">
                     <div
                         style={{
@@ -103,7 +104,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                 </div>
 
             </div>
-            <div className={`flex flex-col items-center justify-center h-[95%] w-[44%] gap-16 bg-[url('/images/game/cropgrid-bg.webp')] bg-no-repeat bg-contain bg-center `}>
+            <div className={`flex flex-col items-center justify-center h-[95%] gap-16 bg-[url('/images/game/cropgrid-bg.webp')] bg-no-repeat bg-contain bg-center ${isMobilePortrait ? "w-full" : "w-[44%]"}`}>
                 <div className="flex flex-row justify-center items-center w-full px-4 relative gap-4">
                     <div className="w-full px-6 flex flex-wrap justify-center items-center gap-x-8">
                         {targetName.split(' ').map((word, wordIndex) => (
@@ -180,7 +181,8 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                     </div>
                 )}
             </div>
-            <div className='flex flex-col gap-4 h-full w-1/4 justify-center items-center '>
+            </div>
+            <div className="flex flex-col gap-4 h-full w-1/4 justify-center items-center">
                 <div className={`relative w-[133px] h-[525px] bg-[url('/images/minigames/fishingRod.webp')] bg-contain bg-no-repeat bg-center`}>
                     <img className={`absolute scale-[3.5] translate-x-1/2 -translate-y-1/2 right-[43%] ${ROD_STYLES[livesLost].rod_pos} transition-all duration-200`} src="/images/minigames/fishBar.webp" />
                     <img className={`absolute scale-[2] translate-x-1/2 -translate-y-1/2 right-[43%] ${ROD_STYLES[livesLost].fish_pos} transition-all duration-200`} src="/images/minigames/fishIcon.webp" />

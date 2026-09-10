@@ -23,13 +23,13 @@ const staticGameData =
             bundleNum: 1,
             pos: "top-[25%] left-[50%]",
         },
-        {
+        /*{
             name: "map",
             label: "Treasure Hunter's",
             bundleNum: 2,
             imgPath: "treasureHunter",
             pos: "top-[50%] left-[25%]",
-        },
+        },*/
         {
             name: "npc",
             label: "Helper's",
@@ -56,6 +56,7 @@ const staticGameData =
 export default function MinigamesBox({ isMobilePortrait }) {
     const {
         isReady,
+        dailyData,
         showUpdates,
         setShowUpdates,
         shouldPulse,
@@ -89,9 +90,13 @@ export default function MinigamesBox({ isMobilePortrait }) {
         return saved ? JSON.parse(saved) : defaultGameData;
     });
 
-    const allBundlesComplete = ['food', 'map', 'npc', 'minerals', 'fish'].every(key => gameData[key]?.complete);
+    const allBundlesComplete = ['food'/*, 'map'*/, 'npc', 'minerals', 'fish'].every(key => gameData[key]?.complete);
 
     const [globalCompletions, setGlobalCompletions] = useState(0);
+
+    useEffect(() => {
+        setGlobalCompletions(dailyData?.bundleCompletions ?? 0);
+    }, [dailyData?.bundleCompletions]);
 
     useEffect(() => {
         setSelectedGameData(staticGameData.find(item => item.name === selectedGame) || null);
@@ -221,155 +226,142 @@ export default function MinigamesBox({ isMobilePortrait }) {
     };
 
     if (!isReady) {
-        return <CropLoader className={isMobilePortrait ? "content-counter-rotate-mobile" : ""} />;
+        return <CropLoader />;
     }
 
     return (
-        <div
-            className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait
-                ? "gamebox-mobile-layout"
-                : "mt-2"
-                }`}
+      <div
+        className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait ? "" : "mt-2"}`}
+        style={{
+          backgroundImage:
+            selectedGame === "map"
+              ? "url('/images/minigames/mainBG2.webp')"
+              : "url('/images/minigames/mainBG.webp')",
+          backgroundSize: "100% 100%",
+          width: isMobilePortrait ? "940px" : "1440px",
+          height: isMobilePortrait ? "1500px" : "810px",
+        }}
+      >
+        <h2 className="w-full justify-center items-center text-main text-center text-2xl md:text-7xl font-semibold pt-2">
+          {isGameSelected
+            ? selectedGameData.label + " Bundle"
+            : "Minigame Bundles"}
+        </h2>
+
+        {allBundlesComplete && !isGameSelected && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
+            <span className="text-3xl text-correct">
+              Community Center Restored!
+            </span>
+            <GiftIcon />
+
+            <span className="text-3xl text-main ">
+              Total Restorations Today: {globalCompletions}
+            </span>
+
+            <span className="text-3xl text-main ">
+              Time until new bundles: {timeLeft.hours}h{" "} {timeLeft.minutes}m {timeLeft.seconds}s
+            </span>
+          </div>
+        )}
+
+        {isGameSelected ? (
+          <div
+            className={`relative bg-no-repeat bg-center ${
+              isMobilePortrait ? "" : "mt-[24px] ml-[103px]"
+            }`}
             style={{
-                backgroundImage: isMobilePortrait
-                    ? selectedGame === "map" ? "url('/images/minigames/mainBG2.webp')" : "url('/images/minigames/mainBG.webp')"
-                    : selectedGame === "map" ? "url('/images/minigames/mainBG2.webp')" : "url('/images/minigames/mainBG.webp')",
-                backgroundSize: "100% 100%",
-                width: isMobilePortrait ? "1500px" : "1440px",
-                height: isMobilePortrait ? "940px" : "810px",
+              backgroundImage: "url('/images/minigames/innerBG.webp')",
+              backgroundSize: "100% 100%",
+              width: isMobilePortrait ? "900px" : "1233px",
+              height: isMobilePortrait ? "1400px" : "603px",
             }}
-        >
-            <h2 className="w-full justify-center items-center text-main text-center text-2xl md:text-7xl font-semibold pt-2">
-                {isGameSelected ? selectedGameData.label + " Bundle" : "Minigame Bundles"}
-            </h2>
-
-
-            {allBundlesComplete && !isGameSelected && (
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3">
-                    <span className="text-3xl text-correct">Community Center Restored!</span>
-                    <GiftIcon />
-
-                    <span className="text-3xl text-main ">
-                        Total Restorations Today: {globalCompletions}
-                    </span>
-
-                    <span className="text-3xl text-main ">
-                        Time until new bundles: {getTimeUntilMidnightUTC}
-                    </span>
-                </div>
-            )}
-
-            {isGameSelected ?
-                (
-                    <div
-                        className={`relative bg-no-repeat bg-center ${isMobilePortrait
-                            ? "gamebox-mobile-layout"
-                            : "mt-[24px] ml-[103px]"
-                            }`}
-                        style={{
-                            backgroundImage: isMobilePortrait
-                                ? "url('/images/minigames/innerBG.webp')"
-                                : "url('/images/minigames/innerBG.webp')",
-                            backgroundSize: "100% 100%",
-                            width: isMobilePortrait ? "1500px" : "1233px",
-                            height: isMobilePortrait ? "940px" : "603px",
-                        }}
-                    >
-                        <div
-                            className={`absolute flex top-2 left-2 z-10`}
-                        >
-                            <CustomButton
-                                variant="share"
-                                icon="/images/minigames/arrowBack.webp"
-                                label="Return"
-                                isMuted={isMuted}
-                                onClick={() => {
-                                    setSelectedGame("");
-                                }}
-                                isMobilePortrait={isMobilePortrait}
-                            />
-                        </div>
-
-                        {renderMinigame()}
-
-                    </div>
-                ) : (
-                    <div
-                        className="flex flex-col gap-2 h-full w-full items-center justify-center"
-                    >
-
-                        {staticGameData.map((bundle) => (
-                            <BundleButton
-                                key={bundle.name}
-                                variant={bundle.bundleNum}
-                                label={bundle.label}
-                                onClick={() => { setSelectedGame(bundle.name) }}
-                                isMuted={isMuted}
-                                positionClass={bundle.pos}
-                                isAnimated={gameData[bundle.name].complete}
-                                skipAnimation={gameData[bundle.name].animationSeen}
-                                onAnimationComplete={() => markAnimationSeen(bundle.name)}
-                            />
-                        ))}
-                    </div>
-                )
-            }
-
-            <div
-                className={`absolute flex gap-[5px] ${isMobilePortrait
-                    ? " bottom-[100px] -right-[145px] content-counter-rotate-mobile"
-                    : "-top-[55px] right-0"
-                    } `}
-            >
-                <CustomButton
-                    variant="icon"
-                    icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
-                    label={isMuted ? "Unmute" : "Mute"}
-                    isMuted={true}
-                    onClick={() => {
-                        if (isMuted) {
-                            new Audio("/sounds/pluck.mp3").play();
-                        }
-                        toggleMute();
-                    }}
-                    showLabel={true}
-                    isMobilePortrait={isMobilePortrait}
-                />
-
-                <CustomButton
-                    variant="icon"
-                    icon={"/images/question-mark.webp"}
-                    label={"Help"}
-                    isMuted={isMuted}
-                    onClick={() => {
-                        setShowHelp(true);
-                    }}
-                    showLabel={true}
-                    isMobilePortrait={isMobilePortrait}
-                    soundPath={"/sounds/modal.mp3"}
-                />
-
-                <CustomButton
-                    variant="icon"
-                    icon="/images/info.webp"
-                    label="Updates"
-                    isMuted={isMuted}
-                    onClick={handleOpenUpdates}
-                    shouldPulse={shouldPulse}
-                    showLabel={true}
-                    isMobilePortrait={isMobilePortrait}
-                    soundPath={"/sounds/modal.mp3"}
-                />
+          >
+            <div className={`absolute flex top-2 left-2 z-10`}>
+              <CustomButton
+                variant="share"
+                icon="/images/minigames/arrowBack.webp"
+                label="Return"
+                isMuted={isMuted}
+                onClick={() => {
+                  setSelectedGame("");
+                }}
+                isMobilePortrait={isMobilePortrait}
+              />
             </div>
-            {showUpdates && (
-                <UpdatesModal
-                    isMuted={isMuted}
-                    onClose={() => setShowUpdates(false)}
-                />
-            )}
-            {showHelp && (
-                <HelpModal isMuted={isMuted} onClose={() => setShowHelp(false)} />
-            )}
+
+            {renderMinigame()}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 h-full w-full items-center justify-center">
+            {staticGameData.map((bundle) => (
+              <BundleButton
+                key={bundle.name}
+                variant={bundle.bundleNum}
+                label={bundle.label}
+                onClick={() => {
+                  setSelectedGame(bundle.name);
+                }}
+                isMuted={isMuted}
+                positionClass={bundle.pos}
+                isAnimated={gameData[bundle.name].complete}
+                skipAnimation={gameData[bundle.name].animationSeen}
+                onAnimationComplete={() => markAnimationSeen(bundle.name)}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className={`absolute flex gap-[5px] -top-[55px] right-0`}>
+          <CustomButton
+            variant="icon"
+            icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+            label={isMuted ? "Unmute" : "Mute"}
+            isMuted={true}
+            onClick={() => {
+              if (isMuted) {
+                new Audio("/sounds/pluck.mp3").play();
+              }
+              toggleMute();
+            }}
+            showLabel={true}
+            isMobilePortrait={isMobilePortrait}
+          />
+
+          <CustomButton
+            variant="icon"
+            icon={"/images/question-mark.webp"}
+            label={"Help"}
+            isMuted={isMuted}
+            onClick={() => {
+              setShowHelp(true);
+            }}
+            showLabel={true}
+            isMobilePortrait={isMobilePortrait}
+            soundPath={"/sounds/modal.mp3"}
+          />
+
+          <CustomButton
+            variant="icon"
+            icon="/images/info.webp"
+            label="Updates"
+            isMuted={isMuted}
+            onClick={handleOpenUpdates}
+            shouldPulse={shouldPulse}
+            showLabel={true}
+            isMobilePortrait={isMobilePortrait}
+            soundPath={"/sounds/modal.mp3"}
+          />
         </div>
+        {showUpdates && (
+          <UpdatesModal
+            isMuted={isMuted}
+            onClose={() => setShowUpdates(false)}
+          />
+        )}
+        {showHelp && (
+          <HelpModal isMuted={isMuted} onClose={() => setShowHelp(false)} />
+        )}
+      </div>
     );
 }

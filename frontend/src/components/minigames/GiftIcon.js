@@ -7,7 +7,7 @@ export default function GiftIcon() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((i) => (i + 1) % 4);
-    }, 300);
+    }, 200);
     return () => clearInterval(interval);
   }, []);
 
