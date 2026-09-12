@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useResponsiveScale } from "../hooks/useResponsiveScale";
 
 import CustomButton from "../components/CustomButton";
+import { playSound } from "../utils/playSound";
 
 export default function Landing() {
   const { isMuted } = useSound();
@@ -12,7 +13,7 @@ export default function Landing() {
   const scaleFactor = useResponsiveScale(1080, 720);
 
   return (
-    <div className="relative min-h-screen w-full overflow-y-auto">
+    <div className="relative h-screen w-full overflow-y-auto">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
@@ -24,27 +25,33 @@ export default function Landing() {
             width: "1080px",
             height: `${720 * scaleFactor}px`,
             transform: `scale(${scaleFactor})`,
-            transformOrigin: "top center",
           }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center justify-center gap-32"
         >
           <img
-            src="/images/stardewdleTitle.webp"
+            src="/images/landing/stardewdleTitle.webp"
             alt="Stardewdle Title"
-            className="mt-10 max-w-[800px]"
+            className="max-w-[800px]"
           />
 
-          <div className="flex flex-col items-center gap-4 mt-[140px]">
+          <div className="flex flex-col items-center gap-4">
             <CustomButton
               variant="menu"
-              icon="/images/play-button.webp"
+              icon="/images/landing/play-button.webp"
               label="Play"
               isMuted={isMuted}
               onClick={() => navigate("/game")}
             />
             <CustomButton
               variant="menu"
-              icon="/images/collections-button.webp"
+              icon="/images/landing/minigames-button.webp"
+              label="Minigames"
+              isMuted={isMuted}
+              onClick={() => navigate("/minigames")}
+            />
+            <CustomButton
+              variant="menu"
+              icon="/images/landing/collections-button.webp"
               label="Collections"
               isMuted={isMuted}
               onClick={() => navigate("/collections")}
@@ -52,8 +59,7 @@ export default function Landing() {
             <div className="flex gap-4">
               <CustomButton
                 variant="square"
-                icon="/images/github.webp"
-                label="GitHub"
+                icon="/images/landing/github.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
                 showLabel={true}
@@ -62,8 +68,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/discord.webp"
-                label="Discord"
+                icon="/images/landing/discord.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
                 showLabel={true}
@@ -73,7 +78,6 @@ export default function Landing() {
               <CustomButton
                 variant="square"
                 icon="/images/kofi.webp"
-                label="Discord"
                 isMuted={isMuted}
                 onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
                 showLabel={true}
@@ -82,8 +86,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/credits.webp"
-                label="Credits"
+                icon="/images/landing/credits.webp"
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
                 showLabel={true}
@@ -99,7 +102,7 @@ export default function Landing() {
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40"
           onClick={() => {
             if (!isMuted) {
-              new Audio("/sounds/mouseClick.mp3").play();
+              playSound("/sounds/mouseClick.mp3");
             }
             setShowModal(false);
           }}
@@ -123,7 +126,7 @@ export default function Landing() {
               <button
                 onClick={() => {
                   if (!isMuted) {
-                    new Audio("/sounds/mouseClick.mp3").play();
+                    playSound("/sounds/mouseClick.mp3");
                   }
                   setShowModal(false);
                 }}
@@ -137,9 +140,10 @@ export default function Landing() {
               </h2>
 
               <div className="mt-6 space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto">
-                <p>- Built by Chris and Omar.</p>
+                <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54 clickable" className="underline">Omar</a>.</p>
                 <p>- Artwork and sounds by ConcernedApe.</p>
                 <p>- Inspired by Wordle and Stardew Valley.</p>
+                <p>- Stardewdle.com is the only site associated with us.</p>
               </div>
             </div>
           </div>
