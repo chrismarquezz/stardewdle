@@ -10,11 +10,11 @@
 
 After each guess, the game provides color-coded feedback based on five key attributes: **Growth Time** (Days), **Sell Price** (Gold), **Regrows** (Yes/No), **Crop Type** (Fruit, Vegetable, Flower, Forage), and **Season** (Spring, Summer, Fall, Winter).
 
-<img src="https://img.shields.io/badge/-%23538D4E?style=for-the-badge&labelColor=538D4E" alt="Green Tile" width="10" height="18" /> **Green** indicates a **Perfect Match**: your value for the attribute is **exactly correct**. This applies to all five attributes.
+<img src="https://img.shields.io/badge/-%23538D4E?style=for-the-badge&labelColor=538D4E" alt="Green Tile" width="18" height="18" /> **Green** indicates a **Perfect Match**: your value for the attribute is **exactly correct**. This applies to all five attributes.
 
-<img src="https://img.shields.io/badge/-%23B59F3B?style=for-the-badge&labelColor=B59F3B" alt="Yellow Tile" width="10" height="18" /> **Yellow** indicates a **Partial Season Match** and **appears exclusively for the Season attribute**. If the season you guessed is one of the crop's growing seasons, but the crop also grows in at least one other season, the tile will be yellow.
+<img src="https://img.shields.io/badge/-%23B59F3B?style=for-the-badge&labelColor=B59F3B" alt="Yellow Tile" width="18" height="18" /> **Yellow** indicates a **Partial Season Match** and **appears exclusively for the Season attribute**. If the season, or one of the seasons, of the crop you guessed is, or includes, one of the crop's growing seasons the tile will be yellow.
 
-<img src="https://img.shields.io/badge/-%23FF4136?style=for-the-badge&labelColor=FF4136" alt="Red Tile" width="10" height="18" /> **Red** indicates the value is **Incorrect**. For the numerical attributes (**Growth Time** and **Sell Price**), a directional arrow will accompany the red tile to help you: $\bigtriangleup$ means the correct value is higher, and $\bigtriangledown$ means the correct value is lower.
+<img src="https://img.shields.io/badge/-%23FF4136?style=for-the-badge&labelColor=FF4136" alt="Red Tile" width="18" height="18" /> **Red** indicates the value is **Incorrect**. For the numerical attributes (**Growth Time** and **Sell Price**), a directional arrow will accompany the red tile to help you: $\bigtriangleup$ means the correct value is higher, and $\bigtriangledown$ means the correct value is lower.
 
 ---
 
@@ -29,12 +29,16 @@ After each guess, the game provides color-coded feedback based on five key attri
 ---
 
 ## Screenshots
-
-![Game Screenshot 1](https://github.com/user-attachments/assets/b2aaffd4-cb23-4fb7-b491-64afa6862eee)
-
-![Game Screenshot 2](https://github.com/user-attachments/assets/88495f41-8df5-4283-bd3e-6d9d7db33899)
-
-![Game Screenshot 3](https://github.com/user-attachments/assets/6f4f30cf-b60e-476f-90a2-70c63e266016)
+<p align="center">
+  <img width="480" height="270" alt="Home Page" src="https://github.com/user-attachments/assets/b2aaffd4-cb23-4fb7-b491-64afa6862eee" />
+  <img width="480" height="270" alt="Main Game" src="https://github.com/user-attachments/assets/88495f41-8df5-4283-bd3e-6d9d7db33899" />
+  <img width="480" height="270" alt="Collections Page" src="https://github.com/user-attachments/assets/6f4f30cf-b60e-476f-90a2-70c63e266016" />
+  <img width="480" height="270" alt="Minigames Page" src="https://github.com/user-attachments/assets/d4438efe-7d5e-40e2-a4b2-978ff2a6000d" />
+  <img width="480" height="270" alt="Cooking Minigame" src="https://github.com/user-attachments/assets/40df8988-6f01-4b33-990c-fa24a9b7fc8e" />
+  <img width="480" height="270" alt="Villager Minigame" src="https://github.com/user-attachments/assets/74eb6bcd-0e44-4b24-8ab4-e56020516d39" />
+  <img width="480" height="270" alt="Fishing Minigame" src="https://github.com/user-attachments/assets/3a7c7965-ef80-422d-b48a-ce4b39e34b78" />
+  <img width="480" height="270" alt="Geology Minigame" src="https://github.com/user-attachments/assets/6964b062-be31-4706-b0f5-819025b378d1" />
+</p>
 
 ---
 
@@ -83,11 +87,19 @@ After each guess, the game provides color-coded feedback based on five key attri
   <a href="https://www.osid.dev/" target="_blank"><img src="https://img.shields.io/badge/Portfolio-555555?style=for-the-badge&logoColor=white" /></a>
 </p>
 
+**Contact Us & Support Us**
+
+<a href="https://discord.gg/Fg56gpXXBK" target="_blank"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
+<a href="https://ko-fi.com/stardewdlecom" target="_blank"><img src="https://img.shields.io/badge/KoFi-ff5a16?style=for-the-badge&logo=kofi&logoColor=white" /></a>
+
 ---
 
 ## Credits
 
 All images and sound assets used in this game are created by **ConcernedApe** for *Stardew Valley*.  
+
 This project is a fan-made game and is not affiliated with or endorsed by **ConcernedApe**.
+
+[Stardewdle.com](https://www.stardewdle.com/) is the only official site associated with this repository and these authors.
 
 ---
