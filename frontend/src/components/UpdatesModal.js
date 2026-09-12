@@ -23,6 +23,9 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             <li>
               If you want to give feedback on them, feel free to join the join the <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a>.
             </li>
+            <li>
+              The "How to Play" has also been updated. It now contains more details on how the crops are categorized and chosen.
+            </li>
           </ul>
         </div>
 
