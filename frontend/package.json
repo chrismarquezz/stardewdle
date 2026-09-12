@@ -1,6 +1,6 @@
 {
   "name": "stardewdle",
-  "version": "1.4",
+  "version": "1.5",
   "private": true,
   "dependencies": {
     "react": "^19.1.0",

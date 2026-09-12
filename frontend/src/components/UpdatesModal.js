@@ -16,6 +16,21 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
             </div>
 
             <div>
+              <p className="font-semibold">v1.5 — August 2026</p>
+              <ul className="list-disc ml-6 md:ml-10">
+                <li>
+                  There is now a custom eliminations feature! You can narrow down your options as you'd like.
+                </li>
+                <li>
+                  Hit the pencil button, and click any crops you would like to eliminate as a choice.
+                </li>
+                <li>
+                  We also opened up a <a href="https://ko-fi.com/stardewdlecom" className="underline">Ko-fi</a>, if you'd like to help support the site as we continue to maintain it.
+                </li>
+              </ul>
+            </div>
+            
+            <div>
               <p className="font-semibold">v1.4 — June 2026</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
@@ -40,7 +55,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
               <p className="font-semibold">v1.3.1 — February 2026</p>
               <ul className="list-disc ml-6 md:ml-10">
                 <li>
-                  We decided to create a Discord server!
+                  We decided to create a <a href="https://discord.gg/Fg56gpXXBK" className="underline">Discord</a> server!
                 </li>
                 <li>
                   Join if you want share your guesses, talk about the game, or just want to say hi.

@@ -2,36 +2,47 @@ import { useState } from "react";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
 
-export default function CropCard({ crop, isSelected, onClick, isMuted, guessable, isMobilePortrait }) {
+export default function CropCard({
+  crop,
+  isSelected,
+  onClick,
+  isMuted,
+  guessable,
+  manuallyDisabled,
+  interactable,
+  playClickSound = true,
+  isMobilePortrait,
+}) {
   const formattedName = formatName(crop.name);
   const [isHovering, setIsHovering] = useState(false);
+  const canInteract = interactable ?? guessable;
 
   async function handleEndHover() {
     await new Promise((resolve) => setTimeout(resolve, 100));
     setIsHovering(false);
-  };
+  }
 
   const x_pos = parseInt(crop.crop_index) * 48;
 
   const spriteStyle = {
-    backgroundImage: 'var(--sprite-url)',
+    backgroundImage: "var(--sprite-url)",
     backgroundPosition: `-${x_pos}px 0px`,
-    backgroundSize: '3456px 48px',
-    width: '48px',
-    height: '48px',
-    imageRendering: 'pixelated',
+    backgroundSize: "3456px 48px",
+    width: "48px",
+    height: "48px",
+    imageRendering: "pixelated",
   };
 
   return (
     <div
       onClick={() => {
-        if (!guessable) return;
-        if (!isMuted) {
+        if (!canInteract) return;
+        if (!isMuted && playClickSound) {
           playSound("/sounds/select.mp3");
         }
         onClick(crop);
       }}
-      className={`relative w-16 h-16 p-1 flex items-center justify-center group ${guessable ? "clickable" : ""} ${isHovering ? "z-10" : "z-0"}`}
+      className={`relative w-16 h-16 p-1 flex items-center justify-center group ${canInteract ? "clickable" : ""} ${isHovering ? "z-10" : "z-0"}`}
       style={{
         backgroundImage: "url('/images/game/tile-bg.webp')",
         backgroundSize: "cover",
@@ -41,7 +52,6 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => handleEndHover()}
     >
-
       <div
         className={`absolute w-full h-full opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
       />
@@ -52,7 +62,7 @@ export default function CropCard({ crop, isSelected, onClick, isMuted, guessable
       />
 
       <div
-        className={`absolute w-full h-full opacity-70 mix-blend-multiply ${guessable ? "" : "bg-gray-500"}`}
+        className={`absolute w-full h-full opacity-70 mix-blend-multiply ${guessable ? "" : manuallyDisabled ? "bg-gray-800" : "bg-gray-400"}`}
       />
       <div
         className="absolute -top-5 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none z-50 whitespace-nowrap"
