@@ -12,14 +12,42 @@ const ddb = DynamoDBDocumentClient.from(client);
 
 const ANALYTICS_TABLE = "stardewdleCounts";
 const WORDS_TABLE = "daily_words";
+const BASE_URL = process.env.BASE_URL;
 
-const CROPS_URL = process.env.CROPS_URL;
+const getRandomValidIndex = (totalLength, recentSet) => {
+  const validIndices = [];
+  for (let i = 0; i < totalLength; i++) {
+    if (!recentSet.has(i)) validIndices.push(i);
+  }
+
+  if (validIndices.length === 0) {
+    return Math.floor(Math.random() * totalLength);
+  }
+
+  return validIndices[Math.floor(Math.random() * validIndices.length)];
+};
 
 export const handler = async () => {
   try {
-    const cropsResponse = await fetch(CROPS_URL);
-    if (!cropsResponse.ok) throw new Error("Failed to fetch crops from R2");
-    const crops = await cropsResponse.json();
+    const [cropsRes, cookingRes, fishRes, geologyRes, quotesRes] = await Promise.all([
+      fetch(`${BASE_URL}/crops.json`),
+      fetch(`${BASE_URL}/cooking.json`),
+      fetch(`${BASE_URL}/fish.json`),
+      fetch(`${BASE_URL}/geology.json`),
+      fetch(`${BASE_URL}/quotes.json`)
+    ]);
+
+    if (!cropsRes.ok || !cookingRes.ok || !fishRes.ok || !geologyRes.ok || !quotesRes.ok) {
+      throw new Error("Failed to fetch one or more JSON files from R2");
+    }
+
+    const [crops, cooking, fish, geology, quotes] = await Promise.all([
+      cropsRes.json(),
+      cookingRes.json(),
+      fishRes.json(),
+      geologyRes.json(),
+      quotesRes.json()
+    ]);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -65,24 +93,60 @@ export const handler = async () => {
       FilterExpression: "#date >= :sevenDaysAgo",
       ExpressionAttributeNames: { "#date": "date" },
       ExpressionAttributeValues: { ":sevenDaysAgo": sevenDaysAgoISO },
-      ProjectionExpression: "word",
+      ProjectionExpression: "word, daily_items",
     }));
 
-    const recentWords = new Set(Items.map((item) => item.word));
-    const availableCrops = crops.filter((crop) => !recentWords.has(crop.name));
+    const recentWords = new Set();
+    const recentCooking = new Set();
+    const recentFish = new Set();
+    const recentGeology = new Set();
+    const recentVillagers = new Set();
 
+    Items.forEach(item => {
+      recentWords.add(item.word);
+      if (item.daily_items) {
+        if (item.daily_items.cooking !== undefined) recentCooking.add(item.daily_items.cooking);
+        if (item.daily_items.fish !== undefined) recentFish.add(item.daily_items.fish);
+        if (item.daily_items.geology !== undefined) recentGeology.add(item.daily_items.geology);
+        if (item.daily_items.villager && item.daily_items.villager.index !== undefined) {
+          recentVillagers.add(item.daily_items.villager.index);
+        }
+      }
+    });
+
+    const availableCrops = crops.filter((crop) => !recentWords.has(crop.name));
     if (availableCrops.length === 0) {
       return { statusCode: 200, body: JSON.stringify({ message: "No new crops available." }) };
     }
-
     const randomCrop = availableCrops[Math.floor(Math.random() * availableCrops.length)];
+
+    const cookingArray = cooking.foods ? cooking.foods : cooking;
+    const cookingIndex = getRandomValidIndex(cookingArray.length, recentCooking);
+    const fishIndex = getRandomValidIndex(fish.length, recentFish);
+    const geologyIndex = getRandomValidIndex(geology.length, recentGeology);
+    const villagerIndex = getRandomValidIndex(quotes.length, recentVillagers);
+
+    const selectedVillager = quotes[villagerIndex];
+    const shuffledQuotes = [...selectedVillager.quotes].sort(() => 0.5 - Math.random());
+    const selectedQuoteIndices = shuffledQuotes.slice(0, 5).map(q => q.index);
+
     await ddb.send(new PutCommand({
       TableName: WORDS_TABLE,
       Item: {
         date: todayISO,
         word: randomCrop.name,
         correct_guesses: 0,
-        totalAttempts: 0, 
+        totalAttempts: 0,
+        daily_items: {
+          cooking: cookingIndex,
+          fish: fishIndex,
+          geology: geologyIndex,
+          villager: {
+            index: villagerIndex,
+            quotes: selectedQuoteIndices
+          }
+        },
+        bundle_completions: 0
       },
     }));
 
