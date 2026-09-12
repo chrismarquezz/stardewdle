@@ -44,7 +44,7 @@ export default function Game() {
         }}
       />
 
-      <div className={`absolute z-10 w-full h-full flex justify-center items-center`}>
+      <div className={`absolute z-10 w-full h-full flex justify-center items-center pb-10`}>
         <div
           className="flex flex-col items-center justify-center"
           style={{
