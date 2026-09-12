@@ -136,7 +136,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
                         className="relative group flex items-center justify-center gap-3"
                       >
                         <img
-                          src={`/images/${season}.webp`}
+                          src={`/images/game/${season}.webp`}
                           alt={season}
                           className="h-8 w-12"
                         />

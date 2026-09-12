@@ -60,8 +60,6 @@ export default function Landing() {
               <CustomButton
                 variant="square"
                 icon="/images/landing/github.webp"
-                label="GitHub"
-                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
                 showLabel={true}
@@ -71,8 +69,6 @@ export default function Landing() {
               <CustomButton
                 variant="square"
                 icon="/images/landing/discord.webp"
-                label="Discord"
-                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
                 showLabel={true}
@@ -82,7 +78,6 @@ export default function Landing() {
               <CustomButton
                 variant="square"
                 icon="/images/kofi.webp"
-                label="Discord"
                 isMuted={isMuted}
                 onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
                 showLabel={true}
@@ -91,18 +86,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/landing/kofi.webp"
-                label="Support the Site"
-                showLabel={true}
-                isMuted={isMuted}
-                onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
-              />
-
-              <CustomButton
-                variant="square"
                 icon="/images/landing/credits.webp"
-                label="Credits"
-                showLabel={true}
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
                 showLabel={true}

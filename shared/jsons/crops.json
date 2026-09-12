@@ -225,7 +225,7 @@
     "season": ["winter"],
     "base_price": 150,
     "regrows": false,
-    "type": "forage",
+    "type": "fruit",
     "infodetail": "A delicate fruit that pops up from the snow.",
     "crop_index": 22
   },

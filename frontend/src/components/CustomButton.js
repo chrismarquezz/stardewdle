@@ -15,7 +15,6 @@ const CustomButton = ({
     children
 }) => {
 
-    // Mapping variants to Tailwind classes
     const variantStyles = {
         icon: mobilePortrait ? "w-[75px] h-[75px]" : "w-[50px] h-[50px]",      // Top right utility buttons
         square: "w-[75px] h-[75px]",    // GitHub, Discord, Credits
@@ -26,7 +25,6 @@ const CustomButton = ({
         toggle: "w-[30px] h-[30px] md:w-[50px] md:h-[50px]", // Toggle buttons in Hints Modal
     };
 
-    // Determine default sound based on variant
     const defaultSound = (variant === 'menu' || variant === 'title')
         ? "/sounds/menu-select.mp3"
         : variant === 'square'
@@ -35,7 +33,6 @@ const CustomButton = ({
 
     const handleClick = () => {
         if (!isMuted) {
-            // Use passed soundPath or the default for that variant
             playSound(soundPath || defaultSound);
         }
         onClick();

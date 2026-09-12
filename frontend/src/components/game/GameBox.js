@@ -102,6 +102,23 @@ export default function GameBox({ isMobilePortrait }) {
     (parsed) => (parsed?.growth_time?.length === 2 ? parsed : null)
   );
 
+  const [manualDisables, setManualDisables] = useState(() => {
+    const saved = localStorage.getItem("stardewdle-manualDisables");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [disableMode, setDisableMode] = useState(() => {
+    const saved = localStorage.getItem("stardewdle-disableMode");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const toggleManualDisable = (crop) => {
+    setManualDisables((prev) =>
+      prev.includes(crop.name)
+        ? prev.filter((name) => name !== crop.name)
+        : [...prev, crop.name]
+    );
+  };
+
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
@@ -315,6 +332,11 @@ export default function GameBox({ isMobilePortrait }) {
           isMobilePortrait={isMobilePortrait}
           constraints={constraints}
           hints={hints}
+          disableMode={!gameOver && guesses.length < 6 ? disableMode : false}
+          manualDisables={manualDisables}
+          onToggleDisable={
+            !gameOver && guesses.length < 6 ? toggleManualDisable : () => { }
+          }
         />
       </div>
 
@@ -419,6 +441,18 @@ export default function GameBox({ isMobilePortrait }) {
               playSound("/sounds/pluck.mp3");
             }
             toggleMute();
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+        />
+        
+        <CustomButton
+          variant="icon"
+          icon={disableMode ? "/images/pencil.webp" : "/images/pencil-off.webp"}
+          label={disableMode ? "Custom Disable: On" : "Custom Disable: Off"}
+          isMuted={isMuted}
+          onClick={() => {
+            setDisableMode((prev) => !prev);
           }}
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
