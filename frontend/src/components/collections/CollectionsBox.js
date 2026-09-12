@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
-import { useGameData } from "../../context/GameDataContext"; // Import the hook
+import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
 
@@ -8,6 +8,7 @@ import CollectionsGrid from "./CollectionsGrid";
 import CollectionsModal from "./CollectionsModal";
 import CropLoader from "../CropLoader";
 import CustomButton from "../CustomButton";
+import UpdatesModal from "../UpdatesModal";
 
 export default function CollectionsBox({ isMobilePortrait }) {
   const [selectedCrop, setSelectedCrop] = useState(null);
@@ -16,6 +17,13 @@ export default function CollectionsBox({ isMobilePortrait }) {
   const { isMuted, toggleMute } = useSound();
   const { crops, isReady } = useGameData();
   const [showCollectionsModal, setShowCollectionsModal] = useState(false);
+
+  const {
+    showUpdates,
+    setShowUpdates,
+    shouldPulse,
+    handleOpenUpdates
+  } = useGameData();
 
   useEffect(() => {
     const hasSeenCollectionsModal = localStorage.getItem(
@@ -177,21 +185,39 @@ export default function CollectionsBox({ isMobilePortrait }) {
           }}
           showLabel={true}
         />
-        
+
         <CustomButton
           variant="icon"
           icon={"/images/question-mark.webp"}
           label={"Help"}
           isMuted={isMuted}
-          onClick={() =>  setShowCollectionsModal(true)}
+          onClick={() => setShowCollectionsModal(true)}
           showLabel={true}
           soundPath={"/sounds/modal.mp3"}
         />
+        
+        <CustomButton
+          variant="icon"
+          icon="/images/info.webp"
+          label="Updates"
+          isMuted={isMuted}
+          onClick={handleOpenUpdates}
+          shouldPulse={shouldPulse}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+          />
       </div>
       {showCollectionsModal && (
         <CollectionsModal
           isMuted={isMuted}
           onClose={() => setShowCollectionsModal(false)}
+        />
+      )}
+      {showUpdates && (
+        <UpdatesModal
+          isMuted={isMuted}
+          onClose={() => setShowUpdates(false)}
         />
       )}
     </div>
