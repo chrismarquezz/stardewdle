@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
 const GameDataContext = createContext();
-const MOST_RECENT_UPDATE = "2026-06-19T00:00:00Z";
+const MOST_RECENT_UPDATE = "2026-11-9T00:00:00Z";
 
 export const GameDataProvider = ({ children }) => {
     const [crops, setCrops] = useState([]);
