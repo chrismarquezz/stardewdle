@@ -56,21 +56,20 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
     };
 
     return (
-        <div className={`flex items-center h-full gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
+        <div className={`flex items-center h-full md:gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
             <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
-                <div className="relative bg-no-repeat bg-cover w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
+                <div className="relative bg-no-repeat bg-cover w-[360px] md:w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
                     <div
                         style={{
                             backgroundImage: `url('/images/minigames/bundleIcons/homeCook.webp')`,
                             imageRendering: 'pixelated',
                         }}
-                        className="absolute top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[128px] w-[128px] bg-no-repeat"
+                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
                     />
                 </div>
-                <div className="flex flex-col justify-center items-center bg-[url('/images/game/guesses.webp')] bg-no-repeat p-4 bg-contain bg-center aspect-[5/3]">
-                    <h3 className="text-5xl text-main pb-4">Ingredients Needed:</h3>
-
-                    <div className="flex gap-8 pb-8 px-4">
+                <div className="flex flex-col justify-center items-center bg-[url('/images/game/guesses.webp')] bg-no-repeat p-8 md:p-4 bg-contain bg-center aspect-[5/3]">
+                    <h3 className="text-5xl text-main pb-8 md:pb-4">Ingredients Needed:</h3>
+                    <div className="flex gap-24 md:gap-8 pt-8 pb-20 md:pt-0 md:pb-0 px-4 overflow-x-auto md:overflow-visible w-full justify-center items-center">
                         {Object.entries(targetFood.ingredients).map(([ingName, count]) => {
                             const ingredientIndex = masterIngredientList.indexOf(ingName);
 
@@ -82,7 +81,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                             backgroundImage: "url('/images/minigames/minigameCard.webp')",
                                             backgroundSize: "cover",
                                             backgroundPosition: "center",
-                                            scale: isMobilePortrait ? "1.1" : "1",
+                                            scale: isMobilePortrait ? "2" : "1",
                                         }}
                                     >
                                         <div
@@ -92,12 +91,11 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                     </div>
 
                                     <div
-                                        className="absolute -bottom-6 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center whitespace-nowrap"
+                                        className="absolute -bottom-20 md:-bottom-6 px-3 py-1 flex items-center justify-center text-4xl md:text-xl font-medium text-main text-center whitespace-nowrap"
                                     >
                                         {count}x {formatName(ingName)}
                                     </div>
                                 </div>
-
                             )
                         })}
                     </div>
@@ -110,7 +108,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                 }}>
-                <div className={`flex flex-wrap gap-2 items-center justify-center max-h-[50%] max-w-[80%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 px-10`}>
+                <div className={`flex flex-wrap gap-2 items-center justify-center max-h-[50%] max-w-[80%] md:max-w-[85%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 px-10`}>
                     {gameState.guesses.map((guess, idx) => {
                         const isCorrect = guess === targetFood.name;
 
@@ -173,7 +171,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                 </div>
 
                 {gameState.complete ? (
-                    <div className="text-3xl font-bold">
+                    <div className="text-5xl font-bold">
                         {gameState.win ? (
                             <span className="text-correct">Bundle Completed!</span>
                         ) : (
@@ -213,7 +211,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                 isMuted={isMuted}
                                 className={!selectedFood ? "opacity-50 pointer-events-none" : ""}
                             >
-                                    <p className="text-main text-center text-xl italic">Guesses left: {15 - gameState.guesses.length}/15</p>
+                                <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {15 - gameState.guesses.length}/15</p>
                             </CustomButton>
                         </div>
 
@@ -231,7 +229,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                         variant="share"
                                         icon="/images/minigames/arrowBack.webp"
                                         label="Close"
-                                        isMuted={isMuted}
+                                        isMuted={true}
                                         onClick={() => {
                                             setShowPicker(false);
                                         }}
@@ -290,7 +288,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                                 ) : (
                                                     <div className="flex justify-start items-center gap-3 w-full">
                                                         <div style={getSpriteStyle("cooking", food.index, 1)} className="scale-[87.5%]" />
-                                                        <div className="w-3/5 text-xl font-medium text-main text-left leading-none z-10">{formatName(food.name)}</div>
+                                                        <div className="w-3/5 text-3xl md:text-xl font-medium text-main text-left leading-none z-10">{formatName(food.name)}</div>
                                                     </div>
                                                 )}
                                             </button>

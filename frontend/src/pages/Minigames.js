@@ -51,7 +51,7 @@ export default function Minigames() {
         className={`absolute z-10 w-full h-full flex justify-center items-center ${isMobilePortrait ? "top-2" : "-top-4"}`}
       >
         <div
-          className="flex flex-col items-center"
+          className="flex flex-col items-center justify-center"
           style={{
             width: isMobilePortrait ? `${designHeight}px` : `${designWidth}px`,
             height: isMobilePortrait ? `${designWidth}px` : `${designHeight}px`,

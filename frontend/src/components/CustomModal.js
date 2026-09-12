@@ -1,13 +1,12 @@
 import ReactDOM from "react-dom";
 import { playSound } from "../utils/playSound";
 
-// Shared overlay/frame/close-button chrome used by HelpModal, HintsModal, UpdatesModal, CollectionsModal.
 export default function CustomModal({
   title,
   isMuted,
   onClose,
   scaleFactor,
-  maxHeightClass = "max-h-[50vh]",
+  maxHeightClass = "max-h-[50vh] md:max-h-[70vh]",
   headerContent,
   children,
 }) {
@@ -24,7 +23,7 @@ export default function CustomModal({
       onClick={playCloseSound}
     >
       <div
-        className={`relative max-w-[95vw] ${maxHeightClass} flex flex-col`}
+        className={`relative max-w-[95vw] md:max-w-[50vw] ${maxHeightClass} flex flex-col`}
         style={{
           transform: `scale(${scaleFactor})`,
           transformOrigin: "center",

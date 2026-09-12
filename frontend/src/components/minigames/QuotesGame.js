@@ -61,29 +61,29 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     };
 
     return (
-        <div className={`flex items-center h-full gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
-            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-2 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
-                <div className="relative bg-no-repeat bg-cover w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
+        <div className={`flex items-center h-full md:gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
+            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
+                <div className="relative bg-no-repeat bg-cover w-[360px] md:w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
                     <div
                         style={{
                             backgroundImage: `url('/images/minigames/bundleIcons/helper.webp')`,
                             imageRendering: 'pixelated',
                         }}
-                        className="absolute top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[128px] w-[128px] bg-no-repeat"
+                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
                     />
                 </div>
-                <div className="flex flex-col gap-1 justify-center items-center bg-no-repeat p-4 bg-[url('/images/game/guesses.webp')] bg-contain bg-center w-full h-[58%]">
+                <div className="flex flex-col gap-1 justify-center items-center bg-no-repeat p-4 bg-[url('/images/game/guesses.webp')] bg-contain bg-center w-full h-[58%] aspect-[5/3]">
                     <h3 className="text-5xl text-main">Who said this?</h3>
                     <div className={`flex flex-col gap-2 overflow-y-auto max-h-[80%] w-[90%] items-center ${scrollbarStyles}`}>
                         {dailyQuotes.map((quoteText, idx) => {
                             const isRevealed = idx < revealedCount || gameState.complete;
-                            if (idx >= revealedCount + 1 && !gameState.complete) return <></>;
+                            if (idx >= revealedCount + 1 && !gameState.complete) return;
                             return (
                                 <div key={idx} className={`text-main text-center px-1 bg-white ${isRevealed ? 'bg-opacity-30 w-full' : 'bg-opacity-15'}`}>
                                     {isRevealed ? (
-                                        <p className="text-2xl">{quoteText}</p>
+                                        <p className="text-4xl md:text-2xl">{quoteText}</p>
                                     ) : (
-                                        <p className="text-xl italic">(Guess incorrectly to get another quote)</p>
+                                        <p className="text-3xl md:text-xl italic">(Guess incorrectly to get another quote)</p>
                                     )}
                                 </div>
                             );
@@ -98,7 +98,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                 }}>
-                <div className={`flex flex-wrap gap-2 items-center justify-center max-h-[50%] max-w-[75%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8`}>
+                <div className={`flex flex-wrap gap-2 items-center justify-center max-h-[40%] max-w-[75%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 mb-4`}>
                     {currentGuesses.map((guess, idx) => {
                         const isCorrect = guess === targetVillager.name;
 
@@ -126,7 +126,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                         className="z-10 scale-[78%]"
                                     />
                                     <div
-                                        className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
+                                        className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap"
                                         style={{
                                             backgroundImage: "url('/images/label.webp')",
                                             backgroundSize: "100% 100%",
@@ -160,7 +160,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                     </p>
                 </div>
                 {gameState.complete ? (
-                    <div className="text-3xl font-bold">
+                    <div className="text-5xl font-bold">
                         {gameState.win ? (
                             <span className="text-correct">Bundle Completed!</span>
                         ) : (
@@ -202,7 +202,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 isMuted={isMuted}
                                 className={!selectedVillager ? "opacity-50 pointer-events-none" : ""}
                             >
-                                <p className="text-main text-center text-xl italic">Guesses left: {maxGuesses - currentGuesses.length}/{maxGuesses}</p>
+                                <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {maxGuesses - currentGuesses.length}/{maxGuesses}</p>
                             </CustomButton>
                         </div>
 
@@ -220,7 +220,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                         variant="share"
                                         icon="/images/minigames/arrowBack.webp"
                                         label="Close"
-                                        isMuted={isMuted}
+                                        isMuted={true}
                                         onClick={() => {
                                             setShowPicker(false);
                                         }}
@@ -276,7 +276,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                 ) : (
                                                     <div className="flex justify-start items-center w-full h-full">
                                                         <div style={getSpriteStyle("villagers", villager.index, 0, 128)} className="scale-[58%] -ml-6" />
-                                                        <div className="w-1/4 text-xl font-medium text-main text-left leading-none z-10">{formatName(villager.name)}</div>
+                                                        <div className="w-1/4 text-3xl md:text-xl font-medium text-main text-left leading-none z-10">{formatName(villager.name)}</div>
                                                     </div>
                                                 )}
                                             </button>

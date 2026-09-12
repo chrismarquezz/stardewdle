@@ -26,7 +26,10 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
     const maxGuesses = 6;
 
     const guessesMade = currentGuesses.length;
-    const isRevealed = gameState.complete;
+    const unguessedItems = useMemo(
+        () => minerals.filter(item => !gameState.guesses.includes(item.name)),
+        [minerals, gameState.guesses]
+    );
 
     const getPixelLevel = () => {
         if (gameState.complete) return 1;
@@ -51,11 +54,11 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
     ];
 
     const filteredMinerals = useMemo(
-        () => minerals.filter(item => {
+        () => unguessedItems.filter(item => {
             const activeRegex = ALPHABET_GROUPS.find(g => g.label === activeTab).regex;
             return activeRegex.test(item.name);
         }),
-        [minerals, activeTab]
+        [unguessedItems, activeTab]
     );
 
     const handleSubmit = () => {
@@ -81,19 +84,19 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
     };
 
     return (
-        <div className={`flex items-center h-full gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
+        <div className={`flex items-center h-full md:gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
             <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
-                <div className="relative bg-no-repeat bg-cover w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
+                <div className="relative bg-no-repeat bg-cover w-[360px] md:w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
                     <div
                         style={{
                             backgroundImage: `url('/images/minigames/bundleIcons/geologist.webp')`,
                             imageRendering: 'pixelated',
                         }}
-                        className="absolute top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[128px] w-[128px] bg-no-repeat"
+                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
                     />
                 </div>
                 <div className="flex flex-col justify-center items-center bg-[url('/images/game/guesses.webp')] bg-no-repeat p-4 bg-contain bg-center aspect-[5/3]">
-                    <h3 className="text-5xl text-main pb-2">What is this item?</h3>
+                    <h3 className="text-5xl text-main pt-2 pb-2">What is this item?</h3>
                     <div className="relative h-[242px] w-[242px] flex items-center justify-center mb-4"
                         style={{
                             backgroundImage: "url('/images/minigames/boxMedium.webp')",
@@ -110,7 +113,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                 </div>
             </div>
 
-            <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}
+            <div className={`flex flex-col justify-center items-center h-full p-4 md:pt-8 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}
                 style={{
                     backgroundImage: "url('/images/game/cropgrid-bg.webp')",
                     backgroundSize: "90% 90%",
@@ -180,7 +183,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                 </div>
 
                 {gameState.complete ? (
-                    <div className="text-3xl font-bold">
+                    <div className="text-5xl font-bold">
                         {gameState.win ? (
                             <span className="text-correct">Bundle Completed!</span>
                         ) : (
@@ -189,7 +192,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                     </div>
                 ) : (
                     <>
-                        <div className="flex gap-4 items-center">
+                        <div className="flex gap-4 items-center pb-8">
                             <button
                                 onClick={() => setShowPicker(!showPicker)}
                                 className="group relative h-[72px] w-[72px] flex items-center justify-center clickable"
@@ -211,9 +214,9 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                 onClick={handleSubmit}
                                 isMuted={isMuted}
                                 className={!selectedItem ? "opacity-50 pointer-events-none" : ""}
-                                >
-                                    <p className="text-main text-center text-xl italic">Guesses left: {maxGuesses - currentGuesses.length}/{maxGuesses}</p>
-                                </CustomButton>
+                            >
+                                <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {maxGuesses - currentGuesses.length}/{maxGuesses}</p>
+                            </CustomButton>
                         </div>
 
                         {showPicker && (
@@ -230,7 +233,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                         variant="share"
                                         icon="/images/minigames/arrowBack.webp"
                                         label="Close"
-                                        isMuted={isMuted}
+                                        isMuted={true}
                                         onClick={() => {
                                             setShowPicker(false);
                                         }}
@@ -250,13 +253,12 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                         variant="icon"
                                         icon={showIcons ? "/images/game/hint-on.webp" : "/images/game/hint-off.webp"}
                                         label="Toggle Hint Icons"
-                                        isMuted={isMuted}
+                                        isMuted={true}
                                         onClick={() => {
                                             setShowIcons(!showIcons);
                                         }}
                                         showLabel={true}
                                         isMobilePortrait={isMobilePortrait}
-                                        soundPath={"/sounds/modal.mp3"}
                                     />
                                 </div>
                                 <div className={`overflow-y-auto overflow-x-hidden flex-1 p-2 ${scrollbarStyles}`}>
@@ -281,7 +283,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                                 }
                                                 <div className="flex justify-start items-center gap-3 w-full h-12">
                                                     {showIcons && <div style={getSpriteStyle("geology", item.index)} className="scale-[87.5%] grayscale brightness-50" />}
-                                                    <div className={` text-xl font-medium text-main z-10 ${showIcons ? "w-2/3 text-left" : "w-full text-center"}`}>{item.name}</div>
+                                                    <div className={`text-3xl md:text-xl font-medium text-main z-10 ${showIcons ? "w-2/3 text-left" : "w-full text-center"}`}>{item.name}</div>
                                                 </div>
                                             </button>
                                         ))}

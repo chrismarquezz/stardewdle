@@ -19,7 +19,7 @@ export default function BundleButton({
     const [currentFrame, setCurrentFrame] = useState(skipAnimation && isAnimated ? totalFrames - 1 : 0);
 
     const xPos = -(currentFrame * baseSpriteWidth * bundleScale);
-    const yPos = -((variant - 1) * 32 * bundleScale);
+    const yPos = -((variant - 1) * 16 * bundleScale);
     const iconSize = baseSpriteWidth * bundleScale;
 
     useEffect(() => {

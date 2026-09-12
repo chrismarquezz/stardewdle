@@ -291,7 +291,7 @@ export default function GameBox({ isMobilePortrait }) {
         }`}
       style={{
         backgroundImage: isMobilePortrait
-          ? "url('/images/game/box-bg-sm.jpg')"
+          ? "url('/images/game/box-bg-sm.webp')"
           : "url('/images/game/box-bg.webp')",
         backgroundSize: "100% 100%",
         width: isMobilePortrait ? "940px" : "1600px",

@@ -57,7 +57,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
         }`}
       style={{
         backgroundImage: isMobilePortrait
-          ? "url('/images/collections/collectionsBG-mobile.jpg')"
+          ? "url('/images/collections/collectionsBG-mobile.webp')"
           : "url('/images/collections/collectionsBG.webp')",
         backgroundSize: "100% 100%",
         width: isMobilePortrait ? "940px" : "1600px",

@@ -64,10 +64,10 @@ export default function CropGrid({
 
   return (
     <div
-      className={`flex justify-center items-center ${isMobilePortrait ? "w-full -mt-[92px] h-[98%]" : "w-[90%] h-full mt-[2px]"}`}
+      className={`flex justify-center items-center ${isMobilePortrait ? "w-full -mt-[92px] h-[98%]" : "w-[90%] h-full"}`}
       style={{
-        backgroundImage: `url('/images/game/cropgrid-bg${isMobilePortrait ? "-mobile.jpg" : ".webp"}')`,
-        backgroundSize: isMobilePortrait ? "100% 100%" : "90% 80%",
+        backgroundImage: `url('/images/game/cropgrid-bg${isMobilePortrait ? "-mobile.webp" : ".webp"}')`,
+        backgroundSize: isMobilePortrait ? "100% 100%" : "90% 81%",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
