@@ -19,7 +19,7 @@ export default function Landing() {
         style={{ backgroundImage: "url('/images/background.webp')" }}
       />
 
-      <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden">
+      <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden pb-10">
         <div
           style={{
             width: "1080px",
