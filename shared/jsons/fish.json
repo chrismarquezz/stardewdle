@@ -1,0 +1,310 @@
+[
+    {
+        "name": "Albacore",
+        "index": 0
+    },
+    {
+        "name": "Anchovy",
+        "index": 1
+    },
+    {
+        "name": "Angler",
+        "index": 2
+    },
+    {
+        "name": "Blobfish",
+        "index": 3
+    },
+    {
+        "name": "Blue Discus",
+        "index": 4
+    },
+    {
+        "name": "Bream",
+        "index": 5
+    },
+    {
+        "name": "Bullhead",
+        "index": 6
+    },
+    {
+        "name": "Carp",
+        "index": 7
+    },
+    {
+        "name": "Catfish",
+        "index": 8
+    },
+    {
+        "name": "Cave Jelly",
+        "index": 9
+    },
+    {
+        "name": "Chub",
+        "index": 10
+    },
+    {
+        "name": "Clam",
+        "index": 11
+    },
+    {
+        "name": "Cockle",
+        "index": 12
+    },
+    {
+        "name": "Crab",
+        "index": 13
+    },
+    {
+        "name": "Crayfish",
+        "index": 14
+    },
+    {
+        "name": "Crimsonfish",
+        "index": 15
+    },
+    {
+        "name": "Dorado",
+        "index": 16
+    },
+    {
+        "name": "Eel",
+        "index": 17
+    },
+    {
+        "name": "Flounder",
+        "index": 18
+    },
+    {
+        "name": "Ghostfish",
+        "index": 19
+    },
+    {
+        "name": "Glacierfish",
+        "index": 20
+    },
+    {
+        "name": "Glacierfish Jr.",
+        "index": 21
+    },
+    {
+        "name": "Goby",
+        "index": 22
+    },
+    {
+        "name": "Green Algae",
+        "index": 23
+    },
+    {
+        "name": "Halibut",
+        "index": 24
+    },
+    {
+        "name": "Herring",
+        "index": 25
+    },
+    {
+        "name": "Ice Pip",
+        "index": 26
+    },
+    {
+        "name": "Largemouth Bass",
+        "index": 27
+    },
+    {
+        "name": "Lava Eel",
+        "index": 28
+    },
+    {
+        "name": "Legend",
+        "index": 29
+    },
+    {
+        "name": "Legend II",
+        "index": 30
+    },
+    {
+        "name": "Lingcod",
+        "index": 31
+    },
+    {
+        "name": "Lionfish",
+        "index": 32
+    },
+    {
+        "name": "Lobster",
+        "index": 33
+    },
+    {
+        "name": "Midnight Carp",
+        "index": 34
+    },
+    {
+        "name": "Midnight Squid",
+        "index": 35
+    },
+    {
+        "name": "Ms. Angler",
+        "index": 36
+    },
+    {
+        "name": "Mussel",
+        "index": 37
+    },
+    {
+        "name": "Mutant Carp",
+        "index": 38
+    },
+    {
+        "name": "Octopus",
+        "index": 39
+    },
+    {
+        "name": "Oyster",
+        "index": 40
+    },
+    {
+        "name": "Perch",
+        "index": 41
+    },
+    {
+        "name": "Periwinkle",
+        "index": 42
+    },
+    {
+        "name": "Pike",
+        "index": 43
+    },
+    {
+        "name": "Pufferfish",
+        "index": 44
+    },
+    {
+        "name": "Radioactive Carp",
+        "index": 45
+    },
+    {
+        "name": "Rainbow Trout",
+        "index": 46
+    },
+    {
+        "name": "Red Mullet",
+        "index": 47
+    },
+    {
+        "name": "Red Snapper",
+        "index": 48
+    },
+    {
+        "name": "River Jelly",
+        "index": 49
+    },
+    {
+        "name": "Salmon",
+        "index": 50
+    },
+    {
+        "name": "Sandfish",
+        "index": 51
+    },
+    {
+        "name": "Sardine",
+        "index": 52
+    },
+    {
+        "name": "Scorpion Carp",
+        "index": 53
+    },
+    {
+        "name": "Sea Cucumber",
+        "index": 54
+    },
+    {
+        "name": "Sea Jelly",
+        "index": 55
+    },
+    {
+        "name": "Seaweed",
+        "index": 56
+    },
+    {
+        "name": "Shad",
+        "index": 57
+    },
+    {
+        "name": "Shrimp",
+        "index": 58
+    },
+    {
+        "name": "Slimejack",
+        "index": 59
+    },
+    {
+        "name": "Smallmouth Bass",
+        "index": 60
+    },
+    {
+        "name": "Snail",
+        "index": 61
+    },
+    {
+        "name": "Son of Crimsonfish",
+        "index": 62
+    },
+    {
+        "name": "Spook Fish",
+        "index": 63
+    },
+    {
+        "name": "Squid",
+        "index": 64
+    },
+    {
+        "name": "Stingray",
+        "index": 65
+    },
+    {
+        "name": "Stonefish",
+        "index": 66
+    },
+    {
+        "name": "Sturgeon",
+        "index": 67
+    },
+    {
+        "name": "Sunfish",
+        "index": 68
+    },
+    {
+        "name": "Super Cucumber",
+        "index": 69
+    },
+    {
+        "name": "Tiger Trout",
+        "index": 70
+    },
+    {
+        "name": "Tilapia",
+        "index": 71
+    },
+    {
+        "name": "Tuna",
+        "index": 72
+    },
+    {
+        "name": "Void Salmon",
+        "index": 73
+    },
+    {
+        "name": "Walleye",
+        "index": 74
+    },
+    {
+        "name": "White Algae",
+        "index": 75
+    },
+    {
+        "name": "Woodskip",
+        "index": 76
+    }
+]
