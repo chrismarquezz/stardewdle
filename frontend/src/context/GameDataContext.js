@@ -50,6 +50,7 @@ export const GameDataProvider = ({ children }) => {
                         "stardewdle-stats",
                         "isMuted",
                         "stardewdle-hasSeenHelpModal",
+                        "stardewdle-hasSeenCollectionsModal",
                         "stardewdle-lastUpdateSeen",
                         "stardewdle-crops",
                         "stardewdle-cooking",
@@ -59,7 +60,8 @@ export const GameDataProvider = ({ children }) => {
                     ];
 
                     Object.keys(localStorage).forEach((key) => {
-                        if (!keysToKeep.includes(key)) {
+                        const isMinigameHelpFlag = key.startsWith("stardewdle-hasSeenMinigame");
+                        if (!keysToKeep.includes(key) && !isMinigameHelpFlag) {
                             localStorage.removeItem(key);
                         }
                     });
