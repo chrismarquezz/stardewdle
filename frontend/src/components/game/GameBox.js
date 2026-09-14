@@ -102,14 +102,14 @@ export default function GameBox({ isMobilePortrait }) {
     (parsed) => (parsed?.growth_time?.length === 2 ? parsed : null)
   );
 
-  const [manualDisables, setManualDisables] = useState(() => {
-    const saved = localStorage.getItem("stardewdle-manualDisables");
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [disableMode, setDisableMode] = useState(() => {
-    const saved = localStorage.getItem("stardewdle-disableMode");
-    return saved ? JSON.parse(saved) : false;
-  });
+  const [manualDisables, setManualDisables] = useLocalStorage(
+    isNewDay ? null : "stardewdle-manualDisables",
+    () => []
+  );
+  const [disableMode, setDisableMode] = useLocalStorage(
+    isNewDay ? null : "stardewdle-disableMode",
+    () => false
+  );
 
   const toggleManualDisable = (crop) => {
     setManualDisables((prev) =>
