@@ -4,7 +4,7 @@ import CustomModal from "./CustomModal";
 export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
   return (
     <CustomModal title="What's New" isMuted={isMuted} onClose={onClose} scaleFactor={scaleFactor}>
-      <div className={`space-y-2 md:space-y-4 text-main text-left text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
+      <div className={`space-y-2 md:space-y-4 text-main text-justify text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
         <div>
           <p className="font-semibold">v1.6 — September 2026</p>
           <ul className="list-disc ml-6 md:ml-10">
@@ -21,7 +21,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
               They're not as expansive as the main crop game, but give them a try nonetheless.
             </li>
             <li>
-              If you want to give feedback on them, feel free to join the join the <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a>.
+              If you want to give feedback on them, feel free to join the <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a>.
             </li>
             <li>
               The "How to Play" has also been updated. It now contains more details on how the crops are categorized and chosen.
