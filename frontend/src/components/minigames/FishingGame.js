@@ -181,7 +181,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                             isMuted={true}
                             className={!selectedLetter ? "opacity-50 pointer-events-none" : ""}
                         >
-                            <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {livesRemaining}/{maxLives}</p>
+                            <p className="text-main text-center text-3xl md:text-xl italic">Mistakes left: {livesRemaining}/{maxLives}</p>
                         </CustomButton>
                     ) : (
                         <div className="text-5xl font-bold">

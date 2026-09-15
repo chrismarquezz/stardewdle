@@ -34,7 +34,7 @@ const tutorials = {
       <p>- Click the magnifying glass, and from there select the food you would like to guess</p>
       <p>- Submit the food once you are sure</p>
       <p>- Your results will display above the selection area</p>
-      <p>- You have 15 guesses to get it right</p>
+      <p>- You have 6 guesses to get it right</p>
     </div >,
   //map: {},
   "npc":
@@ -49,7 +49,7 @@ const tutorials = {
     </div >,
   "minerals":
     <div>
-      <p>- How familiar with the minerals and artifacts you can get from mining?</p>
+      <p>- How familiar are you with the minerals and artifacts obtained from mining?</p>
       <p>- You are shown a blurred item that can be acquired from mining</p>
       <p>- Click the magnifying glass, and from there select the name of the item you would like to guess</p>
       <p>- They are organized alphabetically</p>
