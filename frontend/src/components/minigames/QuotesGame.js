@@ -83,7 +83,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                     {isRevealed ? (
                                         <p className="text-4xl md:text-2xl">{quoteText}</p>
                                     ) : (
-                                        <p className="text-3xl md:text-xl italic">(Guess incorrectly to get another quote)</p>
+                                        <p className="text-3xl md:text-xl italic">(Guess incorrectly to show more of their quotes)</p>
                                     )}
                                 </div>
                             );
