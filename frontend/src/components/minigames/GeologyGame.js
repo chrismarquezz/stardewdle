@@ -203,7 +203,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                     backgroundRepeat: "no-repeat",
                                 }}
                             >
-                                <img src="images/minigames/search.webp" className="scale-[2.5]" />
+                                <img src="/images/minigames/search.webp" className="scale-[2.5]" />
                                 <div className="absolute inset-0 bg-white/50 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none rounded-[12px]" />
                             </button>
 
