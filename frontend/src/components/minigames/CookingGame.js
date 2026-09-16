@@ -17,6 +17,8 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
 
+    const maxGuesses = 6;
+
     const unguessedFoods = useMemo(
         () => cooking?.foods?.filter(food => !gameState.guesses.includes(food.name)) ?? [],
         [cooking, gameState.guesses]
@@ -47,7 +49,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
             ...gameState,
             guesses: newGuesses,
             win: gameState.win || isCorrect,
-            complete: gameState.complete || isCorrect || newGuesses.length >= 15
+            complete: gameState.complete || isCorrect || newGuesses.length >= maxGuesses
         });
 
         setSelectedFood(null);
@@ -211,7 +213,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                                 isMuted={isMuted}
                                 className={!selectedFood ? "opacity-50 pointer-events-none" : ""}
                             >
-                                <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {15 - gameState.guesses.length}/15</p>
+                                <p className="text-main text-center text-3xl md:text-xl italic">Guesses left: {maxGuesses - gameState.guesses.length}/{maxGuesses}</p>
                             </CustomButton>
                         </div>
 
