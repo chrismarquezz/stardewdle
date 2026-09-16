@@ -236,6 +236,16 @@ export default function GameBox({ isMobilePortrait }) {
   const handleSubmit = async () => {
     if (!selectedCrop || guesses.length >= 6 || gameOver || !correctCrop) return;
 
+    const currentDateStr = new Date().toISOString().split("T")[0];
+    if (
+      localStorage.getItem("stardewdle-date") !== currentDateStr ||
+      correctCrop.date !== currentDateStr
+    ) {
+      console.log("Date mismatch detected on submit, refreshing...");
+      window.location.reload();
+      return;
+    }
+
     const updatedGuesses = [...guesses, { crop: selectedCrop }];
     setGuesses(updatedGuesses);
     addConstraints(selectedCrop);
