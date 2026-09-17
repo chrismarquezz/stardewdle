@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
-import { getTimeUntilMidnightUTC } from "../../utils/dateUtils";
+import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 
 import CookingGame from "./CookingGame";
@@ -13,64 +13,75 @@ import CropLoader from "../CropLoader";
 import CustomButton from "../CustomButton";
 import HelpModal from "./MinigamesHelp";
 import UpdatesModal from "../UpdatesModal";
+import MinigamesShareModal from "./MinigamesShareModal";
 import BundleButton from "./BundleButton";
 import GiftIcon from "./GiftIcon";
 
-const staticGameData =
-  [
-    {
-      name: "food",
-      label: "Home Cook's",
-      bundleNum: 6,
-      pos: "top-[30%] left-[35%]",
-      // 5 bundle: pos: "top-[25%] left-[50%]",
-    },
-    /*{
+const staticGameData = [
+  {
+    name: "food",
+    emoji: "🍳",
+    label: "Home Cook's",
+    bundleNum: 6,
+    pos: "top-[30%] left-[35%]",
+    // 5 bundle: pos: "top-[25%] left-[50%]",
+  },
+  /*{
         name: "map",
+        emoji: "🗺️",
         label: "Treasure Hunter's",
         bundleNum: 2,
         imgPath: "treasureHunter",
         // 5 bundle: pos: "top-[50%] left-[25%]",
     },*/
-    {
-      name: "npc",
-      label: "Helper's",
-      bundleNum: 3,
-      imgPath: "helper",
-      pos: "top-[30%] left-[65%]",
-      // 5 bundle: pos: "top-[50%] left-[75%]",
-    },
-    {
-      name: "minerals",
-      label: "Geologist's",
-      bundleNum: 5,
-      imgPath: "geologist",
-      pos: "top-[70%] left-[25%]",
-      // 5 bundle: pos: "top-[75%] left-1/3",
-    },
-    {
-      name: "fish",
-      label: "Quality Fish",
-      bundleNum: 7,
-      imgPath: "qualityFish",
-      pos: "top-[70%] left-[75%]",
-      // 5 bundle: pos: "top-[75%] left-2/3",
-    }
-  ];
+  {
+    name: "npc",
+    emoji: "🧑‍🤝‍🧑",
+    label: "Helper's",
+    bundleNum: 3,
+    imgPath: "helper",
+    pos: "top-[30%] left-[65%]",
+    // 5 bundle: pos: "top-[50%] left-[75%]",
+  },
+  {
+    name: "minerals",
+    emoji: "⛏️",
+    label: "Geologist's",
+    bundleNum: 5,
+    imgPath: "geologist",
+    pos: "top-[70%] left-[25%]",
+    // 5 bundle: pos: "top-[75%] left-1/3",
+  },
+  {
+    name: "fish",
+    emoji: "🐟",
+    label: "Quality Fish",
+    bundleNum: 7,
+    imgPath: "qualityFish",
+    pos: "top-[70%] left-[75%]",
+    // 5 bundle: pos: "top-[75%] left-2/3",
+  },
+];
 
 export default function MinigamesBox({ isMobilePortrait }) {
   const {
     isReady,
     dailyData,
+    cooking,
+    minerals,
+    fish,
+    quotes,
     showUpdates,
     setShowUpdates,
     shouldPulse,
-    handleOpenUpdates
+    handleOpenUpdates,
   } = useGameData();
 
   const { isMuted, toggleMute } = useSound();
 
   const [showHelp, setShowHelp] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareText, setShareText] = useState("");
   const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
 
   const [selectedGame, setSelectedGame] = useState("");
@@ -82,11 +93,35 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
   const [gameData, setGameData] = useState(() => {
     const defaultGameData = {
-      food: { complete: false, win: false, guesses: [], animationSeen: false, helpSeen: false },
+      food: {
+        complete: false,
+        win: false,
+        guesses: [],
+        animationSeen: false,
+        helpSeen: false,
+      },
       //map: { complete: true, win: false, guesses: [], animationSeen: false, helpSeen: false },
-      npc: { complete: false, win: false, guesses: [], animationSeen: false, helpSeen: false },
-      minerals: { complete: false, win: false, guesses: [], animationSeen: false, helpSeen: false },
-      fish: { complete: false, win: false, guesses: [], animationSeen: false, helpSeen: false }
+      npc: {
+        complete: false,
+        win: false,
+        guesses: [],
+        animationSeen: false,
+        helpSeen: false,
+      },
+      minerals: {
+        complete: false,
+        win: false,
+        guesses: [],
+        animationSeen: false,
+        helpSeen: false,
+      },
+      fish: {
+        complete: false,
+        win: false,
+        guesses: [],
+        animationSeen: false,
+        helpSeen: false,
+      },
     };
 
     if (isNewDay) return defaultGameData;
@@ -95,7 +130,12 @@ export default function MinigamesBox({ isMobilePortrait }) {
     return saved ? JSON.parse(saved) : defaultGameData;
   });
 
-  const allBundlesComplete = ['food'/*, 'map'*/, 'npc', 'minerals', 'fish'].every(key => gameData[key]?.complete);
+  const allBundlesComplete = [
+    "food" /*, 'map'*/,
+    "npc",
+    "minerals",
+    "fish",
+  ].every((key) => gameData[key]?.complete);
 
   const [globalCompletions, setGlobalCompletions] = useState(0);
 
@@ -104,26 +144,33 @@ export default function MinigamesBox({ isMobilePortrait }) {
   }, [dailyData?.bundleCompletions]);
 
   useEffect(() => {
-    setSelectedGameData(staticGameData.find(item => item.name === selectedGame) || null);
+    setSelectedGameData(
+      staticGameData.find((item) => item.name === selectedGame) || null,
+    );
     setIsGameSelected(selectedGame !== "");
   }, [selectedGame]);
 
   useEffect(() => {
     if (allBundlesComplete && !gameData.apiSynced) {
-
       const recordCompletion = async () => {
         try {
-          const response = await fetch(import.meta.env.VITE_API_URL + "/bundle-complete", {
-            method: "POST"
-          });
+          const response = await fetch(
+            import.meta.env.VITE_API_URL + "/bundle-complete",
+            {
+              method: "POST",
+            },
+          );
 
           if (response.ok) {
             const data = await response.json();
             setGlobalCompletions(data.newTotal);
 
-            setGameData(prev => {
+            setGameData((prev) => {
               const updated = { ...prev, apiSynced: true };
-              localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
+              localStorage.setItem(
+                "stardewdle-game-data",
+                JSON.stringify(updated),
+              );
               return updated;
             });
           }
@@ -152,20 +199,87 @@ export default function MinigamesBox({ isMobilePortrait }) {
   }, []);
 
   useEffect(() => {
-    const hasSeenHelp = localStorage.getItem(`stardewdle-hasSeenMinigame${selectedGame}Help`);
+    const hasSeenHelp = localStorage.getItem(
+      `stardewdle-hasSeenMinigame${selectedGame}Help`,
+    );
     if (!hasSeenHelp) {
       setShowHelp(true);
-      localStorage.setItem(`stardewdle-hasSeenMinigame${selectedGame}Help`, "true");
+      localStorage.setItem(
+        `stardewdle-hasSeenMinigame${selectedGame}Help`,
+        "true",
+      );
     }
   }, [selectedGame]);
 
   useEffect(() => {
-    const interval = setInterval(() => setTimeLeft(getTimeUntilMidnightUTC()), 1000);
+    const interval = setInterval(
+      () => setTimeLeft(getTimeUntilMidnightUTC()),
+      1000,
+    );
     return () => clearInterval(interval);
   }, []);
 
+  const getGameSquares = (gameName) => {
+    const guesses = gameData[gameName]?.guesses || [];
+
+    switch (gameName) {
+      case "food": {
+        const target = cooking?.foods?.[dailyData?.dailyItems?.cooking];
+        return guesses
+          .map((guess) => (guess === target?.name ? "🟩" : "🟥"))
+          .join("");
+      }
+      case "npc": {
+        const target = quotes?.[dailyData?.dailyItems?.villager?.index];
+        return guesses
+          .map((guess) => (guess === target?.name ? "🟩" : "🟥"))
+          .join("");
+      }
+      case "minerals": {
+        const target = minerals?.[dailyData?.dailyItems?.geology];
+        return guesses
+          .map((guess) => (guess === target?.name ? "🟩" : "🟥"))
+          .join("");
+      }
+      case "fish": {
+        const target = fish?.[dailyData?.dailyItems?.fish];
+        const targetName =
+          target?.name
+            ?.replace(/[^a-zA-Z\s]/g, "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase() || "";
+        return guesses
+          .map((letter) => (targetName.includes(letter) ? "🟩" : "🟥"))
+          .join("");
+      }
+      default:
+        return "";
+    }
+  };
+
+  useEffect(() => {
+    if (!showShareModal) return;
+
+    const header = allBundlesComplete
+      ? "I restored today's Community Center!"
+      : "I did not get all the Community Center bundles!";
+
+    const grid = staticGameData
+      .filter((bundle) => bundle.name !== "map")
+      .map(
+        (bundle) =>
+          `${bundle.emoji} ${bundle.label} Bundle: ${getGameSquares(bundle.name)}`,
+      )
+      .join("\n");
+
+    setShareText(
+      `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`,
+    );
+  }, [showShareModal, gameData, allBundlesComplete]);
+
   const updateGameState = (gameName, newState) => {
-    setGameData(prev => {
+    setGameData((prev) => {
       const updated = { ...prev, [gameName]: newState };
       localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
       return updated;
@@ -173,10 +287,10 @@ export default function MinigamesBox({ isMobilePortrait }) {
   };
 
   const markAnimationSeen = (gameName) => {
-    setGameData(prev => {
+    setGameData((prev) => {
       const updated = {
         ...prev,
-        [gameName]: { ...prev[gameName], animationSeen: true }
+        [gameName]: { ...prev[gameName], animationSeen: true },
       };
       localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
       return updated;
@@ -216,7 +330,9 @@ export default function MinigamesBox({ isMobilePortrait }) {
         return (
           <GeologyGame
             gameState={gameData.minerals}
-            updateGameState={(newState) => updateGameState("minerals", newState)}
+            updateGameState={(newState) =>
+              updateGameState("minerals", newState)
+            }
             isMobilePortrait={isMobilePortrait}
             isMuted={isMuted}
           />
@@ -238,11 +354,11 @@ export default function MinigamesBox({ isMobilePortrait }) {
     <div
       className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait ? "" : "mt-2"}`}
       style={{
-        backgroundImage:
-          isMobilePortrait ? "url('/images/minigames/mainBG-mobile.webp')"
-            : selectedGame === "map"
-              ? "url('/images/minigames/mainBG2.webp')"
-              : "url('/images/minigames/mainBG.webp')",
+        backgroundImage: isMobilePortrait
+          ? "url('/images/minigames/mainBG-mobile.webp')"
+          : selectedGame === "map"
+            ? "url('/images/minigames/mainBG2.webp')"
+            : "url('/images/minigames/mainBG.webp')",
         backgroundSize: "100% 100%",
         width: isMobilePortrait ? "940px" : "1440px",
         height: isMobilePortrait ? "1500px" : "810px",
@@ -255,19 +371,16 @@ export default function MinigamesBox({ isMobilePortrait }) {
       </h2>
 
       {allBundlesComplete && !isGameSelected && (
-        <div className="absolute top-1/2 md:top-[54%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 bg-[url('/images/minigames/innerBG.webp')] border-4 border-main p-4 bg-opacity-0 w-1/2 md:w-1/3">
-          <span className="text-3xl text-correct">
+        <div className="absolute top-1/2 md:top-[54%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-1/2 md:w-1/3 gap-2">
+          <span className="text-4xl text-correct text-nowrap bg-[url('/images/name-banner.webp')] flex justify-center items-center bg-contain bg-no-repeat bg-center w-full h-[80px]">
             Community Center Restored!
           </span>
-          <GiftIcon />
-
-          <span className="text-3xl text-main ">
-            Total Restorations Today: {globalCompletions}
-          </span>
-
-          <span className="text-3xl text-main ">
-            Time until new bundles: {timeLeft.hours}h{" "} {timeLeft.minutes}m {timeLeft.seconds}s
-          </span>
+          <GiftIcon
+            isMuted={isMuted}
+            onClick={() => {
+              setShowShareModal(true);
+            }}
+          />
         </div>
       )}
 
@@ -275,7 +388,9 @@ export default function MinigamesBox({ isMobilePortrait }) {
         <div
           className={`relative bg-no-repeat bg-center ${isMobilePortrait ? "mt-[26px] ml-[120px]" : "mt-[20px] ml-[104px]"}`}
           style={{
-            backgroundImage: isMobilePortrait ? "url('/images/minigames/innerBG-mobile.webp')" : "url('/images/minigames/innerBG.webp')",
+            backgroundImage: isMobilePortrait
+              ? "url('/images/minigames/innerBG-mobile.webp')"
+              : "url('/images/minigames/innerBG.webp')",
             backgroundSize: "100% 100%",
             width: isMobilePortrait ? "700px" : "1232px",
             height: isMobilePortrait ? "1266px" : "579px",
@@ -304,8 +419,12 @@ export default function MinigamesBox({ isMobilePortrait }) {
               variant={bundle.bundleNum}
               label={bundle.label}
               onClick={() => {
-                staticGameData.map(b => {
-                  if (gameData[b.name].complete && !gameData[b.name].animationSeen) markAnimationSeen(b.name);
+                staticGameData.map((b) => {
+                  if (
+                    gameData[b.name].complete &&
+                    !gameData[b.name].animationSeen
+                  )
+                    markAnimationSeen(b.name);
                 });
                 setSelectedGame(bundle.name);
               }}
@@ -361,13 +480,23 @@ export default function MinigamesBox({ isMobilePortrait }) {
         />
       </div>
       {showUpdates && (
-        <UpdatesModal
-          isMuted={isMuted}
-          onClose={() => setShowUpdates(false)}
-        />
+        <UpdatesModal isMuted={isMuted} onClose={() => setShowUpdates(false)} />
       )}
       {showHelp && (
-        <HelpModal isMuted={isMuted} onClose={() => setShowHelp(false)} selectedGame={selectedGame}/>
+        <HelpModal
+          isMuted={isMuted}
+          onClose={() => setShowHelp(false)}
+          selectedGame={selectedGame}
+        />
+      )}
+      {showShareModal && (
+        <MinigamesShareModal
+          shareText={shareText}
+          timeLeft={timeLeft}
+          totalCompletions={globalCompletions}
+          onClose={() => setShowShareModal(false)}
+          isMuted={isMuted}
+        />
       )}
     </div>
   );
