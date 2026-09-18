@@ -73,11 +73,11 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
               className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
             />
           </div>
-          <div className="flex flex-col justify-center items-center bg-[url('/images/game/guesses.webp')] bg-no-repeat p-8 md:p-4 bg-contain bg-center aspect-[5/3] max-w-full">
+          <div className="flex flex-col justify-center items-center bg-[url('/images/game/guesses.webp')] bg-no-repeat p-8 md:p-4 bg-contain bg-center aspect-[5/3] w-[95%]">
             <h3 className="text-5xl text-main pb-8 md:pb-4">
               Ingredients Needed:
             </h3>
-            <div className={`flex gap-24 md:gap-8 pt-8 pb-20 md:pt-0 md:pb-0 px-4 overflow-x-auto md:overflow-visible w-full md:justify-center items-center ${scrollbarStyles}`}>
+            <div className={`flex gap-24 md:gap-8 pt-8 pb-20 md:pt-0 md:pb-0 px-4 overflow-x-auto md:overflow-visible w-full justify-center items-center ${scrollbarStyles}`}>
               {Object.entries(targetFood.ingredients).map(
                 ([ingName, count]) => {
                   const ingredientIndex = masterIngredientList.indexOf(ingName);
@@ -103,7 +103,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                         />
                       </div>
 
-                      <div className="absolute top-20 md:-bottom-6 text-4xl md:text-xl font-medium text-main text-center leading-none">
+                      <div className="absolute top-[116px] md:top-20 text-4xl md:text-xl font-medium text-main text-center leading-none w-[180px] md:w-full">
                         {count}x {formatName(ingName)}
                       </div>
                     </div>

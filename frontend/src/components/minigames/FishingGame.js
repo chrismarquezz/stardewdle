@@ -81,16 +81,16 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                 className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
                             />
                         </div>
-                        <div className="flex w-40 h-40 items-center justify-center bg-[url('/images/minigames/fishCloud.webp')] bg-contain bg-center bg-no-repeat">
-                            <div className="group mt-4 flex w-28 h-28 items-center justify-center bg-[url('/images/minigames/fishFrame.webp')] bg-contain bg-center bg-no-repeat">
+                        <div className="flex w-60 h-60 md:w-40 md:h-40 items-center justify-center bg-[url('/images/minigames/fishCloud.webp')] bg-contain bg-center bg-no-repeat">
+                            <div className="group mt-6 md:mt-4 flex w-[168px] h-[168px] md:w-28 md:h-28 items-center justify-center bg-[url('/images/minigames/fishFrame.webp')] bg-contain bg-center bg-no-repeat">
                                 {gameState.complete || gameState.hintUsed ? (
-                                    <div className="w-20 h-20 flex justify-center items-center overflow-hidden">
+                                    <div className="w-[120px] h-[120px] md:w-20 md:h-20 flex justify-center items-center overflow-hidden">
                                         <div
                                             style={{
                                                 ...getSpriteStyle("fish", targetFish.index, 0),
                                                 filter: gameState.complete || gameState.win ? 'none' : 'brightness(0)'
                                             }}
-                                            className="scale-100 transition-all duration-300"
+                                            className="scale-[150%] md:scale-[100%] transition-all duration-300"
                                         />
                                     </div>
                                 ) : (
@@ -98,13 +98,12 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                         onClick={() => updateGameState({ ...gameState, hintUsed: true })}
                                         className="text-main text-3xl font-bold text-center w-full h-full clickable flex justify-center items-center"
                                     >
-                                        <div className="absolute bg-white/50 mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-auto w-28 h-28" />
+                                        <div className="absolute bg-white/50 mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-auto w-[168px] h-[168px] md:w-28 md:h-28" />
                                         Hint
                                     </button>
                                 )}
                             </div>
                         </div>
-
                     </div>
                     {isMobilePortrait &&
                         <div className="flex flex-col gap-4 h-full w-1/4 justify-center items-center">
