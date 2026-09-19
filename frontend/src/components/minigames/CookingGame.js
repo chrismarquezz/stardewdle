@@ -85,7 +85,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                   return (
                     <div
                       key={ingName}
-                      className="relative flex flex-col justify-center items-center p-2"
+                      className="relative flex flex-col justify-center items-center p-2 md:w-1/5"
                     >
                       <div
                         className={`w-18 h-18 p-1 flex items-center justify-center`}
