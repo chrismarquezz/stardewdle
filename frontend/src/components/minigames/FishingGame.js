@@ -96,7 +96,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                 ) : (
                                     <button
                                         onClick={() => updateGameState({ ...gameState, hintUsed: true })}
-                                        className="text-main text-3xl font-bold text-center w-full h-full clickable flex justify-center items-center"
+                                        className="text-main text-5xl md:text-3xl font-bold text-center w-full h-full clickable flex justify-center items-center"
                                     >
                                         <div className="absolute bg-white/50 mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-auto w-[168px] h-[168px] md:w-28 md:h-28" />
                                         Hint
