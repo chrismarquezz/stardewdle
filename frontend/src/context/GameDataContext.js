@@ -81,7 +81,7 @@ export const GameDataProvider = ({ children }) => {
                         }
                     }
 
-                    const res = await fetch(`${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=20260906`);
+                    const res = await fetch(`${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=20260918`);
                     if (res.ok) {
                         const data = await res.json();
                         localStorage.setItem(storageKey, JSON.stringify(data));
