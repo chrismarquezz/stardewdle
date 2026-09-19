@@ -70,7 +70,7 @@ export const GameDataProvider = ({ children }) => {
 
                 const loadOrFetch = async (storageKey, fileName) => {
                     const saved = localStorage.getItem(storageKey);
-                    if (saved) {
+                    if (saved && storageKey !== "stardewdle-cooking") {
                         try {
                             const parsed = JSON.parse(saved);
                             if (parsed && (parsed.length > 0 || Object.keys(parsed).length > 0)) {
