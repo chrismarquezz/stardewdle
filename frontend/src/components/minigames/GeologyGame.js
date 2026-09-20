@@ -35,11 +35,11 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
         if (gameState.complete) return 1;
 
         switch (guessesMade) {
-            case 0: return 24;
-            case 1: return 12;
-            case 2: return 8;
-            case 3: return 6;
-            case 4: return 4;
+            case 0: return 12;
+            case 1: return 8;
+            case 2: return 6;
+            case 3: return 4;
+            case 4: return 3;
             case 5: return 2;
             default: return 1;
         }
