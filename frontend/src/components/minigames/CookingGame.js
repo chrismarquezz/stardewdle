@@ -77,7 +77,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
             <h3 className="text-5xl text-main pb-8 md:pb-4">
               Ingredients Needed:
             </h3>
-            <div className={`flex gap-24 md:gap-8 pt-8 pb-20 md:pt-0 md:pb-0 px-4 overflow-x-auto md:overflow-visible w-full justify-center items-center ${scrollbarStyles}`}>
+            <div className={`flex gap-24 md:gap-8 pt-8 pb-[100px] md:pt-0 md:pb-0 px-8 md:px-4 overflow-x-auto md:overflow-visible w-full md:justify-center items-center ${scrollbarStyles}`}>
               {Object.entries(targetFood.ingredients).map(
                 ([ingName, count]) => {
                   const ingredientIndex = masterIngredientList.indexOf(ingName);
