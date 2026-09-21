@@ -77,7 +77,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
             <h3 className="text-5xl text-main pb-8 md:pb-4">
               Ingredients Needed:
             </h3>
-            <div className={`flex gap-24 md:gap-8 pt-8 pb-[100px] md:pt-0 md:pb-0 px-8 md:px-4 overflow-x-auto md:overflow-visible w-full md:justify-center items-center ${scrollbarStyles}`}>
+            <div className={`flex flex-row gap-24 md:gap-8 pt-8 pb-[100px] md:pt-0 md:pb-0 px-12 md:px-4 overflow-x-auto md:overflow-visible min-w-[25%] md:min-w-full max-w-full md:justify-center items-center ${scrollbarStyles}`}>
               {Object.entries(targetFood.ingredients).map(
                 ([ingName, count]) => {
                   const ingredientIndex = masterIngredientList.indexOf(ingName);
@@ -103,7 +103,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                         />
                       </div>
 
-                      <div className="absolute top-[116px] md:top-20 text-4xl md:text-xl font-medium text-main text-center leading-none w-[180px] md:w-full">
+                      <div className="absolute top-[116px] md:top-20 text-4xl md:text-xl font-medium text-main text-center leading-none w-[180px] md:w-[100px]">
                         {count}x {formatName(ingName)}
                       </div>
                     </div>
@@ -123,7 +123,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
           }}
         >
           <div
-            className={`flex flex-wrap gap-2 items-center justify-center max-h-[50%] max-w-[80%] md:max-w-[85%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 px-10`}
+            className={`flex flex-wrap gap-2 items-center justify-center max-h-[50%] max-w-[50%] md:max-w-[60%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 px-10`}
           >
             {gameState.guesses.map((guess, idx) => {
               const isCorrect = guess === targetFood.name;

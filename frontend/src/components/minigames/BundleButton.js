@@ -7,6 +7,7 @@ export default function BundleButton({
     onClick,
     isMuted,
     isAnimated = false,
+    isFailed = false,
     skipAnimation = false,
     onAnimationComplete,
     positionClass = "",
@@ -60,6 +61,7 @@ export default function BundleButton({
                     backgroundSize: `${256 * bundleScale}px ${112 * bundleScale}px`,
                     width: iconSize,
                     height: iconSize,
+                    filter: isFailed ? "grayscale(1)" : "none",
                     imageRendering: 'pixelated',
                 }}
             />
