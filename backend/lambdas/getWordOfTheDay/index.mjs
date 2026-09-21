@@ -44,7 +44,8 @@ export const handler = async (event) => {
         correct_date: today,
         global_total_plays: statsData.Item?.occurrences ?? 0,
         daily_items: wordData.Item.daily_items,
-        bundle_completions: wordData.Item.bundle_completions ?? 0
+        bundle_completions: wordData.Item.bundle_completions ?? 0,
+        bundle_successes: wordData.Item.bundle_successes ?? 0
       }),
     };
   } catch (err) {

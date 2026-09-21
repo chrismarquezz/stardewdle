@@ -1,11 +1,13 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
 import { playSound } from "../../utils/playSound";
+import { scrollbarStyles } from "../../utils/scrollbarStyles";
 
 export default function MinigamesShareModal({
   shareText,
   timeLeft,
-  totalCompletions,
+  totalSuccesses,
+  totalAttempts,
   onClose,
   isMuted,
   scaleFactor,
@@ -60,10 +62,10 @@ export default function MinigamesShareModal({
             </p>
 
             <p className="text-center text-main text-md md:text-3xl mb-2">
-              {totalCompletions ?? 0} people have restored the Community Center today!
+              {totalSuccesses ?? 0} out of {totalAttempts ?? 0} people have restored the Community Center today!
             </p>
 
-            <p className="bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full">
+            <p className={`bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full ${scrollbarStyles}`}>
               {shareText}
             </p>
 

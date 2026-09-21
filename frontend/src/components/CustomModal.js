@@ -23,7 +23,7 @@ export default function CustomModal({
       onClick={playCloseSound}
     >
       <div
-        className={`relative max-w-[95vw] md:max-w-[50vw] ${maxHeightClass} flex flex-col`}
+        className={`relative max-w-[95vw] md:max-w-[70vw] lg:max-w-[50vw] ${maxHeightClass} flex flex-col`}
         style={{
           transform: `scale(${scaleFactor})`,
           transformOrigin: "center",

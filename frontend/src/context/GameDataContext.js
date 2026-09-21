@@ -81,7 +81,7 @@ export const GameDataProvider = ({ children }) => {
                         }
                     }
 
-                    const res = await fetch(`${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=20260918`);
+                    const res = await fetch(`${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=20260921`);
                     if (res.ok) {
                         const data = await res.json();
                         localStorage.setItem(storageKey, JSON.stringify(data));
@@ -125,7 +125,8 @@ export const GameDataProvider = ({ children }) => {
                             correctGuesses: lambdaData.correct_guesses,
                             totalGuesses: lambdaData.total_guesses
                         },
-                        bundleCompletions: lambdaData.bundle_completions ?? 0
+                        bundleCompletions: lambdaData.bundle_completions ?? 0,
+                        bundleSuccesses: lambdaData.bundle_successes ?? 0
                     });
                 }
 
