@@ -146,7 +146,8 @@ export const handler = async () => {
             quotes: selectedQuoteIndices
           }
         },
-        bundle_completions: 0
+        bundle_completions: 0,
+        bundle_successes: 0
       },
     }));
 

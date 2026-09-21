@@ -63,6 +63,8 @@ const staticGameData = [
   },
 ];
 
+const bundleGameKeys = staticGameData.map((bundle) => bundle.name);
+
 export default function MinigamesBox({ isMobilePortrait }) {
   const {
     isReady,
@@ -130,18 +132,20 @@ export default function MinigamesBox({ isMobilePortrait }) {
     return saved ? JSON.parse(saved) : defaultGameData;
   });
 
-  const allBundlesComplete = [
-    "food" /*, 'map'*/,
-    "npc",
-    "minerals",
-    "fish",
-  ].every((key) => gameData[key]?.complete);
+  const allBundlesFinished = bundleGameKeys.every((key) => gameData[key]?.complete);
+  const allBundlesSuccessful = bundleGameKeys.every((key) => gameData[key]?.win);
 
-  const [globalCompletions, setGlobalCompletions] = useState(0);
+  const [globalBundleStats, setGlobalBundleStats] = useState({
+    attempts: 0,
+    successes: 0,
+  });
 
   useEffect(() => {
-    setGlobalCompletions(dailyData?.bundleCompletions ?? 0);
-  }, [dailyData?.bundleCompletions]);
+    setGlobalBundleStats({
+      attempts: dailyData?.bundleCompletions ?? 0,
+      successes: dailyData?.bundleSuccesses ?? 0,
+    });
+  }, [dailyData?.bundleCompletions, dailyData?.bundleSuccesses]);
 
   useEffect(() => {
     setSelectedGameData(
@@ -151,19 +155,24 @@ export default function MinigamesBox({ isMobilePortrait }) {
   }, [selectedGame]);
 
   useEffect(() => {
-    if (allBundlesComplete && !gameData.apiSynced) {
+    if (allBundlesFinished && !gameData.apiSynced) {
       const recordCompletion = async () => {
         try {
           const response = await fetch(
             import.meta.env.VITE_API_URL + "/bundle-complete",
             {
               method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ success: allBundlesSuccessful }),
             },
           );
 
           if (response.ok) {
             const data = await response.json();
-            setGlobalCompletions(data.newTotal);
+            setGlobalBundleStats({
+              attempts: data.newTotal,
+              successes: data.newSuccesses ?? 0,
+            });
 
             setGameData((prev) => {
               const updated = { ...prev, apiSynced: true };
@@ -181,7 +190,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
       recordCompletion();
     }
-  }, [allBundlesComplete, gameData.apiSynced]);
+  }, [allBundlesFinished, allBundlesSuccessful, gameData.apiSynced]);
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -261,7 +270,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
   useEffect(() => {
     if (!showShareModal) return;
 
-    const header = allBundlesComplete
+    const header = allBundlesSuccessful
       ? "I restored today's Community Center!"
       : "I did not get all the Community Center bundles!";
 
@@ -276,7 +285,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
     setShareText(
       `${todaysDate()}\n${header}\n${grid}\nPlay at: https://stardewdle.com/`,
     );
-  }, [showShareModal, gameData, allBundlesComplete]);
+  }, [showShareModal, gameData, allBundlesSuccessful]);
 
   const updateGameState = (gameName, newState) => {
     setGameData((prev) => {
@@ -370,17 +379,30 @@ export default function MinigamesBox({ isMobilePortrait }) {
           : "Minigame Bundles"}
       </h2>
 
-      {allBundlesComplete && !isGameSelected && (
+      {allBundlesFinished && !isGameSelected && (
         <div className="absolute top-1/2 md:top-[54%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-1/2 md:w-1/3 gap-2">
-          <span className="text-4xl text-correct text-nowrap bg-[url('/images/name-banner.webp')] flex justify-center items-center bg-contain bg-no-repeat bg-center w-full h-[80px]">
-            Community Center Restored!
+          <span className={`text-4xl ${allBundlesSuccessful ? "text-correct" : "text-wrong"} text-nowrap bg-[url('/images/name-banner.webp')] flex justify-center items-center bg-contain bg-no-repeat bg-center w-full h-[80px]`}>
+            {allBundlesSuccessful ? "Community Center Restored!" : "Bundles not completed!"}
           </span>
-          <GiftIcon
-            isMuted={isMuted}
-            onClick={() => {
-              setShowShareModal(true);
-            }}
-          />
+          {allBundlesSuccessful ? (
+            <GiftIcon
+              isMuted={isMuted}
+              onClick={() => {
+                setShowShareModal(true);
+              }}
+            />
+          ) : (
+            <CustomButton
+              variant="icon"
+              icon="/images/minigames/failButton.webp"
+              label="Share"
+              isMuted={isMuted}
+              onClick={() => {
+                setShowShareModal(true);
+              }}
+              soundPath="/sounds/modal.mp3"
+            />
+          )}
         </div>
       )}
 
@@ -419,18 +441,16 @@ export default function MinigamesBox({ isMobilePortrait }) {
               variant={bundle.bundleNum}
               label={bundle.label}
               onClick={() => {
-                staticGameData.map((b) => {
-                  if (
-                    gameData[b.name].complete &&
-                    !gameData[b.name].animationSeen
-                  )
+                staticGameData.forEach((b) => {
+                  if (gameData[b.name].win && !gameData[b.name].animationSeen)
                     markAnimationSeen(b.name);
                 });
                 setSelectedGame(bundle.name);
               }}
               isMuted={isMuted}
               positionClass={bundle.pos}
-              isAnimated={gameData[bundle.name].complete}
+              isAnimated={gameData[bundle.name].complete && gameData[bundle.name].win}
+              isFailed={gameData[bundle.name].complete && !gameData[bundle.name].win}
               skipAnimation={gameData[bundle.name].animationSeen}
               onAnimationComplete={() => markAnimationSeen(bundle.name)}
             />
@@ -493,7 +513,8 @@ export default function MinigamesBox({ isMobilePortrait }) {
         <MinigamesShareModal
           shareText={shareText}
           timeLeft={timeLeft}
-          totalCompletions={globalCompletions}
+          totalSuccesses={globalBundleStats.successes}
+          totalAttempts={globalBundleStats.attempts}
           onClose={() => setShowShareModal(false)}
           isMuted={isMuted}
         />
