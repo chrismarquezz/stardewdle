@@ -21,11 +21,11 @@ function checkConstraints(constraints, crop, hints) {
         isMatch = true;
       else {
         isMatch = constraintValues.some(constraintArr => {
-          if (Array.isArray(constraintArr))
-            return constraintArr.every(season => cropValue.includes(season))
-          return constraintArr === cropValue[0]
-        }
-        );
+          if (Array.isArray(constraintArr)) {
+            return constraintArr.every(season => cropValue.includes(season));
+          }
+          return constraintArr === cropValue[0];
+        });
       }
     } else if (key === "growth_time" || key === "base_price") {
       isMatch = cropValue <= constraintValues[0] || cropValue >= constraintValues[1];

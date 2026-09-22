@@ -205,17 +205,13 @@ export default function GameBox({ isMobilePortrait }) {
                   ? key === "regrows"
                     ? !correctCrop["regrows"]
                     : key === "type"
-                      ? ["fruit", "vegetable", "flower", "forage"].filter(
-                        (type) => type !== crop["type"]
-                      )
+                      ? ["fruit", "vegetable", "flower", "forage"].filter((type) => type !== crop["type"])
                       : key === "season" && crop["season"].length === 1
-                        ? [["spring"], ["summer"], ["fall"], ["winter"]].filter(
-                          (season) => season[0] !== crop["season"][0]
-                        )
+                        ? [["spring"], ["summer"], ["fall"], ["winter"]].filter((season) => season[0] !== crop["season"][0])
                         : null
                   : crop[key];
           if (newValue === null) continue;
-          if (Array.isArray(newValue) && newValue.length === 3) {
+          if (Array.isArray(newValue) && newValue.length === 3 && key !== "season") {
             newValue.forEach((val) => {
               if (!prevArray.includes(val)) {
                 newConstraints[key] = [...newConstraints[key], val];
@@ -383,7 +379,7 @@ export default function GameBox({ isMobilePortrait }) {
                 {selectedCrop ? formatName(selectedCrop.name) : ""}
               </p>
             </div>
-            {/*JSON.stringify(constraints)*/}
+            {JSON.stringify(constraints)}
             {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
                 {(guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
@@ -455,7 +451,7 @@ export default function GameBox({ isMobilePortrait }) {
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
         />
-        
+
         <CustomButton
           variant="icon"
           icon={disableMode ? "/images/pencil.webp" : "/images/pencil-off.webp"}
