@@ -3,6 +3,7 @@ import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
 import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 import CookingGame from "./CookingGame";
 import FishingGame from "./FishingGame";
@@ -65,6 +66,26 @@ const staticGameData = [
 
 const bundleGameKeys = staticGameData.map((bundle) => bundle.name);
 
+const HELP_SEEN_KEY = "stardewdle-minigameHelpSeen";
+
+// Key used for the bundle-map help shown before any minigame is selected.
+const BASE_HELP = "base";
+
+// Seeds the dictionary from the old per-game `stardewdle-hasSeenMinigame<name>Help` keys.
+function migrateLegacyHelpFlags() {
+  const seen = {};
+
+  [...bundleGameKeys, ""].forEach((name) => {
+    const legacyKey = `stardewdle-hasSeenMinigame${name}Help`;
+    if (localStorage.getItem(legacyKey)) {
+      seen[name || BASE_HELP] = true;
+      localStorage.removeItem(legacyKey);
+    }
+  });
+
+  return seen;
+}
+
 export default function MinigamesBox({ isMobilePortrait }) {
   const {
     isReady,
@@ -100,29 +121,25 @@ export default function MinigamesBox({ isMobilePortrait }) {
         win: false,
         guesses: [],
         animationSeen: false,
-        helpSeen: false,
       },
-      //map: { complete: true, win: false, guesses: [], animationSeen: false, helpSeen: false },
+      //map: { complete: true, win: false, guesses: [], animationSeen: false },
       npc: {
         complete: false,
         win: false,
         guesses: [],
         animationSeen: false,
-        helpSeen: false,
       },
       minerals: {
         complete: false,
         win: false,
         guesses: [],
         animationSeen: false,
-        helpSeen: false,
       },
       fish: {
         complete: false,
         win: false,
         guesses: [],
         animationSeen: false,
-        helpSeen: false,
       },
     };
 
@@ -207,17 +224,18 @@ export default function MinigamesBox({ isMobilePortrait }) {
     };
   }, []);
 
+  const [helpSeen, setHelpSeen] = useLocalStorage(
+    HELP_SEEN_KEY,
+    migrateLegacyHelpFlags,
+    (parsed) =>
+      parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null
+  );
+
   useEffect(() => {
-    const hasSeenHelp = localStorage.getItem(
-      `stardewdle-hasSeenMinigame${selectedGame}Help`,
-    );
-    if (!hasSeenHelp) {
-      setShowHelp(true);
-      localStorage.setItem(
-        `stardewdle-hasSeenMinigame${selectedGame}Help`,
-        "true",
-      );
-    }
+    const helpKey = selectedGame || BASE_HELP;
+    if (helpSeen[helpKey]) return;
+    setShowHelp(true);
+    setHelpSeen((prev) => ({ ...prev, [helpKey]: true }));
   }, [selectedGame]);
 
   useEffect(() => {
