@@ -96,12 +96,6 @@ export default function GameBox({ isMobilePortrait }) {
     () => ({ growth_time: false, base_price: false, regrows: false, type: false, season: false })
   );
 
-  const [constraints, setConstraints] = useLocalStorage(
-    isNewDay ? null : "stardewdle-constraints",
-    () => ({ name: [], growth_time: [0, 99], base_price: [0, 9999], regrows: [], type: [], season: [] }),
-    (parsed) => (parsed?.growth_time?.length === 2 ? parsed : null)
-  );
-
   const [manualDisables, setManualDisables] = useLocalStorage(
     isNewDay ? null : "stardewdle-manualDisables",
     () => []
@@ -182,57 +176,6 @@ export default function GameBox({ isMobilePortrait }) {
     setShareText(`${todaysDate()}\n${header}\n${streak}${grid}\nPlay at: https://stardewdle.com/`);
   }, [showShareModal, guesses, correctCrop, storedStats.streak]);
 
-  const addConstraints = (crop) => {
-    if (!correctCrop) return;
-    setConstraints((prevConstraints) => {
-      const newConstraints = { ...prevConstraints };
-      for (const key in newConstraints) {
-        if (Object.hasOwn(crop, key)) {
-          const prevArray = prevConstraints[key];
-          if (key === "growth_time" || key === "base_price") {
-            newConstraints[key] = crop[key] === correctCrop[key]
-              ? [correctCrop[key] - 1, correctCrop[key] + 1]
-              : [correctCrop[key] > crop[key] && crop[key] > prevArray[0] ? crop[key] : prevArray[0],
-              correctCrop[key] < crop[key] && crop[key] < prevArray[1] ? crop[key] : prevArray[1]]
-            continue;
-          }
-          const newValue =
-            key === "season" && (correctCrop["season"][0] === "all" || (correctCrop["season"].length > 1 && correctCrop["season"].includes(crop["season"][0])))
-              ? null
-              : key === "season" && crop["season"][0] === "all"
-                ? ["spring", "summer", "fall", "winter"]
-                : JSON.stringify(crop[key]) === JSON.stringify(correctCrop[key])
-                  ? key === "regrows"
-                    ? !correctCrop["regrows"]
-                    : key === "type"
-                      ? ["fruit", "vegetable", "flower", "forage"].filter(
-                        (type) => type !== crop["type"]
-                      )
-                      : key === "season" && crop["season"].length === 1
-                        ? [["spring"], ["summer"], ["fall"], ["winter"]].filter(
-                          (season) => season[0] !== crop["season"][0]
-                        )
-                        : null
-                  : crop[key];
-          if (newValue === null) continue;
-          if (Array.isArray(newValue) && newValue.length === 3) {
-            newValue.forEach((val) => {
-              if (!prevArray.includes(val)) {
-                newConstraints[key] = [...newConstraints[key], val];
-              }
-            });
-          } else {
-            if (!prevArray.includes(newValue)) {
-              newConstraints[key] = [...prevArray, newValue];
-            }
-          }
-        }
-      }
-
-      return newConstraints;
-    });
-  };
-
   const handleSubmit = async () => {
     if (!selectedCrop || guesses.length >= 6 || gameOver || !correctCrop) return;
 
@@ -248,7 +191,6 @@ export default function GameBox({ isMobilePortrait }) {
 
     const updatedGuesses = [...guesses, { crop: selectedCrop }];
     setGuesses(updatedGuesses);
-    addConstraints(selectedCrop);
 
     if (!gameOver && updatedGuesses.length < 6) setSelectedCrop(null);
 
@@ -340,8 +282,9 @@ export default function GameBox({ isMobilePortrait }) {
           crops={crops}
           isMuted={!gameOver && guesses.length < 6 ? isMuted : true}
           isMobilePortrait={isMobilePortrait}
-          constraints={constraints}
           hints={hints}
+          guesses={guesses}
+          correctCrop={correctCrop}
           disableMode={!gameOver && guesses.length < 6 ? disableMode : false}
           manualDisables={manualDisables}
           onToggleDisable={
@@ -383,7 +326,6 @@ export default function GameBox({ isMobilePortrait }) {
                 {selectedCrop ? formatName(selectedCrop.name) : ""}
               </p>
             </div>
-            {/*JSON.stringify(constraints)*/}
             {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
                 {(guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
@@ -455,7 +397,7 @@ export default function GameBox({ isMobilePortrait }) {
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
         />
-        
+
         <CustomButton
           variant="icon"
           icon={disableMode ? "/images/pencil.webp" : "/images/pencil-off.webp"}

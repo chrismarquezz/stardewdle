@@ -51,6 +51,7 @@ export const GameDataProvider = ({ children }) => {
                         "isMuted",
                         "stardewdle-hasSeenHelpModal",
                         "stardewdle-hasSeenCollectionsModal",
+                        "stardewdle-minigameHelpSeen",
                         "stardewdle-lastUpdateSeen",
                         "stardewdle-crops",
                         "stardewdle-cooking",
@@ -60,8 +61,9 @@ export const GameDataProvider = ({ children }) => {
                     ];
 
                     Object.keys(localStorage).forEach((key) => {
-                        const isMinigameHelpFlag = key.startsWith("stardewdle-hasSeenMinigame");
-                        if (!keysToKeep.includes(key) && !isMinigameHelpFlag) {
+                        // Legacy per-minigame help flags are kept until MinigamesBox migrates them.
+                        const isLegacyMinigameHelpFlag = key.startsWith("stardewdle-hasSeenMinigame");
+                        if (!keysToKeep.includes(key) && !isLegacyMinigameHelpFlag) {
                             localStorage.removeItem(key);
                         }
                     });
