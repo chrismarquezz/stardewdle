@@ -11,6 +11,7 @@ import Game from "./pages/Game";
 import Collections from "./pages/Collections";
 import Count from "./pages/Count";
 import Minigames from "./pages/Minigames";
+import ResetGuess from "./pages/ResetGuess";
 
 export default function App() {
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/collections" element={<Collections />} />
             <Route path="/count" element={<Count />} />
             <Route path="/minigames" element={<Minigames />} />
+            <Route path="/reset-guess" element={<ResetGuess />} />
           </Routes>
         </Router>
       </GameDataProvider>

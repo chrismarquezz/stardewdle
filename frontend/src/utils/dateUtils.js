@@ -3,6 +3,10 @@ export function todaysDate() {
     return `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`;
 }
 
+export function utcDateString() {
+    return new Date().toISOString().split("T")[0];
+}
+
 export function getTimeUntilMidnightUTC() {
     const now = new Date();
     const utcNow = new Date(now.toUTCString());

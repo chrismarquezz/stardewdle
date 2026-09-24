@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
+import { todaysDate, getTimeUntilMidnightUTC, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
+import { isFullCropMatch, seasonSet } from "../../utils/cropCompare";
 
 import CropGrid from "./CropGrid";
 import GuessGrid from "./GuessGrid";
@@ -20,6 +22,8 @@ export default function GameBox({ isMobilePortrait }) {
     crops,
     dailyData,
     isReady,
+    loadError,
+    reloadGameData,
     showUpdates,
     setShowUpdates,
     shouldPulse,
@@ -30,21 +34,20 @@ export default function GameBox({ isMobilePortrait }) {
 
   const correctCrop = dailyData?.correctCrop;
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  const isNewDay = localStorage.getItem("stardewdle-date") !== todayStr;
+  const todayStr = utcDateString();
 
   const [selectedCrop, setSelectedCrop] = useLocalStorage(
-    isNewDay ? null : "stardewdle-selectedCrop",
+    "stardewdle-selectedCrop",
     () => null
   );
 
   const [guesses, setGuesses] = useLocalStorage(
-    isNewDay ? null : "stardewdle-guesses",
+    "stardewdle-guesses",
     () => []
   );
 
   const [gameOver, setGameOver] = useLocalStorage(
-    isNewDay ? null : "stardewdle-gameOver",
+    "stardewdle-gameOver",
     () => false
   );
 
@@ -92,16 +95,16 @@ export default function GameBox({ isMobilePortrait }) {
   }, [selectedCrop]);
 
   const [hints, setHints] = useLocalStorage(
-    isNewDay ? null : "stardewdle-hints",
+    "stardewdle-hints",
     () => ({ growth_time: false, base_price: false, regrows: false, type: false, season: false })
   );
 
   const [manualDisables, setManualDisables] = useLocalStorage(
-    isNewDay ? null : "stardewdle-manualDisables",
+    "stardewdle-manualDisables",
     () => []
   );
   const [disableMode, setDisableMode] = useLocalStorage(
-    isNewDay ? null : "stardewdle-disableMode",
+    "stardewdle-disableMode",
     () => false
   );
 
@@ -127,6 +130,8 @@ export default function GameBox({ isMobilePortrait }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useMidnightRefresh();
 
   useEffect(() => {
     const hasSeenHelpModal = localStorage.getItem(
@@ -157,14 +162,15 @@ export default function GameBox({ isMobilePortrait }) {
 
     function getColor(key, guessValue, correctValue) {
       if (key === "season") {
-        const g = guessValue[0] === "all" ? ["winter", "spring", "summer", "fall"] : guessValue;
-        const c = correctValue[0] === "all" ? ["winter", "spring", "summer", "fall"] : correctValue;
-        return (g.length === c.length && g.every((s) => c.includes(s))) ? "🟩" : g.some((s) => c.includes(s)) ? "🟨" : "🟥";
+        const g = seasonSet(guessValue);
+        const c = seasonSet(correctValue);
+        if (g.size === c.size && [...g].every((s) => c.has(s))) return "🟩";
+        return [...g].some((s) => c.has(s)) ? "🟨" : "🟥";
       }
       return guessValue === correctValue ? "🟩" : "🟥";
     }
 
-    const win = guesses[guesses.length - 1]?.crop?.name === correctCrop.name;
+    const win = isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop);
     const header = win ? "I solved today's Stardewdle!" : "I couldn't solve today's Stardewdle.";
     const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} streak!\n` : ""
     const grid = guesses.map((row) =>
@@ -179,13 +185,18 @@ export default function GameBox({ isMobilePortrait }) {
   const handleSubmit = async () => {
     if (!selectedCrop || guesses.length >= 6 || gameOver || !correctCrop) return;
 
-    const currentDateStr = new Date().toISOString().split("T")[0];
-    if (
-      localStorage.getItem("stardewdle-date") !== currentDateStr ||
-      correctCrop.date !== currentDateStr
-    ) {
-      console.log("Date mismatch detected on submit, refreshing...");
+    const currentDateStr = utcDateString();
+
+    // A stale stored date means the day rolled over, which needs the full new-day storage reset.
+    if (localStorage.getItem("stardewdle-date") !== currentDateStr) {
+      console.log("Day rolled over on submit, refreshing...");
       window.location.reload();
+      return;
+    }
+
+    if (correctCrop.date !== currentDateStr) {
+      console.log("Stale daily crop detected on submit, reloading game data...");
+      reloadGameData();
       return;
     }
 
@@ -194,55 +205,48 @@ export default function GameBox({ isMobilePortrait }) {
 
     if (!gameOver && updatedGuesses.length < 6) setSelectedCrop(null);
 
-    const isFullMatch = ["growth_time", "base_price", "regrows", "type", "season"].every((key) => {
-      const guessVal = selectedCrop?.[key];
-      const answerVal = correctCrop?.[key];
-      if (key === "season") {
-        const g = Array.isArray(guessVal) ? guessVal : [];
-        const a = Array.isArray(answerVal) ? answerVal : [];
-        return g.length === a.length && g.every((s) => a.includes(s));
-      }
-      return guessVal === answerVal;
-    });
+    const isWin = isFullCropMatch(selectedCrop, correctCrop);
 
-    if (!isFullMatch && updatedGuesses.length < 6) {
+    if (!isWin && updatedGuesses.length < 6) {
       if (!isMuted) playSound("/sounds/sell.mp3");
       return;
     }
 
+    const guessCount = isWin ? updatedGuesses.length : 0;
+
+    // Snapshot the pre-game stats so /reset-guess can undo today's result.
+    localStorage.setItem(
+      "stardewdle-statsBackup",
+      JSON.stringify({ date: currentDateStr, stats: storedStats })
+    );
+
+    setStoredStats((prev) => ({
+      ...prev,
+      lastPlayedDate: currentDateStr,
+      streak: isWin ? prev.streak + 1 : 0,
+      total: prev.total + 1,
+      accuracy: { ...prev.accuracy, [guessCount]: prev.accuracy[guessCount] + 1 },
+    }));
+
+    if (!isMuted) playSound(isWin ? "/sounds/reward.mp3" : "/sounds/lose.mp3");
+
+    // Ending the game must not depend on the reporting call succeeding.
+    setGameOver(true);
+    setShowShareModal(true);
+
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + "/guess", {
+      await fetch(import.meta.env.VITE_API_URL + "/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ guess: selectedCrop.name, guessNum: updatedGuesses.length }),
       });
-
-      const isWin = isFullMatch;
-      const guessCount = isWin ? updatedGuesses.length : 0;
-      const todayStr = new Date().toISOString().split("T")[0];
-
-      setStoredStats((prev) => {
-        return {
-          ...prev,
-          lastPlayedDate: todayStr,
-          streak: isWin ? prev.streak + 1 : 0,
-          total: prev.total + 1,
-          accuracy: { ...prev.accuracy, [guessCount]: prev.accuracy[guessCount] + 1 },
-        };
-      });
-
-      if (!isMuted) playSound(isWin ? "/sounds/reward.mp3" : "/sounds/lose.mp3");
-
-      setGameOver(true);
-      setShowShareModal(true);
-
     } catch (error) {
       console.error("Error submitting guess:", error);
     }
   };
 
   if (!isReady || !correctCrop || crops.length === 0) {
-    return <CropLoader />;
+    return <CropLoader error={loadError} onRetry={() => reloadGameData()} />;
   }
 
   const spriteStyle = {
@@ -328,7 +332,7 @@ export default function GameBox({ isMobilePortrait }) {
             </div>
             {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
-                {(guesses[5] ? guesses[5].crop.name === correctCrop.name : true) ? (
+                {isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop) ? (
                   <p className="text-correct text-5xl font-bold whitespace-nowrap">
                     You guessed it!
                   </p>
