@@ -15,7 +15,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
   const [cropCount, setCropCount] = useState([]);
 
   const { isMuted, toggleMute } = useSound();
-  const { crops, isReady } = useGameData();
+  const { crops, isReady, loadError, reloadGameData } = useGameData();
   const [showCollectionsModal, setShowCollectionsModal] = useState(false);
 
   const {
@@ -45,7 +45,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
   }, []);
 
   if (!isReady || crops.length === 0) {
-    return <CropLoader />;
+    return <CropLoader error={loadError} onRetry={() => reloadGameData()} />;
   }
 
   const x_pos = parseInt(selectedCrop?.crop_index) / 71 * 100;

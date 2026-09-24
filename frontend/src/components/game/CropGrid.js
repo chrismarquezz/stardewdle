@@ -1,12 +1,7 @@
 import CropCard from "./CropCard";
+import { seasonSet } from "../../utils/cropCompare";
 
-const SEASONS = ["spring", "summer", "fall", "winter"];
 const HINT_KEYS = ["growth_time", "base_price", "regrows", "type", "season"];
-
-function seasonSet(value) {
-  const seasons = Array.isArray(value) ? value : [value];
-  return new Set(seasons.includes("all") ? SEASONS : seasons);
-}
 
 // Mirrors the colour/arrow a guess row shows in GuessGrid for one attribute.
 function feedback(key, guessValue, answerValue) {
