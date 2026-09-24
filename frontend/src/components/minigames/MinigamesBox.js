@@ -4,6 +4,7 @@ import { useGameData } from "../../context/GameDataContext";
 import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
 
 import CookingGame from "./CookingGame";
 import FishingGame from "./FishingGame";
@@ -89,6 +90,8 @@ function migrateLegacyHelpFlags() {
 export default function MinigamesBox({ isMobilePortrait }) {
   const {
     isReady,
+    loadError,
+    reloadGameData,
     dailyData,
     cooking,
     minerals,
@@ -110,9 +113,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedGameData, setSelectedGameData] = useState(null);
   const [isGameSelected, setIsGameSelected] = useState(false);
-
-  const todayStr = new Date().toISOString().split("T")[0];
-  const isNewDay = localStorage.getItem("stardewdle-date") !== todayStr;
 
   const [gameData, setGameData] = useState(() => {
     const defaultGameData = {
@@ -142,8 +142,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
         animationSeen: false,
       },
     };
-
-    if (isNewDay) return defaultGameData;
 
     const saved = localStorage.getItem("stardewdle-game-data");
     return saved ? JSON.parse(saved) : defaultGameData;
@@ -223,6 +221,8 @@ export default function MinigamesBox({ isMobilePortrait }) {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
+
+  useMidnightRefresh();
 
   const [helpSeen, setHelpSeen] = useLocalStorage(
     HELP_SEEN_KEY,
@@ -374,7 +374,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
   };
 
   if (!isReady) {
-    return <CropLoader />;
+    return <CropLoader error={loadError} onRetry={() => reloadGameData()} />;
   }
 
   return (

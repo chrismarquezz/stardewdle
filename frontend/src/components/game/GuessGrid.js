@@ -1,12 +1,6 @@
 import { formatName } from "../../utils/formatString";
+import { ATTRIBUTE_KEYS, isFullCropMatch, seasonSet } from "../../utils/cropCompare";
 
-const ATTRIBUTE_KEYS = [
-  "growth_time",
-  "base_price",
-  "regrows",
-  "type",
-  "season",
-];
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
 
 const BOX_IMAGE_MAP = {
@@ -27,21 +21,6 @@ const W_STRETCH_MAP = {
 
 const COL_DIST = "64px 106px 106px 64px 150px 192px";
 
-function isFullMatch(crop, answer) {
-  return ATTRIBUTE_KEYS.every((key) => {
-    const guessVal = crop?.[key];
-    const answerVal = answer?.[key];
-
-    if (key === "season") {
-      const g = Array.isArray(guessVal) ? guessVal : [];
-      const a = Array.isArray(answerVal) ? answerVal : [];
-      return g.length === a.length && g.every((s) => a.includes(s));
-    }
-
-    return guessVal === answerVal;
-  });
-}
-
 function capitalize(value) {
   if (typeof value === "string") {
     return value.charAt(0).toUpperCase() + value.slice(1);
@@ -51,22 +30,8 @@ function capitalize(value) {
 
 function getColor(key, guessValue, correctValue) {
   if (key === "season") {
-    const SEASONS = new Set(["spring", "summer", "fall", "winter"]);
-
-    const normalizeToSet = (val) => {
-      if (val === "all") return SEASONS;
-      if (Array.isArray(val)) {
-        if (val.includes("all")) {
-          return SEASONS;
-        }
-        return new Set(val);
-      }
-      if (typeof val === "string") return new Set([val]);
-      return new Set();
-    };
-
-    const guessedSet = normalizeToSet(guessValue);
-    const correctSet = normalizeToSet(correctValue);
+    const guessedSet = seasonSet(guessValue);
+    const correctSet = seasonSet(correctValue);
 
     const allMatch =
       guessedSet.size === correctSet.size &&
@@ -107,7 +72,7 @@ export default function GuessGrid({ guesses, answer, className }) {
     const guessEntry = guesses[i];
     const crop = guessEntry?.crop;
     const cropColor =
-      guessEntry && isFullMatch(crop, answer)
+      guessEntry && isFullCropMatch(crop, answer)
         ? "green"
         : guessEntry
           ? "red"
