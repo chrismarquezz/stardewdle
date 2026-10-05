@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 
 import { SoundProvider } from "./context/SoundContext";
@@ -12,6 +12,7 @@ import Collections from "./pages/Collections";
 import Count from "./pages/Count";
 import Minigames from "./pages/Minigames";
 import ResetGuess from "./pages/ResetGuess";
+import Debug from "./pages/Debug";
 
 export default function App() {
   useEffect(() => {
@@ -22,19 +23,24 @@ export default function App() {
   }, []);
 
   return (
-    <SoundProvider>
-      <GameDataProvider>
-        <Router>
-          <Routes>
+    <Router>
+      <Routes>
+        <Route path="/debug" element={<Debug />} />
+        <Route element={
+          <SoundProvider>
+            <GameDataProvider>
+              <Outlet />
+            </GameDataProvider>
+          </SoundProvider>
+        }>
             <Route path="/" element={<Landing />} />
             <Route path="/game" element={<Game />} />
             <Route path="/collections" element={<Collections />} />
             <Route path="/count" element={<Count />} />
             <Route path="/minigames" element={<Minigames />} />
             <Route path="/reset-guess" element={<ResetGuess />} />
-          </Routes>
-        </Router>
-      </GameDataProvider>
-    </SoundProvider>
+        </Route>
+      </Routes>
+    </Router>
   );
 }
