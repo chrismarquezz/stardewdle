@@ -62,7 +62,9 @@ function resetDailyStorageIfNeeded() {
     localStorage.setItem("stardewdle-date", todayStr);
 }
 
-resetDailyStorageIfNeeded();
+if (!/^\/debug\/?$/i.test(window.location.pathname)) {
+    resetDailyStorageIfNeeded();
+}
 
 export const GameDataProvider = ({ children }) => {
     const [crops, setCrops] = useState([]);
