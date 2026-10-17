@@ -41,7 +41,8 @@ const KEYS_TO_KEEP = [
     "stardewdle-cooking",
     "stardewdle-minerals",
     "stardewdle-fish",
-    "stardewdle-quotes"
+    "stardewdle-quotes",
+    "stardewdle-hints"
 ];
 
 // Must run before any component reads its day-scoped state, so this is called at import time
