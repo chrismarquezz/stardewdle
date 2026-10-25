@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { SoundProvider } from "./context/SoundContext";
 import { GameDataProvider } from "./context/GameDataContext";
+import { ResponsiveProvider } from "./context/ResponsiveContext";
 
 import './App.css';
 
@@ -23,24 +24,26 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/debug" element={<Debug />} />
-        <Route element={
-          <SoundProvider>
-            <GameDataProvider>
-              <Outlet />
-            </GameDataProvider>
-          </SoundProvider>
-        }>
-            <Route path="/" element={<Landing />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/collections" element={<Collections />} />
-            <Route path="/count" element={<Count />} />
-            <Route path="/minigames" element={<Minigames />} />
-            <Route path="/reset-guess" element={<ResetGuess />} />
-        </Route>
-      </Routes>
-    </Router>
+    <ResponsiveProvider>
+      <Router>
+        <Routes>
+          <Route path="/debug" element={<Debug />} />
+          <Route element={
+            <SoundProvider>
+              <GameDataProvider>
+                <Outlet />
+              </GameDataProvider>
+            </SoundProvider>
+          }>
+              <Route path="/" element={<Landing />} />
+              <Route path="/game" element={<Game />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/count" element={<Count />} />
+              <Route path="/minigames" element={<Minigames />} />
+              <Route path="/reset-guess" element={<ResetGuess />} />
+          </Route>
+        </Routes>
+      </Router>
+    </ResponsiveProvider>
   );
 }

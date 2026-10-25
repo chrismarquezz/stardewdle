@@ -381,7 +381,7 @@
             },
             {
                 "index": 94,
-                "quote": "“ (Abigail is blushing, but she looks happy.)\"”"
+                "quote": "“ ([_____] is blushing, but she looks happy.)\"”"
             },
             {
                 "index": 95,
@@ -681,7 +681,7 @@
             },
             {
                 "index": 169,
-                "quote": "“*Abigail is lost in her music*”"
+                "quote": "“*[_____] is lost in her music*”"
             },
             {
                 "index": 170,
@@ -1067,11 +1067,11 @@
             },
             {
                 "index": 22,
-                "quote": "“Oh, hey. So you're the new guy, huh? Cool. I'm Alex. I'll see you around.”"
+                "quote": "“Oh, hey. So you're the new guy, huh? Cool. I'm [_____]. I'll see you around.”"
             },
             {
                 "index": 23,
-                "quote": "“Hey, you're the new girl, huh? I think we're going to get along great. I'm Alex. I'll see you around.”"
+                "quote": "“Hey, you're the new girl, huh? I think we're going to get along great. I'm [_____]. I'll see you around.”"
             },
             {
                 "index": 24,
@@ -1407,7 +1407,7 @@
             },
             {
                 "index": 107,
-                "quote": "“(Alex gives your arm a squeeze, grinning.)”"
+                "quote": "“([_____] gives your arm a squeeze, grinning.)”"
             },
             {
                 "index": 108,
@@ -1941,7 +1941,7 @@
             },
             {
                 "index": 9,
-                "quote": "“Hello! You must be [Player], the new farmer. I'm Caroline. My husband runs the general store here. And have you met my daughter, Abigail ? She's the pale one with the purple hair.”"
+                "quote": "“Hello! You must be [Player], the new farmer. I'm [_____]. My husband runs the general store here. And have you met my daughter, Abigail ? She's the pale one with the purple hair.”"
             },
             {
                 "index": 10,
@@ -2231,7 +2231,7 @@
             },
             {
                 "index": 10,
-                "quote": "“Er... hi. I'm Clint. I'm the town blacksmith. If you ever need to upgrade your tools, I'm your guy.”"
+                "quote": "“Er... hi. I'm [_____]. I'm the town blacksmith. If you ever need to upgrade your tools, I'm your guy.”"
             },
             {
                 "index": 11,
@@ -2453,7 +2453,7 @@
             },
             {
                 "index": 9,
-                "quote": "“Greetings! I'm Demetrius, local scientist and father. Thanks for introducing yourself! I'm studying the local plants and animals from my home laboratory. Have you met my daughter Maru? She's interested to meet you.”"
+                "quote": "“Greetings! I'm [_____], local scientist and father. Thanks for introducing yourself! I'm studying the local plants and animals from my home laboratory. Have you met my daughter Maru? She's interested to meet you.”"
             },
             {
                 "index": 10,
@@ -2889,7 +2889,7 @@
             },
             {
                 "index": 13,
-                "quote": "“Ah, the new farmer we've all been expecting... and whose arrival has sparked many a conversation! I'm Elliott... I live in the little cabin by the beach. It's a pleasure to meet you.”"
+                "quote": "“Ah, the new farmer we've all been expecting... and whose arrival has sparked many a conversation! I'm [_____]... I live in the little cabin by the beach. It's a pleasure to meet you.”"
             },
             {
                 "index": 14,
@@ -3169,7 +3169,7 @@
             },
             {
                 "index": 83,
-                "quote": "“Elliott whispers a sweet secret into your ear.”"
+                "quote": "“[_____] whispers a sweet secret into your ear.”"
             },
             {
                 "index": 84,
@@ -3811,11 +3811,11 @@
             },
             {
                 "index": 21,
-                "quote": "“[Player], I have this crazy new idea that I want to involve you in... It's called \"Clothing Therapy\". Please come to the Mayor's house today to see what it's all about. Love, Emily”"
+                "quote": "“[Player], I have this crazy new idea that I want to involve you in... It's called \"Clothing Therapy\". Please come to the Mayor's house today to see what it's all about. Love, [_____]”"
             },
             {
                 "index": 22,
-                "quote": "“Thanks for joining me last night... I had a great time. I'm actually glad that bear showed up! See you soon Love, Emily”"
+                "quote": "“Thanks for joining me last night... I had a great time. I'm actually glad that bear showed up! See you soon Love, [_____]”"
             },
             {
                 "index": 23,
@@ -4103,7 +4103,7 @@
             },
             {
                 "index": 94,
-                "quote": "“(Emily has a big smile on her face.)”"
+                "quote": "“([_____] has a big smile on her face.)”"
             },
             {
                 "index": 95,
@@ -4653,7 +4653,7 @@
             },
             {
                 "index": 35,
-                "quote": "“Hello, dear... I know you're just getting started as a gardener, so I wanted to give you a little tip. Most crops only grow in one season. When summer arrives, your spring crops will all die out. So plan ahead! -Granny Evelyn”"
+                "quote": "“Hello, dear... I know you're just getting started as a gardener, so I wanted to give you a little tip. Most crops only grow in one season. When summer arrives, your spring crops will all die out. So plan ahead! -Granny [_____]”"
             },
             {
                 "index": 36,
@@ -4847,7 +4847,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Hmmph... It's irritating to have to meet all these new people, huh? Name's George, by the way. Now buzz off... Hmmph.”"
+                "quote": "“Hmmph... It's irritating to have to meet all these new people, huh? Name's [_____], by the way. Now buzz off... Hmmph.”"
             },
             {
                 "index": 12,
@@ -5069,7 +5069,7 @@
             },
             {
                 "index": 13,
-                "quote": "“Well hello there! I'm Gus, chef and owner of the Stardrop Saloon. Stop in if you need any refreshments. I've always got hot coffee and cold beer at the ready.”"
+                "quote": "“Well hello there! I'm [_____], chef and owner of the Stardrop Saloon. Stop in if you need any refreshments. I've always got hot coffee and cold beer at the ready.”"
             },
             {
                 "index": 14,
@@ -5295,11 +5295,11 @@
             },
             {
                 "index": 12,
-                "quote": "“[Player], I thought it would be fun to write you a note. I had so much fun with the cows yesterday... I'm starting to understand why you chose the farmer's life! Hope to see you soon. -Haley”"
+                "quote": "“[Player], I thought it would be fun to write you a note. I had so much fun with the cows yesterday... I'm starting to understand why you chose the farmer's life! Hope to see you soon. -[_____]”"
             },
             {
                 "index": 13,
-                "quote": "“Oh... you're that new farmer [boy/girl], aren't you? Huh? Oh... I'm Haley. Hmm... If it weren't for those horrendous clothes you might actually be [cute/pretty]. Actually, nevermind.”"
+                "quote": "“Oh... you're that new farmer [boy/girl], aren't you? Huh? Oh... I'm [_____]. Hmm... If it weren't for those horrendous clothes you might actually be [cute/pretty]. Actually, nevermind.”"
             },
             {
                 "index": 14,
@@ -5731,7 +5731,7 @@
             },
             {
                 "index": 121,
-                "quote": "“*Haley is glistening in the sunlight.*”"
+                "quote": "“*[_____] is glistening in the sunlight.*”"
             },
             {
                 "index": 122,
@@ -6149,7 +6149,7 @@
             },
             {
                 "index": 10,
-                "quote": "“It's a pleasure to meet you. I'm Harvey, the local doctor. I perform regular check-ups and medical procedures for all the residents of Pelican Town. It's rewarding work. I hope you'll find your own work equally rewarding, in time.”"
+                "quote": "“It's a pleasure to meet you. I'm [_____], the local doctor. I perform regular check-ups and medical procedures for all the residents of Pelican Town. It's rewarding work. I hope you'll find your own work equally rewarding, in time.”"
             },
             {
                 "index": 11,
@@ -7049,7 +7049,7 @@
             },
             {
                 "index": 10,
-                "quote": "“Jodi- Since I'll be coming home soon I want to tell you a few things. I might not be the same man you remember. I've seen some things out here that have really shaken me up. I've been having a real hard time relaxing. I don't want to scare you or make you upset. I just don't want you to be shocked when I get back. Remember, no matter how I act, you and the kids mean everything to me. I'll see you soon. -Kent”"
+                "quote": "“[_____]- Since I'll be coming home soon I want to tell you a few things. I might not be the same man you remember. I've seen some things out here that have really shaken me up. I've been having a real hard time relaxing. I don't want to scare you or make you upset. I just don't want you to be shocked when I get back. Remember, no matter how I act, you and the kids mean everything to me. I'll see you soon. -Kent”"
             },
             {
                 "index": 11,
@@ -7057,7 +7057,7 @@
             },
             {
                 "index": 12,
-                "quote": "“Oh! You aren't exactly how I imagined... but that's okay! I'm Jodi. It's a quiet little town, so it's very exciting when someone new moves in! Having a farmer around could really change things.”"
+                "quote": "“Oh! You aren't exactly how I imagined... but that's okay! I'm [_____]. It's a quiet little town, so it's very exciting when someone new moves in! Having a farmer around could really change things.”"
             },
             {
                 "index": 13,
@@ -7343,7 +7343,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Um, hello there. My name's Kent. I just got back last night... from overseas. My wife told me that a new farmer had moved in while I was gone. Well, I just wanted to introduce myself... I'll see you around.”"
+                "quote": "“Um, hello there. My name's [_____]. I just got back last night... from overseas. My wife told me that a new farmer had moved in while I was gone. Well, I just wanted to introduce myself... I'll see you around.”"
             },
             {
                 "index": 12,
@@ -7443,7 +7443,7 @@
             },
             {
                 "index": 36,
-                "quote": "“This open field... it makes me nervous. *whisper* Happy thoughts, Kent. Happy Thoughts.”"
+                "quote": "“This open field... it makes me nervous. *whisper* Happy thoughts, [_____]. Happy Thoughts.”"
             },
             {
                 "index": 37,
@@ -7521,7 +7521,7 @@
             },
             {
                 "index": 11,
-                "quote": "“A human visitor? This is most unusual... I'm Krobus, merchant of rare and exotic goods.”"
+                "quote": "“A human visitor? This is most unusual... I'm [_____], merchant of rare and exotic goods.”"
             },
             {
                 "index": 12,
@@ -9495,7 +9495,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Ah, Mayor Lewis told me you just arrived. I'm Marnie! I sell livestock and animal care products at my ranch. You should swing by some time.”"
+                "quote": "“Ah, Mayor Lewis told me you just arrived. I'm [_____]! I sell livestock and animal care products at my ranch. You should swing by some time.”"
             },
             {
                 "index": 12,
@@ -9583,7 +9583,7 @@
             },
             {
                 "index": 33,
-                "quote": "“(Marnie doesn't seem to notice that you're there...)”"
+                "quote": "“([_____] doesn't seem to notice that you're there...)”"
             },
             {
                 "index": 34,
@@ -9745,7 +9745,7 @@
             },
             {
                 "index": 13,
-                "quote": "“Oh! Aren't you the one who just moved in? I'm Maru. I've been looking forward to meeting you! You know, with a small town like this, a new face can really alter the community dynamic. It's exciting!”"
+                "quote": "“Oh! Aren't you the one who just moved in? I'm [_____]. I've been looking forward to meeting you! You know, with a small town like this, a new face can really alter the community dynamic. It's exciting!”"
             },
             {
                 "index": 14,
@@ -10491,7 +10491,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Hey, kid. The name's Pam. Don't be a jerk and we'll get along fine.”"
+                "quote": "“Hey, kid. The name's [_____]. Don't be a jerk and we'll get along fine.”"
             },
             {
                 "index": 12,
@@ -10619,11 +10619,11 @@
             },
             {
                 "index": 43,
-                "quote": "“(Pam isn't responding.)”"
+                "quote": "“([_____] isn't responding.)”"
             },
             {
                 "index": 44,
-                "quote": "“(Pam seems out of it. Better leave her alone right now.)”"
+                "quote": "“([_____] seems out of it. Better leave her alone right now.)”"
             },
             {
                 "index": 45,
@@ -10779,7 +10779,7 @@
             },
             {
                 "index": 83,
-                "quote": "“Hey, kid...you takin' the day off? It's nice to kick back every once in a while, isn't it? Yup. Even ol' Pam needs some sunlight on her skin now and then! Just wake me up before I turn into leather...Heheh.”"
+                "quote": "“Hey, kid...you takin' the day off? It's nice to kick back every once in a while, isn't it? Yup. Even ol' [_____] needs some sunlight on her skin now and then! Just wake me up before I turn into leather...Heheh.”"
             },
             {
                 "index": 84,
@@ -10795,7 +10795,7 @@
             },
             {
                 "index": 87,
-                "quote": "“Better hurry up, kid... Before ol' Pam here fishes every last lunker out of the tent! Hehe.”"
+                "quote": "“Better hurry up, kid... Before ol' [_____] here fishes every last lunker out of the tent! Hehe.”"
             },
             {
                 "index": 88,
@@ -10861,7 +10861,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Oh... Hello! I'm Penny...”"
+                "quote": "“Oh... Hello! I'm [_____]...”"
             },
             {
                 "index": 12,
@@ -11611,7 +11611,7 @@
             },
             {
                 "index": 11,
-                "quote": "“Hey, it's [Mr./Mrs.] [Player], the new farmer! I'm Pierre, owner of the local general store. If you're looking for seeds, my shop is the place to go. I'll also buy produce from you for a good price! A little agriculture could really inject new life into the local economy!”"
+                "quote": "“Hey, it's [Mr./Mrs.] [Player], the new farmer! I'm [_____], owner of the local general store. If you're looking for seeds, my shop is the place to go. I'll also buy produce from you for a good price! A little agriculture could really inject new life into the local economy!”"
             },
             {
                 "index": 12,
@@ -12179,7 +12179,7 @@
             },
             {
                 "index": 9,
-                "quote": "“Hey, I’m Sam. Good to meet you.”"
+                "quote": "“Hey, I’m [_____]. Good to meet you.”"
             },
             {
                 "index": 10,
@@ -12893,7 +12893,7 @@
             },
             {
                 "index": 13,
-                "quote": "“A... customer? Hi! Welcome to 'Sandy's Oasis'! Hey, you look just like the new farmer that Emily wrote to me about! Then... the bus line to Stardew Valley is back in service! Oh, I'm so happy!”"
+                "quote": "“A... customer? Hi! Welcome to '[_____]'s Oasis'! Hey, you look just like the new farmer that Emily wrote to me about! Then... the bus line to Stardew Valley is back in service! Oh, I'm so happy!”"
             },
             {
                 "index": 14,
@@ -12917,7 +12917,7 @@
             },
             {
                 "index": 19,
-                "quote": "“Hi! Welcome to Sandy's Oasis, the number one destination in Calico Desert! *whisper* Did I sound professional? Make sure to check out our seasonal seed selection. You look really thirsty. Here, have a taste of this ice cold milk . [gifts Player milk] Tasty, huh?”"
+                "quote": "“Hi! Welcome to [_____]'s Oasis, the number one destination in Calico Desert! *whisper* Did I sound professional? Make sure to check out our seasonal seed selection. You look really thirsty. Here, have a taste of this ice cold milk . [gifts Player milk] Tasty, huh?”"
             },
             {
                 "index": 20,
@@ -12929,7 +12929,7 @@
             },
             {
                 "index": 22,
-                "quote": "“My name's not really Sandy, you know. It's just good for business. But everyone calls me Sandy anyway, so I've just gotten used to it.”"
+                "quote": "“My name's not really [_____], you know. It's just good for business. But everyone calls me [_____] anyway, so I've just gotten used to it.”"
             },
             {
                 "index": 23,
@@ -14233,7 +14233,7 @@
             },
             {
                 "index": 60,
-                "quote": "“(Shane has a glazed look in his eye. He won't speak to you.)”"
+                "quote": "“([_____] has a glazed look in his eye. He won't speak to you.)”"
             },
             {
                 "index": 61,
@@ -14485,7 +14485,7 @@
             },
             {
                 "index": 123,
-                "quote": "“The name 'Shane' means 'Gift from Yoba'... What a joke.”"
+                "quote": "“The name '[_____]' means 'Gift from Yoba'... What a joke.”"
             },
             {
                 "index": 124,
@@ -14645,7 +14645,7 @@
             },
             {
                 "index": 163,
-                "quote": "“Papa Shane reporting for duty... Buh... I've become corny in my old age.”"
+                "quote": "“Papa [_____] reporting for duty... Buh... I've become corny in my old age.”"
             },
             {
                 "index": 164,
@@ -14811,7 +14811,7 @@
             },
             {
                 "index": 10,
-                "quote": "“Oh, a stranger! My name's Vincent. Momma says not to talk to strangers... But you seem okay.”"
+                "quote": "“Oh, a stranger! My name's [_____]. Momma says not to talk to strangers... But you seem okay.”"
             },
             {
                 "index": 11,

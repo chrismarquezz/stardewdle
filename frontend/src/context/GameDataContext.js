@@ -3,8 +3,8 @@ import { createContext, useCallback, useContext, useRef, useState, useEffect } f
 const GameDataContext = createContext();
 const MOST_RECENT_UPDATE = "2026-11-9T00:00:00Z";
 
-const DATA_VERSION = "20260921";
-const MAX_ATTEMPTS = 4;
+const DATA_VERSION = "20261025";
+const MAX_ATTEMPTS = 10;
 const RETRY_BASE_MS = 1000;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

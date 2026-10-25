@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
-import { useState, useEffect } from "react";
-import { useResponsiveScale } from "../hooks/useResponsiveScale";
+import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 
 import CollectionsBox from "../components/collections/CollectionsBox";
 import CustomButton from "../components/CustomButton";
@@ -9,25 +8,7 @@ import CustomButton from "../components/CustomButton";
 export default function Game() {
   const { isMuted } = useSound();
   const navigate = useNavigate();
-  const [isMobilePortrait, setIsMobilePortrait] = useState(false);
-
-  const designWidth = 1600;
-  const designHeight = 900;
-  const effectiveDesignWidth = isMobilePortrait ? designHeight : designWidth;
-  const effectiveDesignHeight = isMobilePortrait ? designWidth : designHeight;
-  const scaleFactor = useResponsiveScale(effectiveDesignWidth, effectiveDesignHeight);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const currentlyIsMobilePortrait =
-        window.innerWidth < 768 && window.innerHeight > window.innerWidth;
-      setIsMobilePortrait(currentlyIsMobilePortrait);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const { isMobilePortrait, width, height, scaleFactor } = useResponsiveLayout();
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
@@ -48,8 +29,8 @@ export default function Game() {
         <div
           className="flex flex-col items-center justify-center"
           style={{
-            width: isMobilePortrait ? `${designHeight}px` : `${designWidth}px`,
-            height: isMobilePortrait ? `${designWidth}px` : `${designHeight}px`,
+            width: `${width}px`,
+            height: `${height}px`,
             transform: `scale(${scaleFactor})`,
             transformOrigin: "center center",
           }}

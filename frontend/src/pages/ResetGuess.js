@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useSound } from "../context/SoundContext";
+import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 
 import CustomButton from "../components/CustomButton";
 
@@ -85,6 +86,7 @@ export default function ResetGuess() {
   const { isMuted } = useSound();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { width, height, scaleFactor } = useResponsiveLayout();
 
   const todayStr = new Date().toISOString().split("T")[0];
   const maxStreak = maxStreakFor(todayStr);
@@ -129,7 +131,7 @@ export default function ResetGuess() {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-y-auto flex justify-center">
+    <div className="relative min-h-screen w-full overflow-hidden flex justify-center items-center">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
@@ -142,7 +144,15 @@ export default function ResetGuess() {
         }}
       />
 
-      <div className="relative z-10 flex flex-col items-center gap-6 py-10 px-4 max-w-[700px]">
+      <div
+        className="absolute left-1/2 top-1/2 z-10 flex flex-col items-center overflow-y-auto"
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          transform: `translate(-50%, -50%) scale(${scaleFactor})`,
+          transformOrigin: "center center",
+        }}
+      >
         <CustomButton
           variant="title"
           icon="/images/stardewdleLogo.webp"
@@ -150,24 +160,25 @@ export default function ResetGuess() {
           isMuted={isMuted}
           onClick={() => navigate("/")}
           soundPath={"/sounds/mouseClick.mp3"}
-          className="max-w-full"
+          className="mb-4"
         />
 
-        <div className="bg-[#f5deb3]/95 border-4 border-[#8b5a2b] rounded-xl p-6 text-main text-center flex flex-col gap-4">
-          <h1 className="text-4xl font-bold">Undo Today's Game</h1>
-          <p className="text-xl">
+        <div className="bg-[#f5deb3] border-4 border-main p-6 text-main text-center flex flex-col justify-center items-center gap-4 text-5xl">
+          <h1 className="text-7xl">Undo Today's Game</h1>
+          <p className="">
             This clears your guesses for {todayStr} and removes today's result from your stats, so
             you can play today's crop again from scratch.
           </p>
 
-          <div className="text-xl">
+          <div className="text-4xl bg-white/50 w-1/2 p-4">
             <p>Guesses stored for today: {guessCount}</p>
             <p>Games played: {stats.total}</p>
             <p>Current streak: {stats.streak}</p>
           </div>
 
-          <label className="flex flex-col items-center gap-1 text-xl">
+          <label className="flex flex-col items-center gap-1">
             <span>What was your previous streak?</span>
+            <span className="text-4xl italic">(Default will decrease current by 1)</span>
             <input
               type="number"
               min="0"
@@ -176,8 +187,8 @@ export default function ResetGuess() {
               inputMode="numeric"
               value={streakInput}
               onChange={(e) => setStreakInput(e.target.value)}
-              placeholder="blank will decrease by 1"
-              className="w-[240px] px-3 py-2 text-center text-xl border-2 border-[#8b5a2b] rounded-lg bg-white/80"
+              placeholder={stats.streak - 1}
+              className="w-[240px] px-3 py-2 text-center text-5xl border-2 border-main bg-white/80"
             />
             {streakInvalid && (
               <span className="text-wrong text-base">
@@ -190,18 +201,18 @@ export default function ResetGuess() {
             type="button"
             onClick={handleReset}
             disabled={streakInvalid}
-            className={`clickable self-center px-6 py-3 text-2xl font-bold bg-[#8b5a2b] text-white rounded-lg transition-transform duration-200 hover:scale-105 active:scale-95 ${streakInvalid ? "opacity-40 pointer-events-none" : ""
+            className={`clickable self-center px-6 py-3 text-5xl bg-main text-white transition-transform duration-200 hover:scale-105 active:scale-95 ${streakInvalid ? "opacity-40 pointer-events-none" : ""
               }`}
           >
             Reset today's guesses
           </button>
 
-          {status && <p className="text-xl font-bold">{status}</p>}
+          {status && <p className="text-4xl">{status}</p>}
 
           <button
             type="button"
             onClick={() => window.location.assign("/game")}
-            className="clickable self-center text-xl underline"
+            className="clickable self-center text-5xl underline"
           >
             Back to the game
           </button>
