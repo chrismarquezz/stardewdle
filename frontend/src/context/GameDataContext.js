@@ -3,7 +3,15 @@ import { createContext, useCallback, useContext, useRef, useState, useEffect } f
 const GameDataContext = createContext();
 const MOST_RECENT_UPDATE = "2026-11-9T00:00:00Z";
 
-const DATA_VERSION = "20261025";
+const DATA_FETCH_DATES_KEY = "stardewdle-dataFetchDate";
+const LEGACY_DATA_FETCH_DATE = "2026-10-20";
+const DATA_FETCH_DATES = {
+    crops: LEGACY_DATA_FETCH_DATE,
+    cooking: LEGACY_DATA_FETCH_DATE,
+    minerals: LEGACY_DATA_FETCH_DATE,
+    fish: LEGACY_DATA_FETCH_DATE,
+    quotes: "2026-10-25"
+};
 const MAX_ATTEMPTS = 10;
 const RETRY_BASE_MS = 1000;
 
@@ -30,6 +38,25 @@ async function withRetry(task, signal) {
     throw lastError;
 }
 
+function getDataFetchDates() {
+    const savedDates = localStorage.getItem(DATA_FETCH_DATES_KEY);
+    if (!savedDates) return {};
+
+    try {
+        const parsed = JSON.parse(savedDates);
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch (e) {
+        console.warn("Data fetch dates are corrupted; migrating cached data...");
+        return {};
+    }
+}
+
+function storeDataFetchDate(dataKey, date) {
+    const dataFetchDates = getDataFetchDates();
+    dataFetchDates[dataKey] = date;
+    localStorage.setItem(DATA_FETCH_DATES_KEY, JSON.stringify(dataFetchDates));
+}
+
 const KEYS_TO_KEEP = [
     "stardewdle-stats",
     "isMuted",
@@ -42,7 +69,8 @@ const KEYS_TO_KEEP = [
     "stardewdle-minerals",
     "stardewdle-fish",
     "stardewdle-quotes",
-    "stardewdle-hints"
+    "stardewdle-hints",
+    "stardewdle-dataFetchDate"
 ];
 
 // Must run before any component reads its day-scoped state, so this is called at import time
@@ -112,27 +140,36 @@ export const GameDataProvider = ({ children }) => {
         setIsReady(false);
         setLoadError(null);
 
-        const fetchStaticData = (fileName) =>
+        const fetchStaticData = (fileName, dataKey) =>
             withRetry(
-                () => fetchJSON(`${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=${DATA_VERSION}`, signal),
+                () => fetchJSON(
+                    `${import.meta.env.VITE_BUCKET_URL}/data/${fileName}?v=${DATA_FETCH_DATES[dataKey].replaceAll("-", "")}`,
+                    signal
+                ),
                 signal
             );
 
-        const loadOrFetch = async (storageKey, fileName) => {
+        const loadOrFetch = async (storageKey, fileName, dataKey) => {
             const saved = localStorage.getItem(storageKey);
-            if (saved && storageKey !== "stardewdle-cooking") {
+            const dataFetchDates = getDataFetchDates();
+
+            if (saved) {
                 try {
                     const parsed = JSON.parse(saved);
                     if (parsed && (parsed.length > 0 || Object.keys(parsed).length > 0)) {
-                        return parsed;
+                        const savedDate = dataFetchDates[dataKey] || LEGACY_DATA_FETCH_DATE;
+                        if (!dataFetchDates[dataKey]) {
+                            storeDataFetchDate(dataKey, savedDate);
+                        }
+                        if (savedDate === DATA_FETCH_DATES[dataKey]) return parsed;
                     }
                 } catch (e) {
                     console.warn(`Cache corrupted for ${storageKey}, refetching...`);
                 }
             }
-
-            const data = await fetchStaticData(fileName);
+            const data = await fetchStaticData(fileName, dataKey);
             localStorage.setItem(storageKey, JSON.stringify(data));
+            storeDataFetchDate(dataKey, DATA_FETCH_DATES[dataKey]);
             return data;
         };
 
@@ -144,11 +181,11 @@ export const GameDataProvider = ({ children }) => {
                 fishData,
                 quotesData
             ] = await Promise.all([
-                loadOrFetch("stardewdle-crops", "crops.json"),
-                loadOrFetch("stardewdle-cooking", "cooking.json"),
-                loadOrFetch("stardewdle-minerals", "geology.json"),
-                loadOrFetch("stardewdle-fish", "fish.json"),
-                loadOrFetch("stardewdle-quotes", "quotes.json")
+                loadOrFetch("stardewdle-crops", "crops.json", "crops"),
+                loadOrFetch("stardewdle-cooking", "cooking.json", "cooking"),
+                loadOrFetch("stardewdle-minerals", "geology.json", "minerals"),
+                loadOrFetch("stardewdle-fish", "fish.json", "fish"),
+                loadOrFetch("stardewdle-quotes", "quotes.json", "quotes")
             ]);
 
             setCrops(cropsData);
@@ -172,8 +209,9 @@ export const GameDataProvider = ({ children }) => {
             // A cached crop list can predate the daily crop, so refetch before giving up.
             if (!correctCropObj) {
                 console.warn(`"${lambdaData.word}" missing from cached crops, refetching...`);
-                cropsData = await fetchStaticData("crops.json");
+                cropsData = await fetchStaticData("crops.json", "crops");
                 localStorage.setItem("stardewdle-crops", JSON.stringify(cropsData));
+                storeDataFetchDate("crops", DATA_FETCH_DATES.crops);
                 correctCropObj = findCrop(cropsData);
             }
 
