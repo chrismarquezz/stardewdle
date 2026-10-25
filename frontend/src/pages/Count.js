@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
 import { useState, useEffect } from "react";
+import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 import CustomButton from "../components/CustomButton";
 
 export default function Count() {
     const { isMuted } = useSound();
     const navigate = useNavigate();
+    const { width, height, scaleFactor } = useResponsiveLayout();
     const [totalPlays, setTotalPlays] = useState(0);
 
     useEffect(() => {    
@@ -24,7 +26,7 @@ export default function Count() {
       }, []);
 
     return (
-        <div className="relative min-h-screen w-full overflow-y-auto flex justify-center">
+        <div className="relative min-h-screen w-full overflow-hidden flex justify-center items-center">
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat "
                 style={{ backgroundImage: "url('/images/count/ocean.webp')"}}
@@ -38,14 +40,23 @@ export default function Count() {
                 }}
             />
             
-            <CustomButton
-                variant="title"
-                icon="/images/stardewdleLogo.webp"
-                label="Stardewdle Home"
-                isMuted={isMuted}
-                onClick={() => navigate("/")}
-                soundPath={"/sounds/mouseClick.mp3"}
-            />
+            <div
+                className="absolute left-1/2 top-1/2 z-10"
+                style={{
+                    width: `${width}px`,
+                    height: `${height}px`,
+                    transform: `translate(-50%, -50%) scale(${scaleFactor})`,
+                    transformOrigin: "center center",
+                }}
+            >
+                <CustomButton
+                    variant="title"
+                    icon="/images/stardewdleLogo.webp"
+                    label="Stardewdle Home"
+                    isMuted={isMuted}
+                    onClick={() => navigate("/")}
+                    soundPath={"/sounds/mouseClick.mp3"}
+                />
 
             <div className="absolute bottom-0 w-full text-center flex flex-col justify-center items-center gap-5" >
                 <div className="relative text-4xl font-bold text-[#615E56] bg-contain bg-center bg-no-repeat w-[300px] flex items-center justify-center text-center p-10 pt-8"
@@ -58,6 +69,7 @@ export default function Count() {
                     alt="Mr Qi"
                     className="w-[424px] object-contain"
                 />
+            </div>
             </div>
             
         </div>
