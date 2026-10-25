@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
 import { useState } from "react";
-import { useResponsiveScale } from "../hooks/useResponsiveScale";
+import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 
 import CustomButton from "../components/CustomButton";
 import { playSound } from "../utils/playSound";
@@ -10,7 +10,7 @@ export default function Landing() {
   const { isMuted } = useSound();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const scaleFactor = useResponsiveScale(1080, 720);
+  const { width, height, scaleFactor } = useResponsiveLayout();
 
   return (
     <div className="relative h-screen w-full overflow-y-auto">
@@ -22,9 +22,10 @@ export default function Landing() {
       <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden pb-10">
         <div
           style={{
-            width: "1080px",
-            height: `${720 * scaleFactor}px`,
+            width: `${width}px`,
+            height: `${height}px`,
             transform: `scale(${scaleFactor})`,
+            transformOrigin: "center center",
           }}
           className="flex flex-col items-center justify-center gap-32"
         >

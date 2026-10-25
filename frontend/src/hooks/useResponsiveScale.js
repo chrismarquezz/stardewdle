@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useResponsiveViewport } from "../context/ResponsiveContext";
+import { useMobilePortrait } from "./useMobilePortrait";
 
 export function useResponsiveScale(designWidth, designHeight) {
-  const [scaleFactor, setScaleFactor] = useState(1);
+  const { width, height } = useResponsiveViewport();
+  const scaleW = (width * 0.95) / designWidth;
+  const scaleH = (height * 0.95) / designHeight;
+  return Math.min(scaleW, scaleH);
+}
 
-  useEffect(() => {
-    const updateScale = () => {
-      const maxWidth = window.innerWidth * 0.95;
-      const maxHeight = window.innerHeight * 0.95;
-      const scaleW = maxWidth / designWidth;
-      const scaleH = maxHeight / designHeight;
-      setScaleFactor(Math.min(scaleW, scaleH));
-    };
+export function useResponsiveLayout(
+  designWidth = 1600,
+  designHeight = 900,
+) {
+  const isMobilePortrait = useMobilePortrait();
+  const width = isMobilePortrait ? designHeight : designWidth;
+  const height = isMobilePortrait ? designWidth : designHeight;
+  const scaleFactor = useResponsiveScale(width, height);
 
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, [designWidth, designHeight]);
-
-  return scaleFactor;
+  return { isMobilePortrait, width, height, scaleFactor };
 }
