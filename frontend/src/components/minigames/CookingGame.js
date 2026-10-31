@@ -265,7 +265,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                     />
                     <CustomButton
                       variant="icon"
-                      icon={`/images/minigames/${viewMode === "grid" ? "list" : "grid"}Button.webp`}
+                      icon={`/images/buttons/icons/${viewMode === "grid" ? "list" : "grid"}.webp`}
                       label={`Toggle ${viewMode === "grid" ? "List" : "Grid"} View`}
                       isMuted={isMuted}
                       onClick={() =>

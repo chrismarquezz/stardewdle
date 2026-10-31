@@ -389,7 +389,8 @@ export default function GameBox({ isMobilePortrait }) {
       >
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -404,7 +405,8 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={disableMode ? "/images/pencil.webp" : "/images/pencil-off.webp"}
+          icon="/images/buttons/icons/pencil.webp"
+          showX={!disableMode}
           label={disableMode ? "Custom Disable: On" : "Custom Disable: Off"}
           isMuted={isMuted}
           onClick={() => {
@@ -416,7 +418,8 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={Object.values(hints).some((value) => value) ? "/images/game/hint-on.webp" : "/images/game/hint-off.webp"}
+          icon="/images/buttons/icons/hint.webp"
+          showX={!Object.values(hints).some((value) => value)}
           label="View Hints"
           isMuted={isMuted}
           onClick={() => {
@@ -429,7 +432,7 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={"/images/question-mark.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
           label={"Help"}
           isMuted={isMuted}
           onClick={() => {
@@ -442,7 +445,7 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}

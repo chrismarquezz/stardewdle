@@ -174,7 +174,8 @@ export default function CollectionsBox({ isMobilePortrait }) {
       >
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -188,7 +189,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={"/images/question-mark.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
           label={"Help"}
           isMuted={isMuted}
           onClick={() => setShowCollectionsModal(true)}
@@ -198,7 +199,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
         
         <CustomButton
           variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}

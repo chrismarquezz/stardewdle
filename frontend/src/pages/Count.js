@@ -41,7 +41,7 @@ export default function Count() {
             />
             
             <div
-                className="absolute left-1/2 top-1/2 z-10"
+                className="absolute left-1/2 top-1/2 z-10 flex justify-center "
                 style={{
                     width: `${width}px`,
                     height: `${height}px`,

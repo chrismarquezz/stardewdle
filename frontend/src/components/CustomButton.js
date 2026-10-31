@@ -1,8 +1,18 @@
 import React from 'react';
 import { playSound } from '../utils/playSound';
 
+const LAYERED_VARIANTS = ['icon', 'menu', 'square', 'toggle'];
+const BACKGROUND_IMAGES = {
+    icon: "/images/buttons/button-base.webp",
+    menu: "/images/buttons/menu-base.webp",
+    square: "/images/buttons/square-base.webp",
+    toggle: "/images/buttons/button-base.webp",
+};
+
 const CustomButton = ({
     icon,
+    showX = false,
+    layered = true,
     label,
     onClick,
     isMuted,
@@ -24,6 +34,8 @@ const CustomButton = ({
         share: "w-10 h-10",          // Share button
         toggle: "w-[30px] h-[30px] md:w-[50px] md:h-[50px]", // Toggle buttons in Hints Modal
     };
+
+    const isLayered = layered && LAYERED_VARIANTS.includes(variant);
 
     const defaultSound = (variant === 'menu' || variant === 'title')
         ? "/sounds/menu-select.mp3"
@@ -48,13 +60,37 @@ const CustomButton = ({
                             ${className}`
                 }
             >
-                <img src={icon} alt={label} className="w-full h-full object-contain" />
+                {isLayered && (
+                    <img
+                        src={BACKGROUND_IMAGES[variant]}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    />
+                )}
+                {icon && (
+                    <img
+                        src={icon}
+                        alt={label}
+                        className={isLayered
+                            ? "absolute inset-0 w-full h-full object-contain pointer-events-none"
+                            : "w-full h-full object-contain"}
+                    />
+                )}
+                {showX && (
+                    <img
+                        src="/images/buttons/button-off.webp"
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                    />
+                )}
 
                 {variant !== "title" && (
                     <div className="absolute inset-0 bg-white/50 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
                         style={{
-                            WebkitMaskImage: `url(${icon})`,
-                            maskImage: `url(${icon})`,
+                            WebkitMaskImage: `url(${isLayered ? BACKGROUND_IMAGES[variant] : icon})`,
+                            maskImage: `url(${isLayered ? BACKGROUND_IMAGES[variant] : icon})`,
                             WebkitMaskSize: 'contain',
                             maskSize: 'contain',
                             WebkitMaskRepeat: 'no-repeat',

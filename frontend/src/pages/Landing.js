@@ -30,7 +30,7 @@ export default function Landing() {
           className="flex flex-col items-center justify-center gap-32"
         >
           <img
-            src="/images/landing/stardewdleTitle.webp"
+            src="/images/stardewdleTitle.webp"
             alt="Stardewdle Title"
             className="max-w-[800px]"
           />
@@ -38,21 +38,21 @@ export default function Landing() {
           <div className="flex flex-col items-center gap-4">
             <CustomButton
               variant="menu"
-              icon="/images/landing/play-button.webp"
+              icon="/images/buttons/landing/play-button.webp"
               label="Play"
               isMuted={isMuted}
               onClick={() => navigate("/game")}
             />
             <CustomButton
               variant="menu"
-              icon="/images/landing/minigames-button.webp"
+              icon="/images/buttons/landing/minigames-button.webp"
               label="Minigames"
               isMuted={isMuted}
               onClick={() => navigate("/minigames")}
             />
             <CustomButton
               variant="menu"
-              icon="/images/landing/collections-button.webp"
+              icon="/images/buttons/landing/collections-button.webp"
               label="Collections"
               isMuted={isMuted}
               onClick={() => navigate("/collections")}
@@ -60,7 +60,7 @@ export default function Landing() {
             <div className="flex gap-4">
               <CustomButton
                 variant="square"
-                icon="/images/landing/github.webp"
+                icon="/images/buttons/squares/github.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
                 showLabel={true}
@@ -69,7 +69,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/landing/discord.webp"
+                icon="/images/buttons/squares/discord.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
                 showLabel={true}
@@ -78,7 +78,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/kofi.webp"
+                icon="/images/buttons/squares/kofi.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
                 showLabel={true}
@@ -87,7 +87,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/landing/credits.webp"
+                icon="/images/buttons/squares/credits.webp"
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
                 showLabel={true}
