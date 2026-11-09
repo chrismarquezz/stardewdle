@@ -172,7 +172,7 @@ export default function GameBox({ isMobilePortrait }) {
 
     const win = isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop);
     const header = win ? "I solved today's Stardewdle!" : "I couldn't solve today's Stardewdle.";
-    const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} streak!\n` : ""
+    const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} day streak!\n` : ""
     const grid = guesses.map((row) =>
       ["growth_time", "base_price", "regrows", "type", "season"]
         .map((key) => getColor(key, row.crop[key], correctCrop[key]))
