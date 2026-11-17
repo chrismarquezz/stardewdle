@@ -17,7 +17,7 @@ import Debug from "./pages/Debug";
 
 export default function App() {
   useEffect(() => {
-    const spriteUrl = import.meta.env.VITE_BUCKET_URL + "/sprites/crops.png";
+    const spriteUrl = import.meta.env.VITE_BUCKET_URL + "/sprites/crops.webp?v=20260921";
     if (spriteUrl) {
       document.documentElement.style.setProperty('--sprite-url', `url(${spriteUrl})`);
     }
