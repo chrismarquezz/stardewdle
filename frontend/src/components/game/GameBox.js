@@ -116,21 +116,6 @@ export default function GameBox({ isMobilePortrait }) {
     );
   };
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log("Tab is visible again, reloading...");
-        window.location.reload();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
   useMidnightRefresh();
 
   useEffect(() => {
