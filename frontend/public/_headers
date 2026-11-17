@@ -1,0 +1,20 @@
+# Cloudflare Pages response headers (replaces customHttp.yml from Amplify)
+
+# Vite build output, file names change on every build
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images
+/images/*
+  Cache-Control: public, max-age=2592000
+
+/favicon.ico
+  Cache-Control: public, max-age=2592000
+
+# Fonts
+/fonts/*
+  Cache-Control: public, max-age=2592000
+
+# Sounds
+/sounds/*
+  Cache-Control: public, max-age=2592000
