@@ -207,21 +207,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
     }
   }, [allBundlesFinished, allBundlesSuccessful, gameData.apiSynced]);
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log("Tab is visible again, reloading...");
-        window.location.reload();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
   useMidnightRefresh();
 
   const [helpSeen, setHelpSeen] = useLocalStorage(
