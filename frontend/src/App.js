@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 
 import { SoundProvider } from "./context/SoundContext";
 import { GameDataProvider } from "./context/GameDataContext";
@@ -9,11 +9,12 @@ import './App.css';
 
 import Landing from "./pages/Landing";
 import Game from "./pages/Game";
-import Collections from "./pages/Collections";
-import Count from "./pages/Count";
 import Minigames from "./pages/Minigames";
-import ResetGuess from "./pages/ResetGuess";
-import Debug from "./pages/Debug";
+
+const Collections = lazy(() => import("./pages/Collections"));
+const Count = lazy(() => import("./pages/Count"));
+const ResetGuess = lazy(() => import("./pages/ResetGuess"));
+const Debug = lazy(() => import("./pages/Debug"));
 
 export default function App() {
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function App() {
   return (
     <ResponsiveProvider>
       <Router>
+        <Suspense fallback={null}>
         <Routes>
           <Route path="/debug" element={<Debug />} />
           <Route element={
@@ -43,6 +45,7 @@ export default function App() {
               <Route path="/reset-guess" element={<ResetGuess />} />
           </Route>
         </Routes>
+        </Suspense>
       </Router>
     </ResponsiveProvider>
   );
