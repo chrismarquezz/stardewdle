@@ -157,11 +157,9 @@ export const GameDataProvider = ({ children }) => {
                 try {
                     const parsed = JSON.parse(saved);
                     if (parsed && (parsed.length > 0 || Object.keys(parsed).length > 0)) {
-                        const savedDate = dataFetchDates[dataKey] || LEGACY_DATA_FETCH_DATE;
-                        if (!dataFetchDates[dataKey]) {
-                            storeDataFetchDate(dataKey, savedDate);
-                        }
-                        if (savedDate === DATA_FETCH_DATES[dataKey]) return parsed;
+                        const isCurrent = dataFetchDates[dataKey] === DATA_FETCH_DATES[dataKey];
+                        const isMissingCropIndex = dataKey === "crops" && !Object.hasOwn(parsed[0] ?? {}, "crop_index");
+                        if (isCurrent && !isMissingCropIndex) return parsed;
                     }
                 } catch (e) {
                     console.warn(`Cache corrupted for ${storageKey}, refetching...`);
