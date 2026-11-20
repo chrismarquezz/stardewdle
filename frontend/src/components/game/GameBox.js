@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate, getTimeUntilMidnightUTC, utcDateString } from "../../utils/dateUtils";
+import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
@@ -87,7 +87,6 @@ export default function GameBox({ isMobilePortrait }) {
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
-  const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
 
   const [selectionOffset, setSelectionOffset] = useState(0);
   useEffect(() => {
@@ -126,14 +125,6 @@ export default function GameBox({ isMobilePortrait }) {
       setShowHelp(true);
       localStorage.setItem("stardewdle-hasSeenHelpModal", "true");
     }
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeUntilMidnightUTC());
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -460,7 +451,6 @@ export default function GameBox({ isMobilePortrait }) {
           shareText={shareText}
           correctGuesses={dailyData?.stats?.correctGuesses}
           totalGuesses={dailyData?.stats?.totalGuesses}
-          timeLeft={timeLeft}
           onClose={() => setShowShareModal(false)}
           isMuted={isMuted}
           storedStats={storedStats}
