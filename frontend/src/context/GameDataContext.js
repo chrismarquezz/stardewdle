@@ -223,7 +223,8 @@ export const GameDataProvider = ({ children }) => {
                 dailyItems: lambdaData.daily_items || null,
                 stats: {
                     correctGuesses: lambdaData.correct_guesses,
-                    totalGuesses: lambdaData.total_guesses
+                    totalGuesses: lambdaData.total_guesses,
+                    globalTotalPlays: lambdaData.global_total_plays
                 },
                 bundleCompletions: lambdaData.bundle_completions ?? 0,
                 bundleSuccesses: lambdaData.bundle_successes ?? 0
