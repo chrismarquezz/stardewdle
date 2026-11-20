@@ -61,7 +61,7 @@ export default function CropCard({
       onMouseLeave={() => handleEndHover()}
     >
       <div
-        className={`absolute opacity-60 mix-blend-screen left-0 bottom-0 ${theme === "light" ? "top-0 right-0" : "top-1 right-1"} ${isSelected ? "bg-yellow-100" : ""}`}
+        className={`absolute mix-blend-screen left-0 bottom-0 ${theme === "light" ? "opacity-60 top-0 right-0" : "opacity-30 top-1 right-1"} ${isSelected ? "bg-yellow-100" : ""}`}
       />
 
       <div

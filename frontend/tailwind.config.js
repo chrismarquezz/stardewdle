@@ -1,7 +1,7 @@
 const tailwindPlugin = require('tailwindcss/plugin');
 
 const mainColor = '#BC6131';
-const mainDarkColor = '#984318';
+const mainDarkColor = '#391D0B'; //#984318
 
 function toRgbChannels(hexColor) {
   return hexColor

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTheme } from '../context/ThemeContext';
+import { useThemedAsset } from '../hooks/useThemedAsset';
 import { playSound } from '../utils/playSound';
 
 const LAYERED_VARIANTS = ['icon', 'menu', 'square', 'toggle'];
@@ -24,6 +26,16 @@ const CustomButton = ({
     mobilePortrait = false,
     children
 }) => {
+    const { theme } = useTheme();
+    const backgroundImage = useThemedAsset(
+        BACKGROUND_IMAGES[variant] || BACKGROUND_IMAGES.icon,
+        theme
+    );
+    const themedIcon = useThemedAsset(
+        variant === "submit" ? icon || "" : "",
+        theme
+    );
+    const buttonIcon = variant === "submit" ? themedIcon : icon;
 
     const variantStyles = {
         icon: mobilePortrait ? "w-[75px] h-[75px]" : "w-[50px] h-[50px]",      // Top right utility buttons
@@ -62,15 +74,15 @@ const CustomButton = ({
             >
                 {isLayered && (
                     <img
-                        src={BACKGROUND_IMAGES[variant]}
+                        src={backgroundImage}
                         alt=""
                         aria-hidden="true"
                         className="absolute inset-0 w-full h-full object-contain pointer-events-none"
                     />
                 )}
-                {icon && (
+                {buttonIcon && (
                     <img
-                        src={icon}
+                        src={buttonIcon}
                         alt={label}
                         className={isLayered
                             ? "absolute inset-0 w-full h-full object-contain pointer-events-none"
@@ -87,10 +99,10 @@ const CustomButton = ({
                 )}
 
                 {variant !== "title" && (
-                    <div className="absolute inset-0 bg-white/50 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                    <div className={`absolute inset-0 ${theme === "dark" ? "bg-white/30" : "bg-white/50"} mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}
                         style={{
-                            WebkitMaskImage: `url(${isLayered ? BACKGROUND_IMAGES[variant] : icon})`,
-                            maskImage: `url(${isLayered ? BACKGROUND_IMAGES[variant] : icon})`,
+                            WebkitMaskImage: `url(${isLayered ? backgroundImage : buttonIcon})`,
+                            maskImage: `url(${isLayered ? backgroundImage : buttonIcon})`,
                             WebkitMaskSize: 'contain',
                             maskSize: 'contain',
                             WebkitMaskRepeat: 'no-repeat',

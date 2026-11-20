@@ -1,25 +1,27 @@
 import { formatName } from "../../utils/formatString";
 import { ATTRIBUTE_KEYS, isFullCropMatch, seasonSet } from "../../utils/cropCompare";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
 
 const BOX_IMAGE_MAP = {
-  growth_time: "Small", //106px
-  season: "Large", //192px
-  base_price: "Small", //106px
-  regrows: "Square", //64px
-  type: "Small", //150px
+  growth_time: "Small", //106px -- 40
+  base_price: "Small", //106px -- 40
+  regrows: "Square", //64px -- 24
+  type: "Medium", //160px -- 60
+  season: "Large", //192px -- 72
 };
 
 const W_STRETCH_MAP = {
-  growth_time: "90",
-  season: "90",
-  base_price: "90",
-  regrows: "75",
-  type: "90",
+  growth_time: "81%",
+  base_price: "81%",
+  regrows: "75%",
+  type: "87%",
+  season: "90%",
 };
 
-const COL_DIST = "64px 106px 106px 64px 160px 192px";
+const COL_DIST = "60px 106px 106px 60px 160px 192px";
 
 function capitalize(value) {
   if (typeof value === "string") {
@@ -68,6 +70,14 @@ function getArrow(key, guessValue, correctValue) {
 }
 
 export default function GuessGrid({ guesses, answer, className, isMobilePortrait }) {
+  const { theme } = useTheme();
+  const boxImages = {
+    Small: useThemedAsset("/images/game/boxSmall.webp", theme),
+    Square: useThemedAsset("/images/game/boxSquare.webp", theme),
+    Medium: useThemedAsset("/images/game/boxMedium.webp", theme),
+    Large: useThemedAsset("/images/game/boxLarge.webp", theme),
+  };
+
   const rows = Array.from({ length: 6 }).map((_, i) => {
     const guessEntry = guesses[i];
     const crop = guessEntry?.crop;
@@ -92,14 +102,14 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
     return (
       <div
         key={i}
-        className="grid gap-1 items-center w-full"
+        className="grid gap-[3px] items-center w-full mb-[3px]"
         style={{ gridTemplateColumns: COL_DIST }}
       >
         {/* Frame image */}
         <div
-          className="relative h-[60px] flex items-center justify-center"
+          className="relative h-[60px] w-[60px] flex items-center justify-center"
           style={{
-            backgroundImage: "url('/images/game/boxSquare.webp')",
+            backgroundImage: `url('${boxImages.Square}')`,
             backgroundSize: "100% 100%",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -107,21 +117,21 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
         >
           {/* Color overlay */}
           <div
-            className={`w-[75%] h-[75%] absolute z-0 opacity-90 mix-blend-multiply 
+            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${theme === "dark" ? "mix-blend-overlay" : "mix-blend-multiply"}
                ${cropColor === "green"
                 ? "bg-cyan-500"
                 : cropColor === "red"
                   ? "bg-red-700"
-                  : "bg-white"
+                : theme === "light" ? "bg-white" : ""
               }`}
           />
 
           {/* Crop image */}
           {crop?.crop_index > -1 && (
-            <div className="relative group w-[40px] h-[40px] flex items-center justify-center">
+            <div className="relative group w-12 h-12 flex items-center justify-center">
               <div
                 style={spriteStyle}
-                className="relative z-10 w-[40px] h-[40px]"
+                className="relative z-10"
               />
               {/* Tooltip label */}
               <div
@@ -155,8 +165,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
               key={j}
               className="relative h-full flex items-center justify-center text-2xl leading-none"
               style={{
-                backgroundImage: `url('/images/game/box${BOX_IMAGE_MAP[key] || "Large"
-                  }.webp')`,
+                backgroundImage: `url('${boxImages[BOX_IMAGE_MAP[key] || "Large"]}')`,
                 backgroundSize: "100% 100%",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -164,15 +173,15 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
             >
               {/* Color Overlay */}
               <div
-                className={`w-[${W_STRETCH_MAP[key]
-                  }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-90 mix-blend-multiply ${color === "green"
-                    ? "bg-cyan-500"
-                    : color === "yellow"
-                      ? "bg-amber-300"
-                      : color === "red"
-                        ? "bg-red-700"
-                        : "bg-white"
+                className={`h-[75%] absolute inset-0 m-auto z-0 opacity-90 ${theme === "dark" ? "mix-blend-overlay" : "mix-blend-multiply"} ${color === "green"
+                  ? "bg-cyan-500"
+                  : color === "yellow"
+                    ? "bg-amber-300"
+                    : color === "red"
+                      ? "bg-red-700"
+                      : theme === "light" ? "bg-white" : ""
                   }`}
+                style={{ width: W_STRETCH_MAP[key] }}
               />
 
               {/* Content */}
@@ -182,7 +191,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
               >
                 {guessEntry ? (
                   key === "season" ? (
-                    <div className="flex gap-1 items-center justify-center">
+                    <div className="flex gap-[3px] items-center justify-center">
                       {(String(value) === "all"
                         ? ["spring", "summer", "fall", "winter"]
                         : Array.isArray(value)
@@ -259,7 +268,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
   });
 
   return (
-    <div className={`space-y-[2px] h-full w-full flex items-center justify-center pb-2 ${isMobilePortrait ? "ml-2 pl-6" : "pl-9"}`}
+    <div className={`space-y-[2px] h-full w-full flex items-center justify-center pb-2 ${isMobilePortrait ? "ml-2 pl-5" : "pl-9"}`}
       style={{
         width: isMobilePortrait ? "750px" : "772px",
         height: "456px",
@@ -268,7 +277,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
         className={`h-full w-full flex flex-col justify-center ${className}`}
       >
         {/* Headers */}
-        <div className="grid gap-1" style={{ gridTemplateColumns: COL_DIST }}>
+        <div className="grid gap-[3px]" style={{ gridTemplateColumns: COL_DIST }}>
           <div className="text-center text-3xl text-main leading-none">
             Crop
           </div>

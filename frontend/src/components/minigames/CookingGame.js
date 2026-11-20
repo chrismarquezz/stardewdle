@@ -94,12 +94,12 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                             "url('/images/minigames/minigameCard.webp')",
                           backgroundSize: "cover",
                           backgroundPosition: "center",
-                          scale: isMobilePortrait ? "2" : "1",
+                          scale: isMobilePortrait ? "2" : "1.5",
                         }}
                       >
                         <div
                           style={getSpriteStyle("cooking", ingredientIndex, 0)}
-                          className="z-10 scale-[87.5%]"
+                          className="w-full h-full z-10 scale-[87.5%]"
                         />
                       </div>
 
