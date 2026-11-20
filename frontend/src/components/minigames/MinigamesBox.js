@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate, getTimeUntilMidnightUTC } from "../../utils/dateUtils";
+import { todaysDate } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
@@ -108,7 +108,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
-  const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
 
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedGameData, setSelectedGameData] = useState(null);
@@ -207,21 +206,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
     }
   }, [allBundlesFinished, allBundlesSuccessful, gameData.apiSynced]);
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log("Tab is visible again, reloading...");
-        window.location.reload();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
   useMidnightRefresh();
 
   const [helpSeen, setHelpSeen] = useLocalStorage(
@@ -237,14 +221,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
     setShowHelp(true);
     setHelpSeen((prev) => ({ ...prev, [helpKey]: true }));
   }, [selectedGame]);
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => setTimeLeft(getTimeUntilMidnightUTC()),
-      1000,
-    );
-    return () => clearInterval(interval);
-  }, []);
 
   const getGameSquares = (gameName) => {
     const guesses = gameData[gameName]?.guesses || [];
@@ -532,7 +508,6 @@ export default function MinigamesBox({ isMobilePortrait }) {
       {showShareModal && (
         <MinigamesShareModal
           shareText={shareText}
-          timeLeft={timeLeft}
           totalSuccesses={globalBundleStats.successes}
           totalAttempts={globalBundleStats.attempts}
           onClose={() => setShowShareModal(false)}

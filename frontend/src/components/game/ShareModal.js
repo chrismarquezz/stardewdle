@@ -3,18 +3,19 @@ import React, { useState } from "react";
 import CustomButton from "../CustomButton";
 import { playSound } from "../../utils/playSound";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
+import { useTimeUntilMidnightUTC } from "../../hooks/useTimeUntilMidnightUTC";
 
 export default function ShareModal({
   shareText,
   correctGuesses,
   totalGuesses,
-  timeLeft,
   onClose,
   isMuted,
   scaleFactor,
   storedStats,
 }) {
   const [copied, setCopied] = useState(false);
+  const timeLeft = useTimeUntilMidnightUTC();
 
   const [showStats, setShowStats] = useState(false);
 

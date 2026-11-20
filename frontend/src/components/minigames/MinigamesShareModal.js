@@ -2,10 +2,10 @@ import ReactDOM from "react-dom";
 import React, { useState } from "react";
 import { playSound } from "../../utils/playSound";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
+import { useTimeUntilMidnightUTC } from "../../hooks/useTimeUntilMidnightUTC";
 
 export default function MinigamesShareModal({
   shareText,
-  timeLeft,
   totalSuccesses,
   totalAttempts,
   onClose,
@@ -13,6 +13,7 @@ export default function MinigamesShareModal({
   scaleFactor,
 }) {
   const [copied, setCopied] = useState(false);
+  const timeLeft = useTimeUntilMidnightUTC();
 
   const playCloseSound = () => {
     if (!isMuted) {

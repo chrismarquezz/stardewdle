@@ -1,29 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
-import { useState, useEffect } from "react";
+import { useGameData } from "../context/GameDataContext";
 import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 import CustomButton from "../components/CustomButton";
 
 export default function Count() {
     const { isMuted } = useSound();
+    const { dailyData } = useGameData();
     const navigate = useNavigate();
     const { width, height, scaleFactor } = useResponsiveLayout();
-    const [totalPlays, setTotalPlays] = useState(0);
-
-    useEffect(() => {    
-        const updateTotalPlays = async () => {
-          try {
-            const res = await fetch(import.meta.env.VITE_API_URL + "/word");
-            const data = await res.json();
-            setTotalPlays(data.global_total_plays+data.total_guesses || 0);
-          } catch (err) {
-            console.error("Failed to fetch total plays", err);
-          }
-        };
-    
-        updateTotalPlays();
-    
-      }, []);
+    const totalPlays = (dailyData?.stats?.globalTotalPlays ?? 0) + (dailyData?.stats?.totalGuesses ?? 0);
 
     return (
         <div className="relative min-h-screen w-full overflow-hidden flex justify-center items-center">

@@ -99,7 +99,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                       >
                         <div
                           style={getSpriteStyle("cooking", ingredientIndex, 0)}
-                          className="w-full h-full m-2 z-10"
+                          className="z-10 scale-[87.5%]"
                         />
                       </div>
 

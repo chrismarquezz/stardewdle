@@ -157,11 +157,9 @@ export const GameDataProvider = ({ children }) => {
                 try {
                     const parsed = JSON.parse(saved);
                     if (parsed && (parsed.length > 0 || Object.keys(parsed).length > 0)) {
-                        const savedDate = dataFetchDates[dataKey] || LEGACY_DATA_FETCH_DATE;
-                        if (!dataFetchDates[dataKey]) {
-                            storeDataFetchDate(dataKey, savedDate);
-                        }
-                        if (savedDate === DATA_FETCH_DATES[dataKey]) return parsed;
+                        const isCurrent = dataFetchDates[dataKey] === DATA_FETCH_DATES[dataKey];
+                        const isMissingCropIndex = dataKey === "crops" && !Object.hasOwn(parsed[0] ?? {}, "crop_index");
+                        if (isCurrent && !isMissingCropIndex) return parsed;
                     }
                 } catch (e) {
                     console.warn(`Cache corrupted for ${storageKey}, refetching...`);
@@ -179,13 +177,18 @@ export const GameDataProvider = ({ children }) => {
                 cookingData,
                 mineralsData,
                 fishData,
-                quotesData
+                quotesData,
+                lambdaData
             ] = await Promise.all([
                 loadOrFetch("stardewdle-crops", "crops.json", "crops"),
                 loadOrFetch("stardewdle-cooking", "cooking.json", "cooking"),
                 loadOrFetch("stardewdle-minerals", "geology.json", "minerals"),
                 loadOrFetch("stardewdle-fish", "fish.json", "fish"),
-                loadOrFetch("stardewdle-quotes", "quotes.json", "quotes")
+                loadOrFetch("stardewdle-quotes", "quotes.json", "quotes"),
+                withRetry(
+                    () => fetchJSON(import.meta.env.VITE_API_URL + "/word", signal),
+                    signal
+                )
             ]);
 
             setCrops(cropsData);
@@ -193,11 +196,6 @@ export const GameDataProvider = ({ children }) => {
             setMinerals(mineralsData);
             setFish(fishData);
             setQuotes(quotesData);
-
-            const lambdaData = await withRetry(
-                () => fetchJSON(import.meta.env.VITE_API_URL + "/word", signal),
-                signal
-            );
 
             if (!lambdaData?.word) throw new Error("Daily crop missing from the server response.");
 
@@ -225,7 +223,8 @@ export const GameDataProvider = ({ children }) => {
                 dailyItems: lambdaData.daily_items || null,
                 stats: {
                     correctGuesses: lambdaData.correct_guesses,
-                    totalGuesses: lambdaData.total_guesses
+                    totalGuesses: lambdaData.total_guesses,
+                    globalTotalPlays: lambdaData.global_total_plays
                 },
                 bundleCompletions: lambdaData.bundle_completions ?? 0,
                 bundleSuccesses: lambdaData.bundle_successes ?? 0
@@ -233,6 +232,7 @@ export const GameDataProvider = ({ children }) => {
             setIsReady(true);
         } catch (error) {
             if (signal.aborted) return;
+            controller.abort();
             console.error("Failed to initialize game data:", error);
             setIsReady(false);
             setLoadError(error.message || "Failed to load today's game.");

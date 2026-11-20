@@ -122,7 +122,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 />
                                 <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                     <div
-                                        style={getSpriteStyle("villagers", spriteIndex, 0, 128)}
+                                        style={getSpriteStyle("villagers", spriteIndex, 0, 64)}
                                         className="z-10 scale-[78%]"
                                     />
                                     <div
@@ -183,7 +183,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 {selectedVillager ?
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 128)}
+                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64)}
                                             className="z-10 scale-[78%] clickable"
                                         />
                                     </div>
@@ -258,7 +258,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                 {viewMode === "grid" ? (
                                                     <div className="relative group flex flex-col items-center">
                                                         <div
-                                                            style={getSpriteStyle("villagers", villager.index, 0, 128)}
+                                                            style={getSpriteStyle("villagers", villager.index, 0, 64)}
                                                             className="scale-[58%]"
                                                         />
                                                         <div
@@ -275,7 +275,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                     </div>
                                                 ) : (
                                                     <div className="flex justify-start items-center w-full h-full">
-                                                        <div style={getSpriteStyle("villagers", villager.index, 0, 128)} className="scale-[58%] -ml-6" />
+                                                        <div style={getSpriteStyle("villagers", villager.index, 0, 64)} className="scale-[58%] -ml-6" />
                                                         <div className="w-1/4 text-3xl md:text-xl font-medium text-main text-left leading-none z-10">{formatName(villager.name)}</div>
                                                     </div>
                                                 )}

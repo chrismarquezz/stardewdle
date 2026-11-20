@@ -3,7 +3,7 @@ import { useSound } from "../../context/SoundContext";
 import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate, getTimeUntilMidnightUTC, utcDateString } from "../../utils/dateUtils";
+import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
@@ -94,7 +94,6 @@ export default function GameBox({ isMobilePortrait }) {
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
-  const [timeLeft, setTimeLeft] = useState(getTimeUntilMidnightUTC());
 
   const [selectionOffset, setSelectionOffset] = useState(0);
   useEffect(() => {
@@ -123,21 +122,6 @@ export default function GameBox({ isMobilePortrait }) {
     );
   };
 
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        console.log("Tab is visible again, reloading...");
-        window.location.reload();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
   useMidnightRefresh();
 
   useEffect(() => {
@@ -148,14 +132,6 @@ export default function GameBox({ isMobilePortrait }) {
       setShowHelp(true);
       localStorage.setItem("stardewdle-hasSeenHelpModal", "true");
     }
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeUntilMidnightUTC());
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -179,7 +155,7 @@ export default function GameBox({ isMobilePortrait }) {
 
     const win = isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop);
     const header = win ? "I solved today's Stardewdle!" : "I couldn't solve today's Stardewdle.";
-    const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} streak!\n` : ""
+    const streak = storedStats.streak > 1 ? `I'm on a ${storedStats.streak} day streak!\n` : ""
     const grid = guesses.map((row) =>
       ["growth_time", "base_price", "regrows", "type", "season"]
         .map((key) => getColor(key, row.crop[key], correctCrop[key]))
@@ -508,7 +484,6 @@ export default function GameBox({ isMobilePortrait }) {
           shareText={shareText}
           correctGuesses={dailyData?.stats?.correctGuesses}
           totalGuesses={dailyData?.stats?.totalGuesses}
-          timeLeft={timeLeft}
           onClose={() => setShowShareModal(false)}
           isMuted={isMuted}
           storedStats={storedStats}
