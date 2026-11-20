@@ -389,6 +389,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
             <CustomButton
               variant="icon"
               icon="/images/minigames/failButton.webp"
+              layered={false}
               label="Share"
               isMuted={isMuted}
               onClick={() => {
@@ -455,7 +456,8 @@ export default function MinigamesBox({ isMobilePortrait }) {
       <div className={`absolute flex gap-[5px] -top-[55px] right-0`}>
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -470,7 +472,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={"/images/question-mark.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
           label={"Help"}
           isMuted={isMuted}
           onClick={() => {
@@ -483,7 +485,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}

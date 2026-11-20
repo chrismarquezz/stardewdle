@@ -243,7 +243,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                         <button
                                             key={group.label}
                                             onClick={() => setActiveTab(group.label)}
-                                            className={`h-12 w-12 transition-colors bg-[url('/images/button-base.webp')] bg-no-repeat bg-contain bg-center
+                                            className={`h-12 w-12 transition-colors bg-[url('/images/buttons/button-base.webp')] bg-no-repeat bg-contain bg-center
                                             ${activeTab === group.label ? "brightness-150 pointer-events-none" : "hover:brightness-125 clickable"}`}
                                         >
                                             <span className={`text-2xl whitespace-nowrap transition-colors ${activeTab === group.label ? "text-[#88403F]" : "text-white"}`}>{group.label}</span>
@@ -251,7 +251,8 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                     ))}
                                     <CustomButton
                                         variant="icon"
-                                        icon={showIcons ? "/images/game/hint-on.webp" : "/images/game/hint-off.webp"}
+                                        icon="/images/buttons/icons/hint.webp"
+                                        showX={!showIcons}
                                         label="Toggle Hint Icons"
                                         isMuted={true}
                                         onClick={() => {
