@@ -177,13 +177,18 @@ export const GameDataProvider = ({ children }) => {
                 cookingData,
                 mineralsData,
                 fishData,
-                quotesData
+                quotesData,
+                lambdaData
             ] = await Promise.all([
                 loadOrFetch("stardewdle-crops", "crops.json", "crops"),
                 loadOrFetch("stardewdle-cooking", "cooking.json", "cooking"),
                 loadOrFetch("stardewdle-minerals", "geology.json", "minerals"),
                 loadOrFetch("stardewdle-fish", "fish.json", "fish"),
-                loadOrFetch("stardewdle-quotes", "quotes.json", "quotes")
+                loadOrFetch("stardewdle-quotes", "quotes.json", "quotes"),
+                withRetry(
+                    () => fetchJSON(import.meta.env.VITE_API_URL + "/word", signal),
+                    signal
+                )
             ]);
 
             setCrops(cropsData);
@@ -191,11 +196,6 @@ export const GameDataProvider = ({ children }) => {
             setMinerals(mineralsData);
             setFish(fishData);
             setQuotes(quotesData);
-
-            const lambdaData = await withRetry(
-                () => fetchJSON(import.meta.env.VITE_API_URL + "/word", signal),
-                signal
-            );
 
             if (!lambdaData?.word) throw new Error("Daily crop missing from the server response.");
 
@@ -232,6 +232,7 @@ export const GameDataProvider = ({ children }) => {
             setIsReady(true);
         } catch (error) {
             if (signal.aborted) return;
+            controller.abort();
             console.error("Failed to initialize game data:", error);
             setIsReady(false);
             setLoadError(error.message || "Failed to load today's game.");
