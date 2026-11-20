@@ -3,6 +3,7 @@ import { useSound } from "../../context/SoundContext";
 import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
+import { utcDateString } from "../../utils/dateUtils";
 
 import CollectionsGrid from "./CollectionsGrid";
 import CollectionsModal from "./CollectionsModal";
@@ -10,9 +11,21 @@ import CropLoader from "../CropLoader";
 import CustomButton from "../CustomButton";
 import UpdatesModal from "../UpdatesModal";
 
+const CROP_COUNT_KEY = "stardewdle-cropCounts";
+
+function getCachedCropCounts() {
+  try {
+    const cached = JSON.parse(localStorage.getItem(CROP_COUNT_KEY));
+    if (cached?.date === utcDateString() && cached.counts) return cached.counts;
+  } catch {
+    localStorage.removeItem(CROP_COUNT_KEY);
+  }
+  return null;
+}
+
 export default function CollectionsBox({ isMobilePortrait }) {
   const [selectedCrop, setSelectedCrop] = useState(null);
-  const [cropCount, setCropCount] = useState([]);
+  const [cropCount, setCropCount] = useState(() => getCachedCropCounts() ?? {});
 
   const { isMuted, toggleMute } = useSound();
   const { crops, isReady, loadError, reloadGameData } = useGameData();
@@ -36,12 +49,24 @@ export default function CollectionsBox({ isMobilePortrait }) {
   }, []);
 
   useEffect(() => {
+    if (getCachedCropCounts()) return;
+
+    const controller = new AbortController();
+
     const fetchCount = async () => {
-      const res = await fetch(import.meta.env.VITE_API_URL + "/count");
-      const countList = await res.json();
-      setCropCount(countList);
+      try {
+        const res = await fetch(import.meta.env.VITE_API_URL + "/count", { signal: controller.signal });
+        if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+        const counts = await res.json();
+        localStorage.setItem(CROP_COUNT_KEY, JSON.stringify({ date: utcDateString(), counts }));
+        setCropCount(counts);
+      } catch (error) {
+        if (!controller.signal.aborted) console.error("Failed to fetch crop counts:", error);
+      }
     };
+
     fetchCount();
+    return () => controller.abort();
   }, []);
 
   if (!isReady || crops.length === 0) {
