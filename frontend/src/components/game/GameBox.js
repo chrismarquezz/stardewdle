@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
+import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
 import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
 import { isFullCropMatch, seasonSet } from "../../utils/cropCompare";
 
@@ -31,6 +33,12 @@ export default function GameBox({ isMobilePortrait }) {
   } = useGameData();
 
   const { isMuted, toggleMute } = useSound();
+  const { theme, toggleTheme } = useTheme();
+  const boxBackground = useThemedAsset(`/images/game/box-bg${isMobilePortrait ? "-sm" : ""}.webp`, theme);
+  const guessBackground = useThemedAsset(`/images/game/guesses.webp`, theme);
+  const selectedImage = useThemedAsset(`/images/selected-frame.webp`, theme);
+  const nameBannerImage = useThemedAsset(`/images/name-banner.webp`, theme);
+  const themeIcon = useThemedAsset("/images/buttons/icons/theme.webp", theme);
 
   const correctCrop = dailyData?.correctCrop;
 
@@ -239,9 +247,7 @@ export default function GameBox({ isMobilePortrait }) {
         : "flex-row justify-between w-full pl-3 mt-3"
         }`}
       style={{
-        backgroundImage: isMobilePortrait
-          ? "url('/images/game/box-bg-sm.webp')"
-          : "url('/images/game/box-bg.webp')",
+        backgroundImage: `url(${boxBackground})`,
         backgroundSize: "100% 100%",
         width: isMobilePortrait ? "940px" : "1600px",
         height: isMobilePortrait ? "1500px" : "800px",
@@ -250,7 +256,7 @@ export default function GameBox({ isMobilePortrait }) {
       <div
         className={
           isMobilePortrait
-            ? "flex justify-center items-center w-[76%] h-[47%] py-6"
+            ? "flex justify-center items-center w-full h-[47%] py-6"
             : "flex justify-center items-center h-full w-[90%] mt-[2px]"
         }
       >
@@ -275,20 +281,23 @@ export default function GameBox({ isMobilePortrait }) {
 
       <div className="flex flex-col align-center w-full place-items-center">
         <div
-          className={`flex flex-row items-center h-full ${isMobilePortrait ? "mt-20" : "mr-24 mt-[80px]"} gap-4`}
+          className={`flex flex-row items-center h-full gap-4 
+            ${theme === "light"
+              ? isMobilePortrait ? "mt-20" : "mr-24 mt-[80px]"
+              : isMobilePortrait ? "mt-7" : "mr-24 mt-[20px]"}`}
         >
           <div
-            className="relative bg-no-repeat bg-contain"
+            className="relative bg-center bg-no-repeat bg-contain flex items-center justify-center"
             style={{
-              backgroundImage: "url('/images/selected-frame.webp')",
-              width: "240px",
-              height: "164px",
+              backgroundImage: `url(${selectedImage})`,
+              width: theme === "light" ? "240px" : "300px",
+              height: theme === "light" ? "164px" : "205px",
             }}
           >
             {selectedCrop && (
               <div
                 style={spriteStyle}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[98.4px] w-[98.4px] bg-no-repeat"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[98.4px] w-[98.4px]"
                 title={selectedCrop.name}
               />
             )}
@@ -297,12 +306,15 @@ export default function GameBox({ isMobilePortrait }) {
             <div
               className="flex items-center justify-center bg-center bg-no-repeat bg-contain"
               style={{
-                backgroundImage: "url('/images/name-banner.webp')",
+                backgroundImage: `url(${nameBannerImage})`,
                 width: "416px",
                 height: "76px",
               }}
             >
-              <p className="text-5xl text-center text-main tracking-wide">
+              <p
+                className="text-5xl text-center text-main tracking-wide"
+                style={theme === "dark" ? { color: "#391D0B" } : undefined}
+              >
                 {selectedCrop ? formatName(selectedCrop.name) : ""}
               </p>
             </div>
@@ -340,7 +352,7 @@ export default function GameBox({ isMobilePortrait }) {
                   handleSubmit();
                 }}
                 isMobilePortrait={isMobilePortrait}
-                className={`mt-4 ${!selectedCrop || guesses.length >= 6 || gameOver
+                  className={`${theme === "light" ? "mt-4" : "mt-2"} ${!selectedCrop || guesses.length >= 6 || gameOver
                   ? "opacity-40 pointer-events-none"
                   : ""
                   }`}
@@ -349,23 +361,76 @@ export default function GameBox({ isMobilePortrait }) {
           </div>
         </div>
         <div
-          className={`${isMobilePortrait ? "ml-2 pl-6 pb-2" : "pl-9 mr-[78px]"
-            } mb-[84px] bg-center bg-no-repeat bg-contain min-h-[440px]`}
+          className={`mb-[84px] min-h-[440px]`}
           style={{
-            backgroundImage: "url('/images/game/guesses.webp')",
             width: isMobilePortrait ? "750px" : "772px",
             height: "456px",
           }}
         >
-          <GuessGrid guesses={guesses} answer={correctCrop} />
+          <div
+            className={`bg-center bg-no-repeat bg-contain min-h-[440px] flex justify-center items-center absolute
+              ${theme === "light"
+                ? isMobilePortrait ? "right-[94px]" : "right-[80px]"
+                : isMobilePortrait ? "right-[58px] top-[16%]" : "right-[12px] bottom-4"}`}
+            style={{
+              backgroundImage: `url(${guessBackground})`,
+              width: theme === "light"
+                ? isMobilePortrait ? "750px" : "772px"
+                : isMobilePortrait ? "830px" : "880px",
+              height: theme === "light" ? "456px" : "540px",
+            }}
+          >
+            <GuessGrid guesses={guesses} answer={correctCrop} isMobilePortrait={isMobilePortrait} />
+          </div>
         </div>
       </div>
       <div
-        className={`absolute flex gap-[5px] -top-[55px] right-0`}
+        className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? " flex-wrap w-[200px] -top-[112px] " : theme === "light" ? "" : " right-16 "}}`}
       >
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
+          label={"Help"}
+          isMuted={isMuted}
+          onClick={() => {
+            setShowHelp(true);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/buttons/icons/hint.webp"
+          showX={!Object.values(hints).some((value) => value)}
+          label="View Hints"
+          isMuted={isMuted}
+          onClick={() => {
+            setShowHints(true);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/buttons/icons/pencil.webp"
+          showX={!disableMode}
+          label={disableMode ? "Custom Disable: On" : "Custom Disable: Off"}
+          isMuted={isMuted}
+          onClick={() => {
+            setDisableMode((prev) => !prev);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -380,11 +445,11 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={disableMode ? "/images/pencil.webp" : "/images/pencil-off.webp"}
-          label={disableMode ? "Custom Disable: On" : "Custom Disable: Off"}
+          icon={themeIcon}
+          label={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           isMuted={isMuted}
           onClick={() => {
-            setDisableMode((prev) => !prev);
+            toggleTheme();
           }}
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
@@ -392,33 +457,7 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={Object.values(hints).some((value) => value) ? "/images/game/hint-on.webp" : "/images/game/hint-off.webp"}
-          label="View Hints"
-          isMuted={isMuted}
-          onClick={() => {
-            setShowHints(true);
-          }}
-          showLabel={true}
-          isMobilePortrait={isMobilePortrait}
-          soundPath={"/sounds/modal.mp3"}
-        />
-
-        <CustomButton
-          variant="icon"
-          icon={"/images/question-mark.webp"}
-          label={"Help"}
-          isMuted={isMuted}
-          onClick={() => {
-            setShowHelp(true);
-          }}
-          showLabel={true}
-          isMobilePortrait={isMobilePortrait}
-          soundPath={"/sounds/modal.mp3"}
-        />
-
-        <CustomButton
-          variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}

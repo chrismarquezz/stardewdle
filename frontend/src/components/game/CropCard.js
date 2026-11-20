@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
 
@@ -13,9 +15,15 @@ export default function CropCard({
   playClickSound = true,
   isMobilePortrait,
 }) {
+  const { theme } = useTheme();
   const formattedName = formatName(crop.name);
   const [isHovering, setIsHovering] = useState(false);
   const canInteract = interactable ?? guessable;
+
+  const disableColor = guessable ? "" 
+  : manuallyDisabled 
+      ? theme === "light" ? "mix-blend-multiply bg-gray-800 opacity-60 " : "opacity-70 bg-slate-800 mix-blend-multiply" 
+      : theme === "light" ? "mix-blend-multiply bg-gray-400 opacity-60 " : "opacity-40 bg-slate-800 mix-blend-multiply" 
 
   async function handleEndHover() {
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -42,9 +50,9 @@ export default function CropCard({
         }
         onClick(crop);
       }}
-      className={`relative w-16 h-16 p-1 flex items-center justify-center group ${canInteract ? "clickable" : ""} ${isHovering ? "z-10" : "z-0"}`}
+      className={`relative w-16 h-16 flex items-center justify-center group ${canInteract ? "clickable" : ""} ${isHovering ? "z-10" : "z-0"}`}
       style={{
-        backgroundImage: "url('/images/game/tile-bg.webp')",
+        backgroundImage: `url(${useThemedAsset("/images/game/tile-bg.webp", theme)})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         scale: isMobilePortrait ? "1.1" : "1",
@@ -53,17 +61,18 @@ export default function CropCard({
       onMouseLeave={() => handleEndHover()}
     >
       <div
-        className={`absolute w-full h-full opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
+        className={`absolute mix-blend-screen left-0 bottom-0 ${theme === "light" ? "opacity-60 top-0 right-0" : "opacity-30 top-1 right-1"} ${isSelected ? "bg-yellow-100" : ""}`}
       />
 
       <div
         style={spriteStyle}
-        className="w-full h-full m-[2px] ml-[6px] mb-[6px] z-10"
+        className={`w-full h-full m-[2px] ${theme === "light" ? "ml-[6px] mb-[6px]" : "ml-0 mb-0"} z-10`}
       />
 
       <div
-        className={`absolute w-full h-full opacity-70 mix-blend-multiply ${guessable ? "" : manuallyDisabled ? "bg-gray-800" : "bg-gray-400"}`}
+        className={`absolute left-0 bottom-0 ${theme === "light" ? "top-0 right-0" : "top-1 right-1"} ${disableColor}`}
       />
+
       <div
         className="absolute -top-5 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none z-50 whitespace-nowrap"
         style={{

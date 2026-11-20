@@ -15,7 +15,7 @@ function ToggleHint({ hintName, hintValue, setHints, isMuted }) {
             <p className="text-center">{formatName(displayName)}</p>
             <CustomButton
                 variant="toggle"
-                icon={hintValue ? "/images/game/toggle-on.webp" : "/images/game/toggle-off.webp"}
+                icon={hintValue ? "/images/buttons/icons/toggle-on.webp" : null}
                 label={`Toggle ${hintName} Hint`}
                 isMuted={isMuted}
                 onClick={() => {
