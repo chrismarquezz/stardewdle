@@ -1,3 +1,16 @@
+const tailwindPlugin = require('tailwindcss/plugin');
+
+const mainColor = '#BC6131';
+const mainDarkColor = '#984318';
+
+function toRgbChannels(hexColor) {
+  return hexColor
+    .slice(1)
+    .match(/.{2}/g)
+    .map((channel) => parseInt(channel, 16))
+    .join(' ');
+}
+
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
@@ -6,9 +19,10 @@ module.exports = {
         stardew: ["Stardew", "sans-serif"],
       },
       colors: {
-        'main': '#BC6131',
+        'main': 'rgb(var(--main-color) / <alpha-value>)',
         'correct': '#1E9365',
         'wrong': '#BE2617',
+        'main-dark': mainDarkColor
       },
       screens: {
         "3xl": "1700px",
@@ -29,5 +43,15 @@ module.exports = {
   },
   plugins: [
     require('tailwind-scrollbar'),
+    tailwindPlugin(({ addBase }) => {
+      addBase({
+        ':root': {
+          '--main-color': toRgbChannels(mainColor),
+        },
+        ':root[data-theme="dark"]': {
+          '--main-color': toRgbChannels(mainDarkColor),
+        },
+      });
+    }),
   ],
 };

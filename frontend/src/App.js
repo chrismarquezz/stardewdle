@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom
 import { useEffect } from "react";
 
 import { SoundProvider } from "./context/SoundContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import { GameDataProvider } from "./context/GameDataContext";
 import { ResponsiveProvider } from "./context/ResponsiveContext";
 
@@ -24,26 +25,28 @@ export default function App() {
   }, []);
 
   return (
-    <ResponsiveProvider>
-      <Router>
-        <Routes>
-          <Route path="/debug" element={<Debug />} />
-          <Route element={
-            <SoundProvider>
-              <GameDataProvider>
-                <Outlet />
-              </GameDataProvider>
-            </SoundProvider>
-          }>
-              <Route path="/" element={<Landing />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="/collections" element={<Collections />} />
-              <Route path="/count" element={<Count />} />
-              <Route path="/minigames" element={<Minigames />} />
-              <Route path="/reset-guess" element={<ResetGuess />} />
-          </Route>
-        </Routes>
-      </Router>
-    </ResponsiveProvider>
+    <ThemeProvider>
+      <ResponsiveProvider>
+        <Router>
+          <Routes>
+            <Route path="/debug" element={<Debug />} />
+            <Route element={
+              <SoundProvider>
+                <GameDataProvider>
+                  <Outlet />
+                </GameDataProvider>
+              </SoundProvider>
+            }>
+                <Route path="/" element={<Landing />} />
+                <Route path="/game" element={<Game />} />
+                <Route path="/collections" element={<Collections />} />
+                <Route path="/count" element={<Count />} />
+                <Route path="/minigames" element={<Minigames />} />
+                <Route path="/reset-guess" element={<ResetGuess />} />
+            </Route>
+          </Routes>
+        </Router>
+      </ResponsiveProvider>
+    </ThemeProvider>
   );
 }

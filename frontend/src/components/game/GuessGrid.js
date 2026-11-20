@@ -19,7 +19,7 @@ const W_STRETCH_MAP = {
   type: "90",
 };
 
-const COL_DIST = "64px 106px 106px 64px 150px 192px";
+const COL_DIST = "64px 106px 106px 64px 160px 192px";
 
 function capitalize(value) {
   if (typeof value === "string") {
@@ -67,7 +67,7 @@ function getArrow(key, guessValue, correctValue) {
   return null;
 }
 
-export default function GuessGrid({ guesses, answer, className }) {
+export default function GuessGrid({ guesses, answer, className, isMobilePortrait }) {
   const rows = Array.from({ length: 6 }).map((_, i) => {
     const guessEntry = guesses[i];
     const crop = guessEntry?.crop;
@@ -259,7 +259,11 @@ export default function GuessGrid({ guesses, answer, className }) {
   });
 
   return (
-    <div className={`space-y-[2px] h-full w-full items-center justify-center`}>
+    <div className={`space-y-[2px] h-full w-full flex items-center justify-center pb-2 ${isMobilePortrait ? "ml-2 pl-6" : "pl-9"}`}
+      style={{
+        width: isMobilePortrait ? "750px" : "772px",
+        height: "456px",
+      }}>
       <div
         className={`h-full w-full flex flex-col justify-center ${className}`}
       >

@@ -1,5 +1,7 @@
 import CropCard from "./CropCard";
 import { seasonSet } from "../../utils/cropCompare";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 
 const HINT_KEYS = ["growth_time", "base_price", "regrows", "type", "season"];
 
@@ -51,6 +53,7 @@ export default function CropGrid({
   manualDisables,
   onToggleDisable,
 }) {
+  const { theme } = useTheme();
 
   const gridStyles = isMobilePortrait
     ? {
@@ -64,12 +67,15 @@ export default function CropGrid({
 
   return (
     <div
-      className={`flex justify-center items-center ${isMobilePortrait ? "w-full -mt-[92px] h-[98%]" : "w-[90%] h-full"}`}
+      className={`flex justify-center items-center bg-center bg-no-repeat ${theme === "light"
+        ? isMobilePortrait ? "-mt-[92px] w-[76%] h-[98%]" : "w-[90%] h-full"
+          : isMobilePortrait ? "-mt-[92px] w-[84%] h-[112%]" : "w-[115%] h-[115%] -ml-2"
+        }`}
       style={{
-        backgroundImage: `url('/images/game/cropgrid-bg${isMobilePortrait ? "-mobile.webp" : ".webp"}')`,
-        backgroundSize: isMobilePortrait ? "100% 100%" : "90% 81%",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        backgroundImage: `url(${useThemedAsset(`/images/game/cropgrid-bg${isMobilePortrait ? "-mobile" : ""}.webp`, theme)})`,
+        backgroundSize: isMobilePortrait
+          ? "100% 100%" 
+          : "90% 81%",
       }}
     >
       <div
