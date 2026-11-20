@@ -5,6 +5,7 @@ export default function SpritePixelator({
     colIndex,
     rowIndex = 0,
     spriteSize = 48,
+    sourceSpriteSize = 16,
     pixelBlockLevel = 1
 }) {
     const canvasRef = useRef(null);
@@ -15,21 +16,21 @@ export default function SpritePixelator({
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const img = new Image();
 
-        img.src = `${bucketUrl}/sprites/${sheetName}.webp?v=20260821`;
+        img.src = `${bucketUrl}/sprites/${sheetName}.webp?v=20261119`;
 
         img.onload = () => {
-            const sourceX = colIndex * spriteSize;
-            const sourceY = rowIndex * spriteSize;
+            const sourceX = colIndex * sourceSpriteSize;
+            const sourceY = rowIndex * sourceSpriteSize;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.drawImage(
                 img,
-                sourceX, sourceY, spriteSize, spriteSize,
+                sourceX, sourceY, sourceSpriteSize, sourceSpriteSize,
                 0, 0, canvas.width, canvas.height
             );
         };
-    }, [sheetName, colIndex, rowIndex, spriteSize, pixelBlockLevel, bucketUrl]);
+    }, [sheetName, colIndex, rowIndex, spriteSize, sourceSpriteSize, pixelBlockLevel, bucketUrl]);
 
     const internalResolution = Math.max(1, Math.floor(spriteSize / pixelBlockLevel));
 
