@@ -122,7 +122,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 />
                                 <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                     <div
-                                        style={getSpriteStyle("villagers", spriteIndex, 0, 128)}
+                                        style={getSpriteStyle("villagers", spriteIndex, 0, 64)}
                                         className="z-10 scale-[78%]"
                                     />
                                     <div
