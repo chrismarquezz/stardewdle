@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
+import { useTheme } from "../context/ThemeContext";
+import { useThemedAsset } from "../hooks/useThemedAsset";
 import { useState } from "react";
 import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 
@@ -8,15 +10,26 @@ import { playSound } from "../utils/playSound";
 
 export default function Landing() {
   const { isMuted } = useSound();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const { width, height, scaleFactor } = useResponsiveLayout();
+
+  const titleImage = useThemedAsset("/images/stardewdleTitle.webp", theme);
 
   return (
     <div className="relative h-screen w-full overflow-y-auto">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backdropFilter: theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)",
+          WebkitBackdropFilter: theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)",
+        }}
       />
 
       <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden pb-10">
@@ -30,7 +43,7 @@ export default function Landing() {
           className="flex flex-col items-center justify-center gap-32"
         >
           <img
-            src="/images/stardewdleTitle.webp"
+            src={titleImage}
             alt="Stardewdle Title"
             className="max-w-[800px]"
           />

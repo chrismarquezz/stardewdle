@@ -2,6 +2,7 @@ import { formatName } from "../../utils/formatString";
 import { ATTRIBUTE_KEYS, isFullCropMatch, seasonSet } from "../../utils/cropCompare";
 import { useTheme } from "../../context/ThemeContext";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import CursorTooltip from "../CursorTooltip";
 
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
 
@@ -19,6 +20,23 @@ const W_STRETCH_MAP = {
   regrows: "75%",
   type: "87%",
   season: "90%",
+};
+
+const VALIDATION_OVERLAY_STYLES = {
+  light: {
+    blend: "mix-blend-multiply",
+    green: "bg-cyan-500",
+    yellow: "bg-amber-300",
+    red: "bg-red-700",
+    neutral: "bg-white",
+  },
+  dark: {
+    blend: "mix-blend-overlay",
+    green: "bg-green-400",
+    yellow: "bg-yellow-100",
+    red: "bg-red-400",
+    neutral: "",
+  },
 };
 
 const COL_DIST = "60px 106px 106px 60px 160px 192px";
@@ -71,6 +89,7 @@ function getArrow(key, guessValue, correctValue) {
 
 export default function GuessGrid({ guesses, answer, className, isMobilePortrait }) {
   const { theme } = useTheme();
+  const validationOverlayStyles = VALIDATION_OVERLAY_STYLES[theme];
   const boxImages = {
     Small: useThemedAsset("/images/game/boxSmall.webp", theme),
     Square: useThemedAsset("/images/game/boxSquare.webp", theme),
@@ -117,35 +136,19 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
         >
           {/* Color overlay */}
           <div
-            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${theme === "dark" ? "mix-blend-overlay" : "mix-blend-multiply"}
-               ${cropColor === "green"
-                ? "bg-cyan-500"
-                : cropColor === "red"
-                  ? "bg-red-700"
-                : theme === "light" ? "bg-white" : ""
-              }`}
+            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${validationOverlayStyles.blend} ${validationOverlayStyles[cropColor] ?? validationOverlayStyles.neutral}`}
           />
 
           {/* Crop image */}
           {crop?.crop_index > -1 && (
-            <div className="relative group w-12 h-12 flex items-center justify-center">
-              <div
-                style={spriteStyle}
-                className="relative z-10"
-              />
-              {/* Tooltip label */}
-              <div
-                className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                style={{
-                  backgroundImage: "url('/images/label.webp')",
-                  backgroundSize: "100% 100%",
-                  backgroundRepeat: "no-repeat",
-                  height: "28px",
-                }}
-              >
-                {formatName(crop.name)}
+            <CursorTooltip label={formatName(crop.name)}>
+              <div className="relative group w-12 h-12 flex items-center justify-center">
+                <div
+                  style={spriteStyle}
+                  className="relative z-10"
+                />
               </div>
-            </div>
+            </CursorTooltip>
           )}
         </div>
 
@@ -173,14 +176,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
             >
               {/* Color Overlay */}
               <div
-                className={`h-[75%] absolute inset-0 m-auto z-0 opacity-90 ${theme === "dark" ? "mix-blend-overlay" : "mix-blend-multiply"} ${color === "green"
-                  ? "bg-cyan-500"
-                  : color === "yellow"
-                    ? "bg-amber-300"
-                    : color === "red"
-                      ? "bg-red-700"
-                      : theme === "light" ? "bg-white" : ""
-                  }`}
+                className={`h-[75%] absolute z-0 opacity-90 ${validationOverlayStyles.blend} ${validationOverlayStyles[color] ?? validationOverlayStyles.neutral}`}
                 style={{ width: W_STRETCH_MAP[key] }}
               />
 
@@ -198,27 +194,18 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
                           ? value.map((s) => s.toLowerCase())
                           : []
                       ).map((season) => (
-                        <div
+                        <CursorTooltip
                           key={season}
-                          className="relative group flex items-center justify-center"
+                          label={season.charAt(0).toUpperCase() + season.slice(1)}
                         >
-                          <img
-                            src={`/images/game/${season}.webp`}
-                            alt={season}
-                            className="h-6 w-9"
-                          />
-                          <div
-                            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                            style={{
-                              backgroundImage: "url('/images/label.webp')",
-                              backgroundSize: "100% 100%",
-                              backgroundRepeat: "no-repeat",
-                              height: "28px",
-                            }}
-                          >
-                            {season.charAt(0).toUpperCase() + season.slice(1)}
+                          <div className="relative group flex items-center justify-center">
+                            <img
+                              src={`/images/game/${season}.webp`}
+                              alt={season}
+                              className="h-6 w-9"
+                            />
                           </div>
-                        </div>
+                        </CursorTooltip>
                       ))}
                     </div>
                   ) : typeof value === "boolean" ? (

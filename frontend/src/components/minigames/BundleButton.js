@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import CursorTooltip from "../CursorTooltip";
 import { playSound } from '../../utils/playSound';
 
 export default function BundleButton({
@@ -49,34 +50,24 @@ export default function BundleButton({
     };
 
     return (
-        <div
-            onClick={handleClick}
-            className={"group absolute clickable transition-transform duration-200 hover:scale-105 active:scale-95 -translate-y-1/2 -translate-x-1/2 " + positionClass}
-        >
+        <CursorTooltip label={`${label} Bundle`} fontSizeClassName="text-lg">
             <div
-                className="transition-transform duration-200 hover:scale-105 active:scale-95"
-                style={{
-                    backgroundImage: "url(/images/minigames/bundles.webp)",
-                    backgroundPosition: `${xPos}px ${yPos}px`,
-                    backgroundSize: `${256 * bundleScale}px ${112 * bundleScale}px`,
-                    width: iconSize,
-                    height: iconSize,
-                    filter: isFailed ? "grayscale(1)" : "none",
-                    imageRendering: 'pixelated',
-                }}
-            />
-
-            <div
-                className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-lg font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                style={{
-                    backgroundImage: "url('/images/label.webp')",
-                    backgroundSize: "100% 100%",
-                    backgroundRepeat: "no-repeat",
-                    height: "28px",
-                }}
+                onClick={handleClick}
+                className={"group absolute clickable transition-transform duration-200 hover:scale-105 active:scale-95 -translate-y-1/2 -translate-x-1/2 " + positionClass}
             >
-                {label} Bundle
+                <div
+                    className="transition-transform duration-200 hover:scale-105 active:scale-95"
+                    style={{
+                        backgroundImage: "url(/images/minigames/bundles.webp)",
+                        backgroundPosition: `${xPos}px ${yPos}px`,
+                        backgroundSize: `${256 * bundleScale}px ${112 * bundleScale}px`,
+                        width: iconSize,
+                        height: iconSize,
+                        filter: isFailed ? "grayscale(1)" : "none",
+                        imageRendering: 'pixelated',
+                    }}
+                />
             </div>
-        </div>
+        </CursorTooltip>
     );
 }
