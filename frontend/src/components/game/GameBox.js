@@ -18,6 +18,9 @@ import HelpModal from "./HelpModal";
 import UpdatesModal from "../UpdatesModal";
 import HintsModal from "./HintsModal";
 import CustomButton from "../CustomButton";
+import CursorTooltip from "../CursorTooltip";
+
+const DARK_SELECTED_FRAME_BACKGROUND_SCALE = (58 / 41) / (205 / 164);
 
 export default function GameBox({ isMobilePortrait }) {
   const {
@@ -38,7 +41,6 @@ export default function GameBox({ isMobilePortrait }) {
   const guessBackground = useThemedAsset(`/images/game/guesses.webp`, theme);
   const selectedImage = useThemedAsset(`/images/selected-frame.webp`, theme);
   const nameBannerImage = useThemedAsset(`/images/name-banner.webp`, theme);
-  const themeIcon = useThemedAsset("/images/buttons/icons/theme.webp", theme);
 
   const correctCrop = dailyData?.correctCrop;
 
@@ -287,19 +289,31 @@ export default function GameBox({ isMobilePortrait }) {
               : isMobilePortrait ? "mt-7" : "mr-24 mt-[20px]"}`}
         >
           <div
-            className="relative bg-center bg-no-repeat bg-contain flex items-center justify-center"
+            className="relative isolate flex items-center justify-center z-20"
             style={{
-              backgroundImage: `url(${selectedImage})`,
               width: theme === "light" ? "240px" : "300px",
               height: theme === "light" ? "164px" : "205px",
             }}
           >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 -z-10 bg-center bg-no-repeat bg-contain"
+              style={{
+                backgroundImage: `url(${selectedImage})`,
+                transform:
+                  theme === "dark"
+                    ? `scale(${DARK_SELECTED_FRAME_BACKGROUND_SCALE})`
+                    : undefined,
+                transformOrigin: "center",
+              }}
+            />
             {selectedCrop && (
-              <div
-                style={spriteStyle}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[98.4px] w-[98.4px]"
-                title={selectedCrop.name}
-              />
+              <CursorTooltip label={formatName(selectedCrop.name)}>
+                <div
+                  style={spriteStyle}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[98.4px] w-[98.4px]"
+                />
+              </CursorTooltip>
             )}
           </div>
           <div className="flex flex-col items-center">
@@ -312,8 +326,7 @@ export default function GameBox({ isMobilePortrait }) {
               }}
             >
               <p
-                className="text-5xl text-center text-main tracking-wide"
-                style={theme === "dark" ? { color: "#391D0B" } : undefined}
+                className={`text-5xl text-center ${theme === "dark" ? "text-alternative-dark" : "text-main"} tracking-wide`}
               >
                 {selectedCrop ? formatName(selectedCrop.name) : ""}
               </p>
@@ -352,10 +365,12 @@ export default function GameBox({ isMobilePortrait }) {
                   handleSubmit();
                 }}
                 isMobilePortrait={isMobilePortrait}
-                  className={`${theme === "light" ? "mt-4" : "mt-2"} ${!selectedCrop || guesses.length >= 6 || gameOver
-                  ? "opacity-40 pointer-events-none"
-                  : ""
-                  }`}
+                className={`${theme === "light" ? "mt-4" : "mt-2 z-10"} 
+                  ${!selectedCrop || guesses.length >= 6 || gameOver
+                    ? "opacity-40 pointer-events-none"
+                    : ""
+                  }`
+                }
               />
             )}
           </div>
@@ -371,7 +386,7 @@ export default function GameBox({ isMobilePortrait }) {
             className={`bg-center bg-no-repeat bg-contain min-h-[440px] flex justify-center items-center absolute
               ${theme === "light"
                 ? isMobilePortrait ? "right-[94px]" : "right-[80px]"
-                : isMobilePortrait ? "right-[58px] top-[16%]" : "right-[12px] bottom-4"}`}
+                : isMobilePortrait ? "right-[58px] top-[14.5%]" : "right-[12px] bottom-4"}`}
             style={{
               backgroundImage: `url(${guessBackground})`,
               width: theme === "light"
@@ -445,7 +460,7 @@ export default function GameBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={themeIcon}
+          icon="/images/buttons/icons/theme.webp"
           label={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           isMuted={isMuted}
           onClick={() => {

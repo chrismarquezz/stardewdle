@@ -69,7 +69,7 @@ export default function CropGrid({
     <div
       className={`flex justify-center items-center bg-center bg-no-repeat ${theme === "light"
         ? isMobilePortrait ? "-mt-[100px] w-[76%] h-[98%]" : "w-[90%] h-full"
-        : isMobilePortrait ? "-mt-[32px] w-[84%] h-[112%]" : "w-[115%] h-[115%] -ml-2"
+        : isMobilePortrait ? "-mt-[64px] w-[84%] h-[112%]" : "w-[115%] h-[115%] -ml-2"
         }`}
       style={{
         backgroundImage: `url(${useThemedAsset(`/images/game/cropgrid-bg${isMobilePortrait ? "-mobile" : ""}.webp`, theme)})`,
