@@ -1,5 +1,7 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { playSound } from "../../utils/playSound";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { useTimeUntilMidnightUTC } from "../../hooks/useTimeUntilMidnightUTC";
@@ -14,6 +16,13 @@ export default function MinigamesShareModal({
 }) {
   const [copied, setCopied] = useState(false);
   const timeLeft = useTimeUntilMidnightUTC();
+  const { theme } = useTheme();
+  const backgroundImage = useThemedAsset("/images/help-bg.webp", theme);
+  const modalTextClassName = theme === "dark" ? "[&_.text-main]:text-alternative-dark" : "";
+  const sharePanelTintClassName = theme === "dark" ? "bg-[#A58C66]" : "bg-[#FFD789]";
+  const mainBackgroundClassName = theme === "dark" ? "bg-alternative-dark" : "bg-main";
+  const mainBorderClassName = theme === "dark" ? "border-alternative-dark" : "border-main";
+  const buttonHoverClassName = theme === "dark" ? "hover:bg-[#984318]" : "hover:bg-[#9c4f26]";
 
   const playCloseSound = () => {
     if (!isMuted) {
@@ -44,15 +53,15 @@ export default function MinigamesShareModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8"
+          className={`justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8 ${modalTextClassName} ${scrollbarStyles}`}
           style={{
-            backgroundImage: "url('/images/help-bg.webp')",
+            backgroundImage: `url('${backgroundImage}')`,
             backgroundSize: "100% 100%",
           }}
         >
           <button
             onClick={playCloseSound}
-            className="clickable absolute left-4 md:left-6 top-1 text-main text-4xl md:text-6xl hover:text-red-500 z-20"
+            className="clickable absolute left-4 md:left-6 top-1 text-main text-4xl md:text-6xl hover:text-wrong z-20"
           >
             x
           </button>
@@ -66,13 +75,13 @@ export default function MinigamesShareModal({
               {totalSuccesses ?? 0} out of {totalAttempts ?? 0} people have restored the Community Center today!
             </p>
 
-            <p className={`bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full ${scrollbarStyles}`}>
+            <p className={`${sharePanelTintClassName} mx-auto bg-opacity-60 border-2 ${mainBorderClassName} p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full ${scrollbarStyles}`}>
               {shareText}
             </p>
 
             <button
               onClick={handleCopy}
-              className="mt-4 clickable w-[80%] mx-auto bg-main text-white text-2xl md:text-4xl py-2 hover:bg-[#9c4f26] transition"
+              className={`mt-4 clickable w-[80%] mx-auto ${mainBackgroundClassName} text-white text-2xl md:text-4xl py-2 ${buttonHoverClassName} transition`}
             >
               {copied ? "Copied to Clipboard!" : "Share"}
             </button>

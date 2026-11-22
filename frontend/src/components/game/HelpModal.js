@@ -1,10 +1,15 @@
 import { useState } from "react";
 
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import CustomModal from "../CustomModal";
 
 export default function HelpModal({ isMuted, onClose, scaleFactor }) {
   const [first, setFirst] = useState(true);
+  const { theme } = useTheme();
+  const leftArrow = useThemedAsset("/images/arrow4L.webp", theme);
+  const rightArrow = useThemedAsset("/images/arrow4R.webp", theme);
 
   const pageToggle = (
     <>
@@ -13,7 +18,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
         disabled={first}
         className={`absolute top-6 md:top-10 right-12 md:right-24 ${first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
       >
-        <img src="/images/arrow4L.webp" className="scale-[2] md:scale-[4]" />
+        <img src={leftArrow} className="scale-[2] md:scale-[4]" />
       </button>
 
       <button
@@ -21,7 +26,7 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
         disabled={!first}
         className={`absolute top-6 md:top-10 right-6 md:right-14 ${!first ? "opacity-50 pointer-events-none" : "hover:brightness-150 clickable"}`}
       >
-        <img src="/images/arrow4R.webp" className="scale-[2] md:scale-[4]" />
+        <img src={rightArrow} className="scale-[2] md:scale-[4]" />
       </button>
     </>
   );

@@ -1,4 +1,6 @@
 import ReactDOM from "react-dom";
+import { useTheme } from "../context/ThemeContext";
+import { useThemedAsset } from "../hooks/useThemedAsset";
 import { playSound } from "../utils/playSound";
 
 export default function CustomModal({
@@ -10,6 +12,9 @@ export default function CustomModal({
   headerContent,
   children,
 }) {
+  const { theme } = useTheme();
+  const backgroundImage = useThemedAsset("/images/help-bg.webp", theme);
+
   const playCloseSound = () => {
     if (!isMuted) {
       playSound("/sounds/modal.mp3");
@@ -31,15 +36,15 @@ export default function CustomModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8"
+          className={`justify-center align-middle relative z-10 flex flex-col overflow-y-auto p-4 md:pl-8 md:pr-8 ${theme === "dark" ? "[&_.text-main]:text-alternative-dark" : ""}`}
           style={{
-            backgroundImage: "url('/images/help-bg.webp')",
+            backgroundImage: `url('${backgroundImage}')`,
             backgroundSize: "100% 100%",
           }}
         >
           <button
             onClick={playCloseSound}
-            className="clickable absolute top-0 left-3 md:left-6 text-main text-4xl md:text-7xl hover:text-red-500"
+            className="clickable absolute top-0 left-3 md:left-6 text-main text-4xl md:text-7xl hover:text-wrong"
           >
             x
           </button>
