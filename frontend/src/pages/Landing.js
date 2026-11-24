@@ -149,12 +149,12 @@ export default function Landing() {
                 x
               </button>
 
-              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold mb-2">
+              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold">
                 Credits
               </h2>
 
-              <div className="mt-6 space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto">
-                <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54 clickable" className="underline">Omar</a>.</p>
+              <div className="space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto p-4">
+                <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54" className="underline clickable">Omar</a>.</p>
                 <p>- Artwork and sounds by ConcernedApe.</p>
                 <p>- Inspired by Wordle and Stardew Valley.</p>
                 <p>- Stardewdle.com is the only site associated with us.</p>
