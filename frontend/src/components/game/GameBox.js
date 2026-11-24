@@ -240,6 +240,7 @@ export default function GameBox({ isMobilePortrait }) {
     backgroundPosition: `${selectionOffset}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (
