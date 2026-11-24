@@ -122,7 +122,7 @@ export default function Landing() {
           }}
         >
           <div
-            className="relative max-w-[95vw] max-h-[95vh] flex flex-col"
+            className="relative max-w-[95vw] md:max-w-[70vw] lg:max-w-[50vw] max-h-[50vh] md:max-h-[70vh] flex flex-col"
             style={{
               transform: `scale(${scaleFactor})`,
               transformOrigin: "center",
@@ -131,7 +131,7 @@ export default function Landing() {
           >
             {/* Content */}
             <div
-              className="relative z-10 flex flex-col overflow-y-auto p-4"
+              className="relative z-10 overflow-y-auto p-4"
               style={{
                 backgroundImage: "url('/images/paper-note.webp')",
                 backgroundSize: "100% 100%",
@@ -149,11 +149,11 @@ export default function Landing() {
                 x
               </button>
 
-              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold">
+              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold flex flex-col">
                 Credits
               </h2>
 
-              <div className="space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto p-4">
+              <div className="space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto p-4 flex flex-col">
                 <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54" className="underline clickable">Omar</a>.</p>
                 <p>- Artwork and sounds by ConcernedApe.</p>
                 <p>- Inspired by Wordle and Stardew Valley.</p>

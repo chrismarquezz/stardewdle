@@ -401,7 +401,7 @@ export default function GameBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? " flex-wrap w-[200px] -top-[114px] " : theme === "light" ? "" : " right-16 "}}`}
+        className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? " flex-wrap w-[200px] -top-[116px] " : theme === "light" ? "" : " right-16 "}}`}
       >
         <CustomButton
           variant="icon"
