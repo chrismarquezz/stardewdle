@@ -6,10 +6,15 @@ import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { playSound } from "../../utils/playSound";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import CustomButton from "../CustomButton";
 import CursorTooltip from "../CursorTooltip";
 import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 
 export default function QuotesGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { quotes, dailyData } = useGameData();
@@ -87,13 +92,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                         theme={theme}
                         scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
                     />
-                    <div
-                        style={{
-                            backgroundImage: `url('/images/minigames/bundleIcons/helper.webp')`,
-                            imageRendering: 'pixelated',
-                        }}
-                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
-                    />
+                    <BundleIcon icon="/images/minigames/bundleIcons/helper.webp" theme={theme} />
                 </div>
                 <div
                     className="relative isolate flex flex-col gap-1 justify-center items-center p-4 w-full h-[58%] aspect-[5/3]"
@@ -110,7 +109,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                             const isRevealed = idx < revealedCount || gameState.complete;
                             if (idx >= revealedCount + 1 && !gameState.complete) return;
                             return (
-                                <div key={idx} className={`text-center px-1 ${theme === "light" ? "text-main bg-white" : "text-alternative-dark bg-main"} ${isRevealed ? 'bg-opacity-30 w-[90%]' : 'bg-opacity-15'}`}>
+                                <div key={idx} className={`text-center px-1 ${theme === "light" ? "text-main bg-white" : "text-alternative-dark bg-[#825230]"} ${isRevealed ? 'bg-opacity-30 w-[90%]' : 'bg-opacity-15'}`}>
                                     {isRevealed ? (
                                         <p className="text-4xl md:text-2xl">{quoteText}</p>
                                     ) : (
@@ -149,12 +148,12 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 key={idx}
                             >
                                 <div
-                                    className={`w-[100px] h-[100px] absolute z-0 opacity-90 mix-blend-multiply ${isCorrect ? "bg-cyan-500" : "bg-red-700"}`}
+                                    className={`w-[100px] h-[100px] absolute z-0 opacity-90 ${isCorrect ? getCorrectGuessOverlayClass(theme) : getWrongGuessOverlayClass(theme)}`}
                                 />
                                 <CursorTooltip label={formatName(guess)}>
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", spriteIndex, 0, 64)}
+                                            style={getSpriteStyle("villagers", spriteIndex, 0, 64, theme)}
                                             className="z-10 scale-[78%]"
                                         />
                                     </div>
@@ -205,7 +204,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 {selectedVillager ?
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64)}
+                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64, theme)}
                                             className="z-10 scale-[78%] clickable"
                                         />
                                     </div>
@@ -280,14 +279,14 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                     <CursorTooltip label={formatName(villager.name)}>
                                                         <div className={`relative group flex flex-col items-center ${theme === " light" ? "" : "-bottom-1 left-0"}`}>
                                                             <div
-                                                                style={getSpriteStyle("villagers", villager.index, 0, 64)}
+                                                                style={getSpriteStyle("villagers", villager.index, 0, 64, theme)}
                                                                 className="scale-[58%]"
                                                             />
                                                         </div>
                                                     </CursorTooltip>
                                                 ) : (
                                                     <div className="flex justify-start items-center w-full h-full">
-                                                            <div style={getSpriteStyle("villagers", villager.index, 0, 64)} className={`relative scale-[58%] -ml-3 ${theme === " light" ? "" : "-bottom-0.5 left-0"}`} />
+                                                            <div style={getSpriteStyle("villagers", villager.index, 0, 64, theme)} className={`relative scale-[58%] -ml-3 ${theme === " light" ? "" : "-bottom-0.5 left-0"}`} />
                                                         <div className={`w-1/4 text-3xl md:text-xl font-medium ${listSelectorTextClassName} text-left leading-none z-10`}>{formatName(villager.name)}</div>
                                                     </div>
                                                 )}

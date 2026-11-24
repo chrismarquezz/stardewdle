@@ -3,6 +3,11 @@ import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
+import {
+  getCorrectGuessOverlayClass,
+  getPartialGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 import CustomModal from "../CustomModal";
 
 export default function HelpModal({ isMuted, onClose, scaleFactor }) {
@@ -50,15 +55,15 @@ export default function HelpModal({ isMuted, onClose, scaleFactor }) {
             <div className="flex flex-row items-center gap-4 md:gap-10 text-nowrap">
               <div className="ml-6 md:ml-10 mt-2 md:mt-4 space-y-3 md:space-y-5">
                 <div className="flex items-center gap-2 md:gap-4">
-                  <div className="w-4 h-4 md:w-8 md:h-8 bg-cyan-500 border md:border-2 border-cyan-600 rounded-sm mix-blend-multiply opacity-90" />
+                  <div className={`w-4 h-4 md:w-8 md:h-8 border md:border-2 ${theme === "dark" ? "border-green-500" : "border-cyan-600"} rounded-sm opacity-90 ${getCorrectGuessOverlayClass(theme)}`} />
                   <span>Exact match</span>
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
-                  <div className="w-4 h-4 md:w-8 md:h-8 bg-amber-300 border md:border-2 border-amber-400 rounded-sm mix-blend-multiply opacity-90" />
+                  <div className={`w-4 h-4 md:w-8 md:h-8 border md:border-2 ${theme === "dark" ? "border-yellow-200" : "border-amber-400"} rounded-sm opacity-90 ${getPartialGuessOverlayClass(theme)}`} />
                   <span>Partial match</span>
                 </div>
                 <div className="flex items-center gap-2 md:gap-4">
-                  <div className="w-4 h-4 md:w-8 md:h-8 bg-red-700 border md:border-2 border-red-800 rounded-sm mix-blend-multiply opacity-90" />
+                  <div className={`w-4 h-4 md:w-8 md:h-8 border md:border-2 border-wrong rounded-sm opacity-90 ${getWrongGuessOverlayClass(theme)}`} />
                   <span>Incorrect</span>
                 </div>
               </div>

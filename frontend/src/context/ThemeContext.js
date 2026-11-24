@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 const ThemeContext = createContext(null);
 const THEME_STORAGE_KEY = "stardewdle-theme";
@@ -11,8 +17,11 @@ function getStoredTheme() {
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(getStoredTheme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  useEffect(() => {
     localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 

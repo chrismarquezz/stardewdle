@@ -6,9 +6,14 @@ import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { playSound } from "../../utils/playSound";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import SpritePixelator from "./SpritePixelator";
 import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 import CustomButton from "../CustomButton";
 import CursorTooltip from "../CursorTooltip";
 
@@ -114,13 +119,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                         theme={theme}
                         scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
                     />
-                    <div
-                        style={{
-                            backgroundImage: `url('/images/minigames/bundleIcons/geologist.webp')`,
-                            imageRendering: 'pixelated',
-                        }}
-                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
-                    />
+                    <BundleIcon icon="/images/minigames/bundleIcons/geologist.webp" theme={theme} />
                 </div>
                 <div
                     className="relative isolate flex flex-col justify-center items-center p-4 aspect-[5/3]"
@@ -137,7 +136,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                             type="button"
                             onClick={() => setSelectedBlurLevelIndex(activeBlurLevelIndex - 1)}
                             disabled={activeBlurLevelIndex === 0}
-                            className={`absolute left-0 z-10 ${activeBlurLevelIndex === 0 ? "opacity-50 pointer-events-none" : "hover:brightness-125 clickable"}`}
+                            className={`absolute left-0 z-10 ${activeBlurLevelIndex === 0 ? "opacity-40 pointer-events-none" : "hover:brightness-125 clickable"}`}
                         >
                             <img src={leftArrow} className="scale-[6] md:scale-[4]" />
                         </button>
@@ -160,7 +159,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                             type="button"
                             onClick={() => setSelectedBlurLevelIndex(activeBlurLevelIndex + 1)}
                             disabled={activeBlurLevelIndex >= maxUnlockedBlurLevelIndex}
-                            className={`absolute right-0 z-10 ${activeBlurLevelIndex >= maxUnlockedBlurLevelIndex ? "opacity-50 pointer-events-none" : "hover:brightness-125 clickable"}`}
+                            className={`absolute right-0 z-10 ${activeBlurLevelIndex >= maxUnlockedBlurLevelIndex ? "opacity-40 pointer-events-none" : "hover:brightness-125 clickable"}`}
                         >
                             <img src={rightArrow} className="scale-[6] md:scale-[4]" />
                         </button>
@@ -195,12 +194,12 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                 key={idx}
                             >
                                 <div
-                                    className={`w-[75%] h-[75%] absolute z-0 opacity-90 mix-blend-multiply ${isCorrect ? "bg-cyan-500" : "bg-red-700"}`}
+                                    className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${isCorrect ? getCorrectGuessOverlayClass(theme) : getWrongGuessOverlayClass(theme)}`}
                                 />
                                 <CursorTooltip label={formatName(guess)}>
                                     <div className="group w-[108px] h-[108px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("geology", spriteIndex)}
+                                            style={getSpriteStyle("geology", spriteIndex, 0, 16, theme)}
                                             className="z-10 scale-[130%]"
                                         />
                                     </div>
@@ -328,7 +327,13 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                                     <div className={`absolute top-0 left-0 w-full h-full opacity-60 mix-blend-screen bg-yellow-100`} />
                                                 }
                                                 <div className="flex justify-start items-center gap-3 w-full h-12">
-                                                    {showIcons && <div style={getSpriteStyle("geology", item.index)} className="scale-[87.5%] grayscale brightness-50" />}
+                                                    {showIcons && <div
+                                                        style={{
+                                                            ...getSpriteStyle("geology", item.index, 0, 16, theme),
+                                                            filter: `grayscale(100%) brightness(50%)${theme === "dark" ? " brightness(90%)" : ""}`,
+                                                        }}
+                                                        className="scale-[87.5%]"
+                                                    />}
                                                     <div className={`text-3xl md:text-xl font-medium ${listSelectorTextClassName} z-10 ${showIcons ? "w-2/3 text-left" : "w-full text-center"}`}>{item.name}</div>
                                                 </div>
                                             </button>
