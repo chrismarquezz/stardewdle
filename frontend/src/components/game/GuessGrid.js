@@ -1,25 +1,44 @@
 import { formatName } from "../../utils/formatString";
 import { ATTRIBUTE_KEYS, isFullCropMatch, seasonSet } from "../../utils/cropCompare";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getPartialGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
+import CursorTooltip from "../CursorTooltip";
 
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
 
 const BOX_IMAGE_MAP = {
-  growth_time: "Small", //106px
-  season: "Large", //192px
-  base_price: "Small", //106px
-  regrows: "Square", //64px
-  type: "Small", //150px
+  growth_time: "Small", //106px -- 40
+  base_price: "Small", //106px -- 40
+  regrows: "Square", //64px -- 24
+  type: "Medium", //160px -- 60
+  season: "Large", //192px -- 72
 };
 
 const W_STRETCH_MAP = {
-  growth_time: "90",
-  season: "90",
-  base_price: "90",
-  regrows: "75",
-  type: "90",
+  growth_time: "81%",
+  base_price: "81%",
+  regrows: "75%",
+  type: "87%",
+  season: "90%",
 };
 
-const COL_DIST = "64px 106px 106px 64px 150px 192px";
+const VALIDATION_OVERLAY_STYLES = {
+  light: {
+    blend: "mix-blend-multiply",
+    neutral: "bg-white",
+  },
+  dark: {
+    blend: "mix-blend-overlay",
+    neutral: "",
+  },
+};
+
+const COL_DIST = "60px 106px 106px 60px 160px 192px";
 
 function capitalize(value) {
   if (typeof value === "string") {
@@ -67,7 +86,16 @@ function getArrow(key, guessValue, correctValue) {
   return null;
 }
 
-export default function GuessGrid({ guesses, answer, className }) {
+export default function GuessGrid({ guesses, answer, className, isMobilePortrait }) {
+  const { theme } = useTheme();
+  const validationOverlayStyles = VALIDATION_OVERLAY_STYLES[theme];
+  const boxImages = {
+    Small: useThemedAsset("/images/game/boxSmall.webp", theme),
+    Square: useThemedAsset("/images/game/boxSquare.webp", theme),
+    Medium: useThemedAsset("/images/game/boxMedium.webp", theme),
+    Large: useThemedAsset("/images/game/boxLarge.webp", theme),
+  };
+
   const rows = Array.from({ length: 6 }).map((_, i) => {
     const guessEntry = guesses[i];
     const crop = guessEntry?.crop;
@@ -87,19 +115,26 @@ export default function GuessGrid({ guesses, answer, className }) {
       width: '40px',
       height: '40px',
       imageRendering: 'pixelated',
+      ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
     };
+    const cropOverlayClass =
+      cropColor === "green"
+        ? getCorrectGuessOverlayClass(theme)
+        : cropColor === "red"
+          ? getWrongGuessOverlayClass(theme)
+          : `${validationOverlayStyles.blend} ${validationOverlayStyles.neutral}`;
 
     return (
       <div
         key={i}
-        className="grid gap-1 items-center w-full"
+        className="grid gap-[3px] items-center w-full mb-[3px]"
         style={{ gridTemplateColumns: COL_DIST }}
       >
         {/* Frame image */}
         <div
-          className="relative h-[60px] flex items-center justify-center"
+          className="relative h-[60px] w-[60px] flex items-center justify-center"
           style={{
-            backgroundImage: "url('/images/game/boxSquare.webp')",
+            backgroundImage: `url('${boxImages.Square}')`,
             backgroundSize: "100% 100%",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
@@ -107,35 +142,19 @@ export default function GuessGrid({ guesses, answer, className }) {
         >
           {/* Color overlay */}
           <div
-            className={`w-[75%] h-[75%] absolute z-0 opacity-90 mix-blend-multiply 
-               ${cropColor === "green"
-                ? "bg-cyan-500"
-                : cropColor === "red"
-                  ? "bg-red-700"
-                  : "bg-white"
-              }`}
+            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${cropOverlayClass}`}
           />
 
           {/* Crop image */}
           {crop?.crop_index > -1 && (
-            <div className="relative group w-[40px] h-[40px] flex items-center justify-center">
-              <div
-                style={spriteStyle}
-                className="relative z-10 w-[40px] h-[40px]"
-              />
-              {/* Tooltip label */}
-              <div
-                className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                style={{
-                  backgroundImage: "url('/images/label.webp')",
-                  backgroundSize: "100% 100%",
-                  backgroundRepeat: "no-repeat",
-                  height: "28px",
-                }}
-              >
-                {formatName(crop.name)}
+            <CursorTooltip label={formatName(crop.name)}>
+              <div className="relative group w-12 h-12 flex items-center justify-center">
+                <div
+                  style={spriteStyle}
+                  className="relative z-10"
+                />
               </div>
-            </div>
+            </CursorTooltip>
           )}
         </div>
 
@@ -149,14 +168,21 @@ export default function GuessGrid({ guesses, answer, className }) {
           const arrow = guessEntry
             ? getArrow(key, value, correctValue)
             : "null";
+          const overlayClass =
+            color === "red"
+              ? getWrongGuessOverlayClass(theme)
+              : color === "green"
+                ? getCorrectGuessOverlayClass(theme)
+                : color === "yellow"
+                  ? getPartialGuessOverlayClass(theme)
+                  : `${validationOverlayStyles.blend} ${validationOverlayStyles.neutral}`;
 
           return (
             <div
               key={j}
               className="relative h-full flex items-center justify-center text-2xl leading-none"
               style={{
-                backgroundImage: `url('/images/game/box${BOX_IMAGE_MAP[key] || "Large"
-                  }.webp')`,
+                backgroundImage: `url('${boxImages[BOX_IMAGE_MAP[key] || "Large"]}')`,
                 backgroundSize: "100% 100%",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -164,15 +190,8 @@ export default function GuessGrid({ guesses, answer, className }) {
             >
               {/* Color Overlay */}
               <div
-                className={`w-[${W_STRETCH_MAP[key]
-                  }%] h-[75%] absolute inset-0 m-auto z-0 rounded-sm opacity-90 mix-blend-multiply ${color === "green"
-                    ? "bg-cyan-500"
-                    : color === "yellow"
-                      ? "bg-amber-300"
-                      : color === "red"
-                        ? "bg-red-700"
-                        : "bg-white"
-                  }`}
+                className={`h-[75%] absolute z-0 opacity-90 ${overlayClass}`}
+                style={{ width: W_STRETCH_MAP[key] }}
               />
 
               {/* Content */}
@@ -182,34 +201,25 @@ export default function GuessGrid({ guesses, answer, className }) {
               >
                 {guessEntry ? (
                   key === "season" ? (
-                    <div className="flex gap-1 items-center justify-center">
+                    <div className="flex gap-[3px] items-center justify-center">
                       {(String(value) === "all"
                         ? ["spring", "summer", "fall", "winter"]
                         : Array.isArray(value)
                           ? value.map((s) => s.toLowerCase())
                           : []
                       ).map((season) => (
-                        <div
+                        <CursorTooltip
                           key={season}
-                          className="relative group flex items-center justify-center"
+                          label={season.charAt(0).toUpperCase() + season.slice(1)}
                         >
-                          <img
-                            src={`/images/game/${season}.webp`}
-                            alt={season}
-                            className="h-6 w-9"
-                          />
-                          <div
-                            className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                            style={{
-                              backgroundImage: "url('/images/label.webp')",
-                              backgroundSize: "100% 100%",
-                              backgroundRepeat: "no-repeat",
-                              height: "28px",
-                            }}
-                          >
-                            {season.charAt(0).toUpperCase() + season.slice(1)}
+                          <div className="relative group flex items-center justify-center">
+                            <img
+                              src={`/images/game/${season}.webp`}
+                              alt={season}
+                              className="h-6 w-9"
+                            />
                           </div>
-                        </div>
+                        </CursorTooltip>
                       ))}
                     </div>
                   ) : typeof value === "boolean" ? (
@@ -259,12 +269,16 @@ export default function GuessGrid({ guesses, answer, className }) {
   });
 
   return (
-    <div className={`space-y-[2px] h-full w-full items-center justify-center`}>
+    <div className={`space-y-[2px] h-full w-full flex items-center justify-center pb-2 ${isMobilePortrait ? "ml-2 pl-5" : "pl-9"}`}
+      style={{
+        width: isMobilePortrait ? "750px" : "772px",
+        height: "456px",
+      }}>
       <div
         className={`h-full w-full flex flex-col justify-center ${className}`}
       >
         {/* Headers */}
-        <div className="grid gap-1" style={{ gridTemplateColumns: COL_DIST }}>
+        <div className="grid gap-[3px]" style={{ gridTemplateColumns: COL_DIST }}>
           <div className="text-center text-3xl text-main leading-none">
             Crop
           </div>

@@ -1,6 +1,8 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
 import CustomButton from "../CustomButton";
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { playSound } from "../../utils/playSound";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { useTimeUntilMidnightUTC } from "../../hooks/useTimeUntilMidnightUTC";
@@ -16,6 +18,14 @@ export default function ShareModal({
 }) {
   const [copied, setCopied] = useState(false);
   const timeLeft = useTimeUntilMidnightUTC();
+  const { theme } = useTheme();
+  const backgroundImage = useThemedAsset("/images/help-bg.webp", theme);
+  const modalTextClassName = theme === "dark" ? "[&_.text-main]:text-alternative-dark" : "";
+  const sharePanelTintClassName = theme === "dark" ? "bg-[#A58C66]" : "bg-[#FFD789]";
+  const graphTrackTintClassName = theme === "dark" ? "bg-[#A58C66]" : "bg-[#FFD789]";
+  const mainBackgroundClassName = theme === "dark" ? "bg-alternative-dark text-[#BC6131]" : "bg-main";
+  const mainBorderClassName = theme === "dark" ? "border-alternative-dark" : "border-main";
+  const buttonHoverClassName = theme === "dark" ? "hover:bg-[#984318]" : "hover:bg-[#9c4f26]";
 
   const [showStats, setShowStats] = useState(false);
 
@@ -65,15 +75,15 @@ export default function ShareModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8"
+          className={`justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8 ${modalTextClassName} ${scrollbarStyles}`}
           style={{
-            backgroundImage: "url('/images/help-bg.webp')",
+            backgroundImage: `url('${backgroundImage}')`,
             backgroundSize: "100% 100%",
           }}
         >
           <button
             onClick={playCloseSound}
-            className="clickable absolute left-4 md:left-6 top-1 text-main text-4xl md:text-6xl hover:text-red-500 z-20"
+            className="clickable absolute left-4 md:left-6 top-1 text-main text-4xl md:text-6xl hover:text-wrong z-20"
           >
             x
           </button>
@@ -87,21 +97,21 @@ export default function ShareModal({
               {correctGuesses ?? 0} out of {totalGuesses ?? 0} people have solved today's puzzle!
             </p>
 
-            <p className=" bg-[#FFD789] mx-auto bg-opacity-60 border-2 border-main p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full">
+            <p className={`${sharePanelTintClassName} mx-auto bg-opacity-60 border-2 ${mainBorderClassName} p-4 text-main text-md md:text-xl whitespace-pre text-center flex-wrap overflow-y-auto w-full ${scrollbarStyles}`}>
               {shareText}
             </p>
 
             <div className="md:mt-1 w-[80%] mx-auto flex items-center justify-center gap-2">
               <button
                 onClick={handleCopy}
-                className="mt-4 clickable w-[75%] bg-main text-white text-2xl md:text-4xl py-2 hover:bg-[#9c4f26] transition"
+                className={`mt-4 clickable w-[75%] ${mainBackgroundClassName} text-white text-2xl md:text-4xl py-2 ${buttonHoverClassName} transition`}
               >
                 {copied ? "Copied to Clipboard!" : "Share"}
               </button>
 
               <button
                 onClick={() => {setShowStats(!showStats)}}
-                className="mt-4 clickable w-[25%] bg-main text-white text-2xl md:text-4xl py-2 hover:bg-[#9c4f26] transition"
+                className={`mt-4 clickable w-[25%] ${mainBackgroundClassName} text-white text-2xl md:text-4xl py-2 ${buttonHoverClassName} transition`}
               >
                 {showStats ? "Hide" : "Stats"}
               </button>
@@ -111,9 +121,9 @@ export default function ShareModal({
         </div>
         {showStats && 
           <div
-            className="justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8"
+            className={`justify-center align-middle relative z-10 overflow-y-auto p-8 py-4 md:py-8 ${modalTextClassName} ${scrollbarStyles}`}
             style={{
-              backgroundImage: "url('/images/help-bg.webp')",
+              backgroundImage: `url('${backgroundImage}')`,
               backgroundSize: "100% 100%",
             }}
           >
@@ -141,7 +151,7 @@ export default function ShareModal({
                 </div>
               </div>
 
-              <h2 className="text-main text-center text-2xl md:text-4xl font-bold md:mb-1 pt-1 border-t-2 border-main">
+              <h2 className={`text-main text-center text-2xl md:text-4xl font-bold md:mb-1 pt-1 border-t-2 ${mainBorderClassName}`}>
                 Guess Distribution
               </h2>
 
@@ -153,9 +163,9 @@ export default function ShareModal({
                   return (
                     <div key={num} className="flex items-center text-main text-base md:text-xl">
                       <span className="w-4 font-bold">{num}</span>
-                      <div className="flex-1 ml-3 bg-[#FFD789] bg-opacity-40">
+                      <div className={`flex-1 ml-3 ${graphTrackTintClassName} bg-opacity-40`}>
                         <div
-                          className="bg-main text-white text-right px-2 py-[2px] font-bold transition-all duration-500 ease-out"
+                          className={`${mainBackgroundClassName} text-white text-right px-2 py-[2px] font-bold transition-all duration-500 ease-out`}
                           style={{ width: `${widthPct}%` }}
                         >
                           {count}

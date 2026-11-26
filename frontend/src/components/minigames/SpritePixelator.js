@@ -1,13 +1,16 @@
 import React, { useRef, useEffect } from 'react';
+import { useTheme } from "../../context/ThemeContext";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 
 export default function SpritePixelator({
     sheetName,
     colIndex,
     rowIndex = 0,
-    spriteSize = 48,
     sourceSpriteSize = 16,
-    pixelBlockLevel = 1
+    pixelResolution = sourceSpriteSize
 }) {
+    const { theme } = useTheme();
+    const boxBackground = useThemedAsset("/images/minigames/boxMediumInner.webp", theme);
     const canvasRef = useRef(null);
     const bucketUrl = import.meta.env.VITE_BUCKET_URL;
 
@@ -30,9 +33,9 @@ export default function SpritePixelator({
                 0, 0, canvas.width, canvas.height
             );
         };
-    }, [sheetName, colIndex, rowIndex, spriteSize, sourceSpriteSize, pixelBlockLevel, bucketUrl]);
+    }, [sheetName, colIndex, rowIndex, sourceSpriteSize, pixelResolution, bucketUrl]);
 
-    const internalResolution = Math.max(1, Math.floor(spriteSize / pixelBlockLevel));
+    const internalResolution = Math.max(1, Math.min(sourceSpriteSize, Math.floor(pixelResolution)));
 
     return (
         <canvas
@@ -40,7 +43,7 @@ export default function SpritePixelator({
             width={internalResolution}
             height={internalResolution}
             style={{
-                backgroundImage: "url('/images/minigames/boxMediumInner.webp')",
+                backgroundImage: `url('${boxBackground}')`,
                 backgroundSize: "100% 100%",
                 backgroundRepeat: "no-repeat",
                 width: '192px',

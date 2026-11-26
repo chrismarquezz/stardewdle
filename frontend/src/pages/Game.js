@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
 import { useResponsiveLayout } from "../hooks/useResponsiveScale";
+import { useTheme } from "../context/ThemeContext";
 
 import GameBox from "../components/game/GameBox";
 import CustomButton from "../components/CustomButton";
 
 export default function Game() {
   const { isMuted } = useSound();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const { isMobilePortrait, width, height, scaleFactor } = useResponsiveLayout();
 
@@ -20,8 +22,8 @@ export default function Game() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backdropFilter: "blur(5px)",
-          WebkitBackdropFilter: "blur(5px)",
+          backdropFilter: `blur(5px) ${theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)"}`,
+          WebkitBackdropFilter: `blur(5px) ${theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)"}`,
         }}
       />
 
@@ -41,7 +43,7 @@ export default function Game() {
             label="Stardewdle Home"
             isMuted={isMuted}
             onClick={() => navigate("/")}
-            className={isMobilePortrait ? "mr-[272px] mb-2" : ""}
+            className={isMobilePortrait ? "mr-[136px] mb-5" : ""}
             soundPath={"/sounds/mouseClick.mp3"}
           />
 

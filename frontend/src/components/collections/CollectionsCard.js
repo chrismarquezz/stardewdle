@@ -1,5 +1,7 @@
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
+import { useTheme } from "../../context/ThemeContext";
+import CursorTooltip from "../CursorTooltip";
 
 export default function CollectionsCard({
   crop,
@@ -7,6 +9,7 @@ export default function CollectionsCard({
   onClick,
   isMuted,
 }) {
+  const { theme } = useTheme();
   const formattedName = formatName(crop.name);
 
   const x_pos = parseInt(crop.crop_index) * 48;
@@ -18,45 +21,40 @@ export default function CollectionsCard({
     width: '48px',
     height: '48px',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (
-    <div
-      onClick={() => {
-        if (!isMuted) {
-          playSound("/sounds/select.mp3");
-        }
-
-        onClick(crop);
-      }}
-      className={`relative w-16 h-16 clickable p-1 flex items-center justify-center group`}
-      style={{
-        backgroundImage: "url('/images/collections/collectionsItemBoxAlt.webp')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+    <CursorTooltip
+      label={formattedName}
+      backgroundImage="/images/collections/collectionsLabel.webp"
+      textClassName="text-[#D5C9AC]"
     >
       <div
-        className={`absolute w-[60px] h-[60px] top-0 right-0 opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
-      />
+        onClick={() => {
+          if (!isMuted) {
+            playSound("/sounds/select.mp3");
+          }
 
-      <div
-        style={spriteStyle}
-        className="w-full h-full m-[2px] ml-[6px] mb-[6px] z-10"
-        title={formattedName}
-      />
-
-      <div
-        className="absolute -top-5 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-[#D5C9AC] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
+          onClick(crop);
+        }}
+        className={`relative w-16 h-16 clickable p-1 flex items-center justify-center group`}
         style={{
-          backgroundImage: "url('/images/collections/collectionsLabel.webp')",
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-          height: "28px",
+          backgroundImage: "url('/images/collections/collectionsItemBoxAlt.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        {formattedName}
+        <div
+          className={`absolute w-[60px] h-[60px] top-0 right-0 opacity-60 mix-blend-screen ${isSelected ? "bg-yellow-100" : ""}`}
+        />
+
+        <div
+          style={spriteStyle}
+          className="w-full h-full m-[2px] ml-[6px] mb-[6px] z-10"
+        />
+
       </div>
-    </div>
+    </CursorTooltip>
   );
 }

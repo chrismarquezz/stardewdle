@@ -1,14 +1,26 @@
 import { useState, useMemo } from "react";
 import { useGameData } from "../../context/GameDataContext";
+import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { playSound } from "../../utils/playSound";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import CustomButton from "../CustomButton";
+import CursorTooltip from "../CursorTooltip";
+import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 
 export default function QuotesGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { quotes, dailyData } = useGameData();
+    const { theme } = useTheme();
+    const titleTextClassName = theme === "dark" ? "text-alternative-dark" : "text-main";
+    const listSelectorTextClassName = theme === "dark" ? "text-alternative-dark" : "text-main";
 
     const targetVillagerIndex = dailyData?.dailyItems?.villager?.index;
     const targetVillager = quotes?.[targetVillagerIndex];
@@ -17,6 +29,15 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     const [selectedVillager, setSelectedVillager] = useState(null);
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
+    const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
+    const guessesBackground = useThemedAsset("/images/game/guesses.webp", theme);
+    const cropGridBackground = useThemedAsset("/images/game/cropgrid-bg.webp", theme);
+    const minigameMediumBoxBackground = useThemedAsset("/images/minigames/boxMedium.webp", theme);
+    const nameBannerBackground = useThemedAsset("/images/name-banner.webp", theme);
+    const tileBackground = useThemedAsset(
+        viewMode === "grid" ? "/images/game/tile-bg.webp" : "/images/minigames/wideTile.webp",
+        theme
+    );
 
     const unguessedVillagers = useMemo(
         () => quotes.filter(villager => !gameState.guesses.includes(villager.name)),
@@ -63,23 +84,32 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     return (
         <div className={`flex items-center h-full md:gap-4 ${isMobilePortrait ? "flex-col w-full" : "flex-row"}`}>
             <div className={`flex flex-col justify-center items-center h-full p-4 relative gap-4 ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
-                <div className="relative bg-no-repeat bg-cover w-[360px] md:w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
-                    <div
-                        style={{
-                            backgroundImage: `url('/images/minigames/bundleIcons/helper.webp')`,
-                            imageRendering: 'pixelated',
-                        }}
-                        className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
+                <div
+                    className="relative isolate z-10 w-[360px] md:w-[240px] aspect-[60/41]"
+                >
+                    <ThemedBackground
+                        image={selectedFrame}
+                        theme={theme}
+                        scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
                     />
+                    <BundleIcon icon="/images/minigames/bundleIcons/helper.webp" theme={theme} />
                 </div>
-                <div className="flex flex-col gap-1 justify-center items-center bg-no-repeat p-4 bg-[url('/images/game/guesses.webp')] bg-contain bg-center w-full h-[58%] aspect-[5/3]">
-                    <h3 className="text-5xl text-main">Who said this?</h3>
+                <div
+                    className="relative isolate flex flex-col gap-1 justify-center items-center p-4 w-full h-[58%] aspect-[5/3]"
+                >
+                    <ThemedBackground
+                        image={guessesBackground}
+                        theme={theme}
+                        backgroundSize="contain"
+                        scale={MINIGAME_DARK_BACKGROUND_SCALE.guesses}
+                    />
+                    <h3 className={`text-5xl ${titleTextClassName}`}>Who said this?</h3>
                     <div className={`flex flex-col gap-2 overflow-y-auto max-h-[80%] w-[90%] items-center ${scrollbarStyles}`}>
                         {dailyQuotes.map((quoteText, idx) => {
                             const isRevealed = idx < revealedCount || gameState.complete;
                             if (idx >= revealedCount + 1 && !gameState.complete) return;
                             return (
-                                <div key={idx} className={`text-main text-center px-1 bg-white ${isRevealed ? 'bg-opacity-30 w-full' : 'bg-opacity-15'}`}>
+                                <div key={idx} className={`text-center px-1 ${theme === "light" ? "text-main bg-white" : "text-alternative-dark bg-[#825230]"} ${isRevealed ? 'bg-opacity-30 w-[90%]' : 'bg-opacity-15'}`}>
                                     {isRevealed ? (
                                         <p className="text-4xl md:text-2xl">{quoteText}</p>
                                     ) : (
@@ -91,13 +121,13 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                     </div>
                 </div>
             </div>
-            <div className={`flex flex-col justify-center items-center h-full p-4 relative ${isMobilePortrait ? "w-full" : "w-1/2"}`}
-                style={{
-                    backgroundImage: "url('/images/game/cropgrid-bg.webp')",
-                    backgroundSize: "90% 90%",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                }}>
+            <div className={`isolate flex flex-col justify-center items-center h-full p-4 relative ${isMobilePortrait ? "w-full" : "w-1/2"}`}>
+                <ThemedBackground
+                    image={cropGridBackground}
+                    theme={theme}
+                    backgroundSize="90% 90%"
+                    scale={MINIGAME_DARK_BACKGROUND_SCALE.cropGrid}
+                />
                 <div className={`flex flex-wrap gap-2 items-center justify-center max-h-[40%] max-w-[75%] overflow-y-auto overflow-x-hidden ${scrollbarStyles} pb-8 mb-4`}>
                     {currentGuesses.map((guess, idx) => {
                         const isCorrect = guess === targetVillager.name;
@@ -110,7 +140,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                             <div
                                 className="relative h-[120px] w-[120px] flex items-center justify-center"
                                 style={{
-                                    backgroundImage: "url('/images/minigames/boxMedium.webp')",
+                                    backgroundImage: `url('${minigameMediumBoxBackground}')`,
                                     backgroundSize: "100% 100%",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
@@ -118,25 +148,16 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 key={idx}
                             >
                                 <div
-                                    className={`w-[100px] h-[100px] absolute z-0 opacity-90 mix-blend-multiply ${isCorrect ? "bg-cyan-500" : "bg-red-700"}`}
+                                    className={`w-[100px] h-[100px] absolute z-0 opacity-90 ${isCorrect ? getCorrectGuessOverlayClass(theme) : getWrongGuessOverlayClass(theme)}`}
                                 />
-                                <div className="group w-[128px] h-[128px] flex items-center justify-center">
-                                    <div
-                                        style={getSpriteStyle("villagers", spriteIndex, 0, 64)}
-                                        className="z-10 scale-[78%]"
-                                    />
-                                    <div
-                                        className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 whitespace-nowrap"
-                                        style={{
-                                            backgroundImage: "url('/images/label.webp')",
-                                            backgroundSize: "100% 100%",
-                                            backgroundRepeat: "no-repeat",
-                                            height: "28px",
-                                        }}
-                                    >
-                                        {formatName(guess)}
+                                <CursorTooltip label={formatName(guess)}>
+                                    <div className="group w-[128px] h-[128px] flex items-center justify-center">
+                                        <div
+                                            style={getSpriteStyle("villagers", spriteIndex, 0, 64, theme)}
+                                            className="z-10 scale-[78%]"
+                                        />
                                     </div>
-                                </div>
+                                </CursorTooltip>
 
                             </div>
                         );
@@ -145,12 +166,12 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                 <div
                     className="flex items-center justify-center bg-center bg-no-repeat bg-contain mb-4"
                     style={{
-                        backgroundImage: "url('/images/name-banner.webp')",
+                        backgroundImage: `url('${nameBannerBackground}')`,
                         width: "416px",
                         height: "76px",
                     }}
                 >
-                    <p className="text-5xl text-center text-main tracking-wide">
+                    <p className={`text-5xl text-center ${titleTextClassName} tracking-wide`}>
                         {gameState.complete
                             ? formatName(targetVillager.name)
                             : selectedVillager
@@ -174,7 +195,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 onClick={() => setShowPicker(!showPicker)}
                                 className="group relative h-[120px] w-[120px] flex items-center justify-center clickable"
                                 style={{
-                                    backgroundImage: "url('/images/minigames/boxMedium.webp')",
+                                    backgroundImage: `url('${minigameMediumBoxBackground}')`,
                                     backgroundSize: "100% 100%",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
@@ -183,7 +204,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 {selectedVillager ?
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64)}
+                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64, theme)}
                                             className="z-10 scale-[78%] clickable"
                                         />
                                     </div>
@@ -207,14 +228,12 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                         </div>
 
                         {showPicker && (
-                            <div className="absolute w-[90%] h-[90%] p-8 z-50 flex flex-col"
-                                style={{
-                                    backgroundImage: "url('/images/game/cropgrid-bg.webp')",
-                                    backgroundSize: "100% 100%",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                }}
-                            >
+                            <div className="absolute isolate w-[90%] h-[90%] p-8 z-50 flex flex-col">
+                                <ThemedBackground
+                                    image={cropGridBackground}
+                                    theme={theme}
+                                    scale={MINIGAME_DARK_BACKGROUND_SCALE.cropGrid}
+                                />
                                 <div className="flex justify-between mb-2 pb-2 border-b-2 border-main">
                                     <CustomButton
                                         variant="share"
@@ -228,7 +247,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                     />
                                     <CustomButton
                                         variant="icon"
-                                        icon={`/images/minigames/${viewMode === "grid" ? "list" : "grid"}Button.webp`}
+                                        icon={`/images/buttons/icons/${viewMode === "grid" ? "list" : "grid"}.webp`}
                                         label={`Toggle ${viewMode === "grid" ? "List" : "Grid"} View`}
                                         isMuted={isMuted}
                                         onClick={() => setViewMode(v => v === "grid" ? "list" : "grid")}
@@ -247,36 +266,28 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                     setShowPicker(false);
                                                 }}
                                                 style={{
-                                                    backgroundImage: `url('/images/${viewMode === "grid" ? "game/tile-bg" : "minigames/wideTile"}.webp')`,
+                                                    backgroundImage: `url('${tileBackground}')`,
                                                     backgroundSize: "100% 100%",
                                                     backgroundPosition: "center",
                                                     backgroundRepeat: "no-repeat",
                                                 }}
-                                                className={`p-2 font-bold text-main clickable relative flex items-center justify-center
-                                                ${viewMode === "grid" ? "w-24 h-24" : "w-[45%] h-24"}`}
+                                                className={`p-2 font-bold ${viewMode === "list" ? listSelectorTextClassName : "text-main"} ${viewMode === "grid" ? "w-24 h-24" : "w-[45%] h-24"}
+                                                clickable relative flex items-center justify-center
+                                                `}
                                             >
                                                 {viewMode === "grid" ? (
-                                                    <div className="relative group flex flex-col items-center">
-                                                        <div
-                                                            style={getSpriteStyle("villagers", villager.index, 0, 64)}
-                                                            className="scale-[58%]"
-                                                        />
-                                                        <div
-                                                            className="absolute top-1 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-main text-center transition-opacity duration-300 opacity-0 group-hover:opacity-100 pointer-events-none z-50 whitespace-nowrap"
-                                                            style={{
-                                                                backgroundImage: "url('/images/label.webp')",
-                                                                backgroundSize: "100% 100%",
-                                                                backgroundRepeat: "no-repeat",
-                                                                height: "28px",
-                                                            }}
-                                                        >
-                                                            {formatName(villager.name)}
+                                                    <CursorTooltip label={formatName(villager.name)}>
+                                                        <div className={`relative group flex flex-col items-center ${theme === " light" ? "" : "-bottom-1 left-0"}`}>
+                                                            <div
+                                                                style={getSpriteStyle("villagers", villager.index, 0, 64, theme)}
+                                                                className="scale-[58%]"
+                                                            />
                                                         </div>
-                                                    </div>
+                                                    </CursorTooltip>
                                                 ) : (
                                                     <div className="flex justify-start items-center w-full h-full">
-                                                        <div style={getSpriteStyle("villagers", villager.index, 0, 64)} className="scale-[58%] -ml-6" />
-                                                        <div className="w-1/4 text-3xl md:text-xl font-medium text-main text-left leading-none z-10">{formatName(villager.name)}</div>
+                                                            <div style={getSpriteStyle("villagers", villager.index, 0, 64, theme)} className={`relative scale-[58%] -ml-3 ${theme === " light" ? "" : "-bottom-0.5 left-0"}`} />
+                                                        <div className={`w-1/4 text-3xl md:text-xl font-medium ${listSelectorTextClassName} text-left leading-none z-10`}>{formatName(villager.name)}</div>
                                                     </div>
                                                 )}
                                             </button>

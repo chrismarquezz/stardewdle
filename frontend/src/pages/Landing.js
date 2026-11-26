@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSound } from "../context/SoundContext";
+import { useTheme } from "../context/ThemeContext";
+import { useThemedAsset } from "../hooks/useThemedAsset";
 import { useState } from "react";
 import { useResponsiveLayout } from "../hooks/useResponsiveScale";
 
@@ -8,15 +10,26 @@ import { playSound } from "../utils/playSound";
 
 export default function Landing() {
   const { isMuted } = useSound();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const { width, height, scaleFactor } = useResponsiveLayout();
+
+  const titleImage = useThemedAsset("/images/stardewdleTitle.webp", theme);
 
   return (
     <div className="relative h-screen w-full overflow-y-auto">
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/background.webp')" }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backdropFilter: theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)",
+          WebkitBackdropFilter: theme === "light" ? "" : "brightness(40%) saturate(80%) hue-rotate(30deg)",
+        }}
       />
 
       <div className="relative z-10 w-full h-full flex justify-center items-center overflow-hidden pb-10">
@@ -30,7 +43,7 @@ export default function Landing() {
           className="flex flex-col items-center justify-center gap-32"
         >
           <img
-            src="/images/landing/stardewdleTitle.webp"
+            src={titleImage}
             alt="Stardewdle Title"
             className="max-w-[800px]"
           />
@@ -38,21 +51,21 @@ export default function Landing() {
           <div className="flex flex-col items-center gap-4">
             <CustomButton
               variant="menu"
-              icon="/images/landing/play-button.webp"
+              icon="/images/buttons/landing/play-button.webp"
               label="Play"
               isMuted={isMuted}
               onClick={() => navigate("/game")}
             />
             <CustomButton
               variant="menu"
-              icon="/images/landing/minigames-button.webp"
+              icon="/images/buttons/landing/minigames-button.webp"
               label="Minigames"
               isMuted={isMuted}
               onClick={() => navigate("/minigames")}
             />
             <CustomButton
               variant="menu"
-              icon="/images/landing/collections-button.webp"
+              icon="/images/buttons/landing/collections-button.webp"
               label="Collections"
               isMuted={isMuted}
               onClick={() => navigate("/collections")}
@@ -60,7 +73,7 @@ export default function Landing() {
             <div className="flex gap-4">
               <CustomButton
                 variant="square"
-                icon="/images/landing/github.webp"
+                icon="/images/buttons/squares/github.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://github.com/chrismarquezz/Stardewdle", "_blank")}
                 showLabel={true}
@@ -69,7 +82,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/landing/discord.webp"
+                icon="/images/buttons/squares/discord.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://discord.gg/Fg56gpXXBK", "_blank")}
                 showLabel={true}
@@ -78,7 +91,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/kofi.webp"
+                icon="/images/buttons/squares/kofi.webp"
                 isMuted={isMuted}
                 onClick={() => window.open("https://ko-fi.com/stardewdlecom", "_blank")}
                 showLabel={true}
@@ -87,7 +100,7 @@ export default function Landing() {
 
               <CustomButton
                 variant="square"
-                icon="/images/landing/credits.webp"
+                icon="/images/buttons/squares/credits.webp"
                 isMuted={isMuted}
                 onClick={() => setShowModal(true)}
                 showLabel={true}
@@ -109,7 +122,7 @@ export default function Landing() {
           }}
         >
           <div
-            className="relative max-w-[95vw] max-h-[95vh] flex flex-col"
+            className="relative max-w-[95vw] md:max-w-[70vw] lg:max-w-[50vw] max-h-[50vh] md:max-h-[70vh] flex flex-col"
             style={{
               transform: `scale(${scaleFactor})`,
               transformOrigin: "center",
@@ -118,7 +131,7 @@ export default function Landing() {
           >
             {/* Content */}
             <div
-              className="relative z-10 flex flex-col overflow-y-auto p-4"
+              className="relative z-10 overflow-y-auto p-4"
               style={{
                 backgroundImage: "url('/images/paper-note.webp')",
                 backgroundSize: "100% 100%",
@@ -136,12 +149,12 @@ export default function Landing() {
                 x
               </button>
 
-              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold mb-2">
+              <h2 className="text-gray-600 text-center text-4xl md:text-6xl font-semibold flex flex-col">
                 Credits
               </h2>
 
-              <div className="mt-6 space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto">
-                <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54 clickable" className="underline">Omar</a>.</p>
+              <div className="space-y-10 text-gray-600 text-left text-3xl md:text-4xl leading-none overflow-y-auto p-4 flex flex-col">
+                <p>- Built by <a href="https://github.com/chrismarquezz" className="underline clickable">Chris</a> and <a href="https://github.com/osid54" className="underline clickable">Omar</a>.</p>
                 <p>- Artwork and sounds by ConcernedApe.</p>
                 <p>- Inspired by Wordle and Stardew Valley.</p>
                 <p>- Stardewdle.com is the only site associated with us.</p>

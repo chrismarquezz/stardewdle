@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useRef, useState, useEffect } from "react";
 
 const GameDataContext = createContext();
-const MOST_RECENT_UPDATE = "2026-11-9T00:00:00Z";
+const MOST_RECENT_UPDATE = "2026-11-26T00:00:00Z";
 
 const DATA_FETCH_DATES_KEY = "stardewdle-dataFetchDate";
 const LEGACY_DATA_FETCH_DATE = "2026-10-20";
@@ -70,7 +70,11 @@ const KEYS_TO_KEEP = [
     "stardewdle-fish",
     "stardewdle-quotes",
     "stardewdle-hints",
-    "stardewdle-dataFetchDate"
+    "stardewdle-dataFetchDate",
+    "stardewdle-pendingProgress",
+    "stardewdle-pendingProgressResets",
+    "stardewdle-cloudStatsOwner",
+    "stardewdle-cloudCompletionOwner"
 ];
 
 // Must run before any component reads its day-scoped state, so this is called at import time
@@ -84,7 +88,12 @@ function resetDailyStorageIfNeeded() {
     Object.keys(localStorage).forEach((key) => {
         // Legacy per-minigame help flags are kept until MinigamesBox migrates them.
         const isLegacyMinigameHelpFlag = key.startsWith("stardewdle-hasSeenMinigame");
-        if (!KEYS_TO_KEEP.includes(key) && !isLegacyMinigameHelpFlag) {
+        const isLocalStatsBackup = key.startsWith("stardewdle-local-stats-");
+        if (
+            !KEYS_TO_KEEP.includes(key)
+            && !isLegacyMinigameHelpFlag
+            && !isLocalStatsBackup
+        ) {
             localStorage.removeItem(key);
         }
     });

@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
+import { useTheme } from "../../context/ThemeContext";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate } from "../../utils/dateUtils";
+import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
+import { useAuth } from "../../context/AuthContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
 
 import CookingGame from "./CookingGame";
 import FishingGame from "./FishingGame";
@@ -18,6 +21,24 @@ import UpdatesModal from "../UpdatesModal";
 import MinigamesShareModal from "./MinigamesShareModal";
 import BundleButton from "./BundleButton";
 import GiftIcon from "./GiftIcon";
+import CustomModal from "../CustomModal";
+import AccountMenu from "../auth/AccountMenu";
+import {
+  restoreMinigameState,
+  serializeCompletedMinigames,
+} from "../../services/latestDayProgress";
+
+const MINIGAME_DATA_KEY = "stardewdle-game-data";
+const MINIGAME_OWNER_KEY = "stardewdle-cloudMinigameOwner";
+
+function createDefaultGameData() {
+  return {
+    food: { complete: false, win: false, guesses: [], animationSeen: false },
+    npc: { complete: false, win: false, guesses: [], animationSeen: false },
+    minerals: { complete: false, win: false, guesses: [], animationSeen: false },
+    fish: { complete: false, win: false, guesses: [], animationSeen: false },
+  };
+}
 
 const staticGameData = [
   {
@@ -87,7 +108,7 @@ function migrateLegacyHelpFlags() {
   return seen;
 }
 
-export default function MinigamesBox({ isMobilePortrait }) {
+export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
   const {
     isReady,
     loadError,
@@ -102,52 +123,224 @@ export default function MinigamesBox({ isMobilePortrait }) {
     shouldPulse,
     handleOpenUpdates,
   } = useGameData();
+  const {
+    user,
+    loading: authLoading,
+    syncRetryToken,
+    setAccountId,
+    setProgressSyncStatus,
+  } = useAuth();
 
   const { isMuted, toggleMute } = useSound();
+  const { theme, toggleTheme } = useTheme();
+  const nameBannerBackground = useThemedAsset("/images/name-banner.webp", theme);
 
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
+  const [progressUserId, setProgressUserId] = useState(null);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const [minigameSyncState, setMinigameSyncState] = useState({
+    status: "idle",
+    error: null,
+  });
+  const [showMinigameErrorModal, setShowMinigameErrorModal] = useState(false);
+  const [errorCopyStatus, setErrorCopyStatus] = useState("");
+  const [minigameSyncRetryToken, setMinigameSyncRetryToken] = useState(0);
+  const todayStr = utcDateString();
 
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedGameData, setSelectedGameData] = useState(null);
   const [isGameSelected, setIsGameSelected] = useState(false);
+  const mainBackgroundPath = isMobilePortrait
+    ? "/images/minigames/mainBG-mobile.webp"
+    : selectedGame === "map"
+      ? "/images/minigames/mainBG2.webp"
+      : "/images/minigames/mainBG.webp";
+  const mainBackground = useThemedAsset(mainBackgroundPath, theme);
+  const innerBackgroundPath = isMobilePortrait
+    ? "/images/minigames/innerBG-mobile.webp"
+    : "/images/minigames/innerBG.webp";
+  const innerBackground = useThemedAsset(innerBackgroundPath, theme);
+
+  const DARK_CHILD_CONTENT_OFFSET_PX = isMobilePortrait ? 28 : 20;
+
 
   const [gameData, setGameData] = useState(() => {
-    const defaultGameData = {
-      food: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      //map: { complete: true, win: false, guesses: [], animationSeen: false },
-      npc: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      minerals: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      fish: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-    };
-
-    const saved = localStorage.getItem("stardewdle-game-data");
-    return saved ? JSON.parse(saved) : defaultGameData;
+    const saved = localStorage.getItem(MINIGAME_DATA_KEY);
+    return saved ? JSON.parse(saved) : createDefaultGameData();
   });
 
   const allBundlesFinished = bundleGameKeys.every((key) => gameData[key]?.complete);
   const allBundlesSuccessful = bundleGameKeys.every((key) => gameData[key]?.win);
+
+  useEffect(() => {
+    if (authLoading) return undefined;
+    if (!user) {
+      setProgressUserId(null);
+      setProgressLoading(false);
+      setMinigameSyncState({ status: "idle", error: null });
+      setShowMinigameErrorModal(false);
+      return undefined;
+    }
+    if (!isReady || !dailyData?.correctCrop) return undefined;
+
+    let active = true;
+    setProgressLoading(true);
+    setProgressSyncStatus("syncing");
+
+    const synchronizeMinigames = async () => {
+      try {
+        const ownerRaw = localStorage.getItem(MINIGAME_OWNER_KEY);
+        const currentOwner = ownerRaw ? JSON.parse(ownerRaw) : null;
+        if (currentOwner?.uid && currentOwner.uid !== user.uid) {
+          throw new Error("Sign out of the other account before syncing minigames.");
+        }
+
+        const localStateRaw = localStorage.getItem(MINIGAME_DATA_KEY);
+        const localState = localStateRaw
+          ? JSON.parse(localStateRaw)
+          : createDefaultGameData();
+        const backupKey = `stardewdle-local-minigames-${user.uid}-${todayStr}`;
+        if (!currentOwner && !localStorage.getItem(backupKey)) {
+          localStorage.setItem(backupKey, JSON.stringify(localState));
+        }
+
+        const [
+          { initializeAccountProgress },
+        ] = await Promise.all([
+          import("../../services/progressMigration"),
+        ]);
+        const progress = await initializeAccountProgress(
+          user.uid,
+          todayStr,
+          dailyData.correctCrop
+        );
+        if (!active) return;
+
+        const latestDayProgress = progress.latestDayProgress?.date === todayStr
+          ? progress.latestDayProgress
+          : null;
+        if (latestDayProgress?.minigames) {
+          const restoredState = restoreMinigameState(latestDayProgress.minigames);
+          localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(restoredState));
+          setGameData(restoredState);
+          setMinigameSyncState({ status: "synced", error: null });
+        } else {
+          setMinigameSyncState({ status: "waiting", error: null });
+        }
+
+        localStorage.setItem(MINIGAME_OWNER_KEY, JSON.stringify({
+          uid: user.uid,
+          accountId: progress.accountId,
+        }));
+        setAccountId(progress.accountId);
+        setProgressUserId(user.uid);
+        setProgressLoading(false);
+        setProgressSyncStatus("synced");
+      } catch (error) {
+        console.error("Failed to sync minigame progress:", error);
+        if (active) {
+          setProgressUserId(user.uid);
+          setProgressLoading(false);
+          setMinigameSyncState({
+            status: "error",
+            error: error.message || "Account progress could not be loaded.",
+          });
+          setErrorCopyStatus("");
+          setShowMinigameErrorModal(true);
+          setProgressSyncStatus("error", error.message);
+        }
+      }
+    };
+
+    const retryWhenAvailable = () => {
+      if (!document.hidden) {
+        setMinigameSyncRetryToken((current) => current + 1);
+        synchronizeMinigames();
+      }
+    };
+    synchronizeMinigames();
+    window.addEventListener("online", retryWhenAvailable);
+    document.addEventListener("visibilitychange", retryWhenAvailable);
+
+    return () => {
+      active = false;
+      window.removeEventListener("online", retryWhenAvailable);
+      document.removeEventListener("visibilitychange", retryWhenAvailable);
+    };
+  }, [
+    authLoading,
+    dailyData?.correctCrop,
+    isReady,
+    setAccountId,
+    setProgressSyncStatus,
+    syncRetryToken,
+    todayStr,
+    user,
+  ]);
+
+  useEffect(() => {
+    if (!user || progressUserId !== user.uid || !allBundlesFinished) return;
+
+    const minigames = serializeCompletedMinigames(gameData);
+    if (!minigames) return;
+
+    let active = true;
+    setMinigameSyncState({ status: "syncing", error: null });
+    setProgressSyncStatus("syncing");
+    const syncCompletedMinigames = async () => {
+      try {
+        const { saveCompletedMinigames } = await import("../../services/progressStore");
+        const result = await saveCompletedMinigames(user.uid, todayStr, minigames);
+        if (!active) return;
+        setAccountId(result.accountId);
+        setProgressUserId(user.uid);
+        setMinigameSyncState({ status: "synced", error: null });
+        setProgressSyncStatus("synced");
+      } catch (error) {
+        console.error("Failed to save completed minigames:", error);
+        if (active) {
+          setMinigameSyncState({
+            status: "error",
+            error: error.message || "Completed minigames could not be saved.",
+          });
+          setErrorCopyStatus("");
+          setShowMinigameErrorModal(true);
+          setProgressSyncStatus("error", error.message);
+        }
+      }
+    };
+
+    syncCompletedMinigames();
+    return () => {
+      active = false;
+    };
+  }, [
+    allBundlesFinished,
+    gameData,
+    progressUserId,
+    minigameSyncRetryToken,
+    setAccountId,
+    setProgressSyncStatus,
+    todayStr,
+    user,
+  ]);
+
+  const copyMinigameSyncError = async () => {
+    try {
+      await navigator.clipboard.writeText(minigameSyncState.error);
+      setErrorCopyStatus("Error copied to clipboard.");
+    } catch {
+      setErrorCopyStatus("Clipboard access failed. Select and copy the error text above.");
+    }
+  };
+
+  const retryMinigameSync = () => {
+    setShowMinigameErrorModal(false);
+    setErrorCopyStatus("");
+    setMinigameSyncRetryToken((current) => current + 1);
+  };
 
   const [globalBundleStats, setGlobalBundleStats] = useState({
     attempts: 0,
@@ -191,7 +384,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
             setGameData((prev) => {
               const updated = { ...prev, apiSynced: true };
               localStorage.setItem(
-                "stardewdle-game-data",
+                MINIGAME_DATA_KEY,
                 JSON.stringify(updated),
               );
               return updated;
@@ -284,7 +477,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
   const updateGameState = (gameName, newState) => {
     setGameData((prev) => {
       const updated = { ...prev, [gameName]: newState };
-      localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
+      localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(updated));
       return updated;
     });
   };
@@ -295,7 +488,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
         ...prev,
         [gameName]: { ...prev[gameName], animationSeen: true },
       };
-      localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
+      localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(updated));
       return updated;
     });
   };
@@ -349,7 +542,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
     }
   };
 
-  if (!isReady) {
+  if (!isReady || progressLoading) {
     return <CropLoader error={loadError} onRetry={() => reloadGameData()} />;
   }
 
@@ -357,105 +550,133 @@ export default function MinigamesBox({ isMobilePortrait }) {
     <div
       className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait ? "" : "mt-2"}`}
       style={{
-        backgroundImage: isMobilePortrait
-          ? "url('/images/minigames/mainBG-mobile.webp')"
-          : selectedGame === "map"
-            ? "url('/images/minigames/mainBG2.webp')"
-            : "url('/images/minigames/mainBG.webp')",
+        backgroundImage: `url('${mainBackground}')`,
         backgroundSize: "100% 100%",
         width: isMobilePortrait ? "940px" : "1440px",
         height: isMobilePortrait ? "1500px" : "810px",
       }}
     >
-      <h2 className="w-full justify-center items-center text-main text-center text-7xl md:text-7xl font-semibold pt-2">
-        {isGameSelected
-          ? selectedGameData.label + " Bundle"
-          : "Minigame Bundles"}
-      </h2>
-
-      {allBundlesFinished && !isGameSelected && (
-        <div className="absolute top-1/2 md:top-[54%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-1/2 md:w-1/3 gap-2">
-          <span className={`text-4xl ${allBundlesSuccessful ? "text-correct" : "text-wrong"} text-nowrap bg-[url('/images/name-banner.webp')] flex justify-center items-center bg-contain bg-no-repeat bg-center w-full h-[80px]`}>
-            {allBundlesSuccessful ? "Community Center Restored!" : "Bundles not completed!"}
-          </span>
-          {allBundlesSuccessful ? (
-            <GiftIcon
-              isMuted={isMuted}
-              onClick={() => {
-                setShowShareModal(true);
-              }}
-            />
-          ) : (
-            <CustomButton
-              variant="icon"
-              icon="/images/minigames/failButton.webp"
-              label="Share"
-              isMuted={isMuted}
-              onClick={() => {
-                setShowShareModal(true);
-              }}
-              soundPath="/sounds/modal.mp3"
-            />
-          )}
-        </div>
-      )}
-
-      {isGameSelected ? (
-        <div
-          className={`relative bg-no-repeat bg-center ${isMobilePortrait ? "mt-[26px] ml-[120px]" : "mt-[20px] ml-[104px]"}`}
-          style={{
-            backgroundImage: isMobilePortrait
-              ? "url('/images/minigames/innerBG-mobile.webp')"
-              : "url('/images/minigames/innerBG.webp')",
-            backgroundSize: "100% 100%",
-            width: isMobilePortrait ? "700px" : "1232px",
-            height: isMobilePortrait ? "1266px" : "579px",
-          }}
+      <div
+        className="absolute inset-0"
+        style={{
+          transform:
+            theme === "dark"
+              ? `translateY(${DARK_CHILD_CONTENT_OFFSET_PX}px)`
+              : undefined,
+        }}
+      >
+        <h2
+          className={`w-full justify-center items-center ${theme === "dark" ? "text-alternative-dark" : "text-main"} text-center text-7xl md:text-7xl font-semibold pt-2`}
         >
-          <div className={`absolute flex top-2 left-2 z-10`}>
-            <CustomButton
-              variant="share"
-              icon="/images/minigames/arrowBack.webp"
-              label="Return"
-              isMuted={isMuted}
-              onClick={() => {
-                setSelectedGame("");
-              }}
-              isMobilePortrait={isMobilePortrait}
-            />
+          {isGameSelected
+            ? selectedGameData.label + " Bundle"
+            : "Minigame Bundles"}
+        </h2>
+
+        {allBundlesFinished && !isGameSelected && (
+          <div className="absolute top-1/2 md:top-[54%] left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center items-center w-1/2 md:w-1/3 gap-2">
+            <span
+              className={`text-4xl ${allBundlesSuccessful ? "text-correct" : "text-wrong"} text-nowrap flex justify-center items-center bg-contain bg-no-repeat bg-center w-full h-[80px]`}
+              style={{ backgroundImage: `url('${nameBannerBackground}')` }}
+            >
+              {allBundlesSuccessful ? "Community Center Restored!" : "Bundles not completed!"}
+            </span>
+            {allBundlesSuccessful ? (
+              <GiftIcon
+                isMuted={isMuted}
+                onClick={() => {
+                  setShowShareModal(true);
+                }}
+              />
+            ) : (
+              <CustomButton
+                variant="icon"
+                icon="/images/minigames/failButton.webp"
+                layered={false}
+                label="Share"
+                isMuted={isMuted}
+                onClick={() => {
+                  setShowShareModal(true);
+                }}
+                soundPath="/sounds/modal.mp3"
+              />
+            )}
           </div>
+        )}
 
-          {renderMinigame()}
-        </div>
-      ) : (
-        <div className="flex flex-col gap-2 h-full w-full items-center justify-center">
-          {staticGameData.map((bundle) => (
-            <BundleButton
-              key={bundle.name}
-              variant={bundle.bundleNum}
-              label={bundle.label}
-              onClick={() => {
-                staticGameData.forEach((b) => {
-                  if (gameData[b.name].win && !gameData[b.name].animationSeen)
-                    markAnimationSeen(b.name);
-                });
-                setSelectedGame(bundle.name);
-              }}
-              isMuted={isMuted}
-              positionClass={bundle.pos}
-              isAnimated={gameData[bundle.name].complete && gameData[bundle.name].win}
-              isFailed={gameData[bundle.name].complete && !gameData[bundle.name].win}
-              skipAnimation={gameData[bundle.name].animationSeen}
-              onAnimationComplete={() => markAnimationSeen(bundle.name)}
-            />
-          ))}
-        </div>
-      )}
+        {isGameSelected ? (
+          <div
+            className={`relative bg-no-repeat bg-center ${isMobilePortrait ? "mt-[26px] ml-[120px]" : "mt-[20px] ml-[104px]"}`}
+            style={{
+              backgroundImage: `url('${innerBackground}')`,
+              backgroundSize: "100% 100%",
+              width: isMobilePortrait ? "700px" : "1232px",
+              height: isMobilePortrait ? "1266px" : theme === "light" ? "579px" : "591px",
+            }}
+          >
+            <div className={`absolute flex top-2 left-2 z-10`}>
+              <CustomButton
+                variant="share"
+                icon="/images/minigames/arrowBack.webp"
+                label="Return"
+                isMuted={isMuted}
+                onClick={() => {
+                  setSelectedGame("");
+                }}
+                isMobilePortrait={isMobilePortrait}
+              />
+            </div>
 
-      <div className={`absolute flex gap-[5px] -top-[55px] right-0`}>
+            {renderMinigame()}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 h-full w-full items-center justify-center">
+            {staticGameData.map((bundle) => (
+              <BundleButton
+                key={bundle.name}
+                variant={bundle.bundleNum}
+                label={bundle.label}
+                onClick={() => {
+                  staticGameData.forEach((b) => {
+                    if (gameData[b.name].win && !gameData[b.name].animationSeen)
+                      markAnimationSeen(b.name);
+                  });
+                  setSelectedGame(bundle.name);
+                }}
+                isMuted={isMuted}
+                positionClass={bundle.pos}
+                isAnimated={gameData[bundle.name].complete && gameData[bundle.name].win}
+                isFailed={gameData[bundle.name].complete && !gameData[bundle.name].win}
+                skipAnimation={gameData[bundle.name].animationSeen}
+                onAnimationComplete={() => markAnimationSeen(bundle.name)}
+              />
+            ))}
+          </div>
+        )}
+
+      </div>
+
+      <div className={`absolute -top-[58px] md:-top-[55px] ${isMobilePortrait ? theme === "light" ? "-top-28" : "-top-28 left-4" : theme === "light" ? "" : "left-16"}`}>
+        <AccountMenu isMuted={isMuted} />
+      </div>
+      <div className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? theme === "light" ? "-top-28" : "-top-28 right-4" : theme === "light" ? "" : "right-16"}`}>
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
+          label={"Help"}
+          isMuted={isMuted}
+          onClick={() => {
+            setShowHelp(true);
+          }}
+          showLabel={true}
+          isMobilePortrait={isMobilePortrait}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -470,20 +691,17 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={"/images/question-mark.webp"}
-          label={"Help"}
+          icon="/images/buttons/icons/theme.webp"
+          label={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           isMuted={isMuted}
-          onClick={() => {
-            setShowHelp(true);
-          }}
+          onClick={toggleTheme}
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
-          soundPath={"/sounds/modal.mp3"}
         />
 
         <CustomButton
           variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}
@@ -502,6 +720,44 @@ export default function MinigamesBox({ isMobilePortrait }) {
           onClose={() => setShowHelp(false)}
           selectedGame={selectedGame}
         />
+      )}
+      {showMinigameErrorModal && minigameSyncState.error && (
+        <CustomModal
+          title="Minigame sync failed"
+          isMuted={isMuted}
+          onClose={() => setShowMinigameErrorModal(false)}
+          scaleFactor={scaleFactor}
+          maxHeightClass="max-h-[80vh]"
+        >
+          <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4 text-main">
+            <p className="text-center text-xl">
+              Your completed minigames are still saved on this device. Copy this error if you
+              need help troubleshooting the account sync.
+            </p>
+            <pre className="max-h-[35vh] overflow-auto whitespace-pre-wrap break-words border-2 border-main bg-white/80 p-3 text-left text-base">
+              {minigameSyncState.error}
+            </pre>
+            {errorCopyStatus && (
+              <p role="status" className="text-center text-base">{errorCopyStatus}</p>
+            )}
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
+                onClick={copyMinigameSyncError}
+              >
+                Copy error
+              </button>
+              <button
+                type="button"
+                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
+                onClick={retryMinigameSync}
+              >
+                Retry sync
+              </button>
+            </div>
+          </div>
+        </CustomModal>
       )}
       {showShareModal && (
         <MinigamesShareModal

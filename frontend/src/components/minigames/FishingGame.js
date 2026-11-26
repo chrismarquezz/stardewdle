@@ -1,13 +1,27 @@
 import { useState } from "react";
 import { useGameData } from "../../context/GameDataContext";
+import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { playSound } from "../../utils/playSound";
+import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import CustomButton from "../CustomButton";
+import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 
 export default function FishingGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { fish, dailyData } = useGameData();
+    const { theme } = useTheme();
+    const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
+    const fishFrameBackground = useThemedAsset("/images/minigames/fishFrame.webp", theme);
+    const cropGridMobileBackground = useThemedAsset("/images/game/cropgrid-bg-mobile.webp", theme);
+    const cropGridBackground = useThemedAsset("/images/game/cropgrid-bg.webp", theme);
+    const tileBackground = useThemedAsset("/images/game/tile-bg.webp", theme);
 
     const targetFishIndex = dailyData?.dailyItems?.fish;
     const targetFish = fish?.[targetFishIndex];
@@ -72,23 +86,29 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
             <div className={isMobilePortrait ? "flex flex-col w-full h-full justify-center items-center gap-4" : "contents"}>
                 <div className={isMobilePortrait ? "flex flex-row w-3/4 h-full justify-center items-center gap-4" : "contents"}>
                     <div className={`flex flex-col gap-4 justify-center items-center ${isMobilePortrait ? "w-full h-full" : "w-1/4"}`}>
-                        <div className="relative bg-no-repeat bg-cover w-[360px] md:w-[240px] aspect-[60/41] bg-[url('/images/selected-frame.webp')]">
-                            <div
-                                style={{
-                                    backgroundImage: `url('/images/minigames/bundleIcons/qualityFish.webp')`,
-                                    imageRendering: 'pixelated',
-                                }}
-                                className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
+                        <div
+                            className="relative isolate z-10 w-[360px] md:w-[240px] aspect-[60/41]"
+                        >
+                            <ThemedBackground
+                                image={selectedFrame}
+                                theme={theme}
+                                scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
                             />
+                            <BundleIcon icon="/images/minigames/bundleIcons/qualityFish.webp" theme={theme} />
                         </div>
                         <div className="flex w-60 h-60 md:w-40 md:h-40 items-center justify-center bg-[url('/images/minigames/fishCloud.webp')] bg-contain bg-center bg-no-repeat">
-                            <div className="group mt-6 md:mt-4 flex w-[168px] h-[168px] md:w-28 md:h-28 items-center justify-center bg-[url('/images/minigames/fishFrame.webp')] bg-contain bg-center bg-no-repeat">
+                            <div
+                                className="group mt-6 md:mt-4 flex w-[168px] h-[168px] md:w-28 md:h-28 items-center justify-center bg-contain bg-center bg-no-repeat"
+                                style={{ backgroundImage: `url('${fishFrameBackground}')` }}
+                            >
                                 {gameState.complete || gameState.hintUsed ? (
                                     <div className="w-[120px] h-[120px] md:w-20 md:h-20 flex justify-center items-center overflow-hidden">
                                         <div
                                             style={{
-                                                ...getSpriteStyle("fish", targetFish.index, 0),
-                                                filter: gameState.complete || gameState.win ? 'none' : 'brightness(0)'
+                                                ...getSpriteStyle("fish", targetFish.index, 0, 16, theme),
+                                                filter: gameState.complete || gameState.win
+                                                    ? (theme === "dark" ? "brightness(90%)" : "none")
+                                                    : "brightness(0)"
                                             }}
                                             className="scale-[150%] md:scale-[100%] transition-all duration-300"
                                         />
@@ -96,7 +116,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                 ) : (
                                     <button
                                         onClick={() => updateGameState({ ...gameState, hintUsed: true })}
-                                        className="text-main text-5xl md:text-3xl font-bold text-center w-full h-full clickable flex justify-center items-center"
+                                        className="text-alternative-dark text-5xl md:text-3xl font-bold text-center w-full h-full clickable flex justify-center items-center"
                                     >
                                         <div className="absolute bg-white/50 mix-blend-overlay opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-auto w-[168px] h-[168px] md:w-28 md:h-28" />
                                         Hint
@@ -115,7 +135,23 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                         </div>
                     }
                 </div>
-                <div className={`flex flex-col items-center justify-center h-[110%] md:h-[95%] gap-12 md:gap-16 bg-[url('/images/game/cropgrid-bg-mobile.webp')] md:bg-[url('/images/game/cropgrid-bg.webp')] bg-no-repeat bg-contain bg-center ${isMobilePortrait ? "w-full" : "w-[44%]"}`}>
+                <div
+                    className={`relative isolate flex flex-col items-center justify-center h-[110%] md:h-[95%] gap-12 md:gap-16 ${isMobilePortrait ? "w-full" : "w-[44%]"}`}
+                >
+                    <ThemedBackground
+                        image={cropGridMobileBackground}
+                        theme={theme}
+                        backgroundSize="contain"
+                        scale={MINIGAME_DARK_BACKGROUND_SCALE.cropGridMobile}
+                        className="md:hidden"
+                    />
+                    <ThemedBackground
+                        image={cropGridBackground}
+                        theme={theme}
+                        backgroundSize="contain"
+                        scale={MINIGAME_DARK_BACKGROUND_SCALE.cropGrid}
+                        className="hidden md:block"
+                    />
                     <div className="flex flex-row justify-center items-center w-full px-4 relative gap-4">
                         <div className="w-full px-6 flex flex-wrap justify-center items-center gap-x-12 md:gap-x-8 gap-y-4">
                             {targetName.split(' ').map((word, wordIndex) => (
@@ -153,12 +189,13 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                             key={key}
                                             disabled={gameState.complete || isGuessed}
                                             onClick={() => setSelectedLetter(letter)}
-                                            className={`w-[58px] md:w-10 aspect-square text-5xl md:text-3xl font-bold clickable bg-[url('/images/game/tile-bg.webp')] bg-no-repeat bg-contain bg-center text-main`}
+                                            className="w-[58px] md:w-10 aspect-square text-5xl md:text-3xl font-bold clickable bg-no-repeat bg-contain bg-center text-alternative-dark"
+                                            style={{ backgroundImage: `url('${tileBackground}')` }}
                                         >
                                             <div
                                                 className={`absolute -translate-y-[6px] md:-translate-y-[2px] w-[60px] md:w-10 aspect-square z-0 
-                                                    ${isCorrect ? "bg-cyan-500 opacity-40 mix-blend-multiply"
-                                                        : isWrong ? "bg-red-700 opacity-40 mix-blend-multiply"
+                                                    ${isCorrect ? `${getCorrectGuessOverlayClass(theme)} opacity-40`
+                                                        : isWrong ? `${getWrongGuessOverlayClass(theme)} opacity-40`
                                                             : isSelected ? "bg-yellow-100 mix-blend-screen opacity-60"
                                                                 : ""}`
                                                 }

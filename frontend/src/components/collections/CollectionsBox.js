@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
+import { useTheme } from "../../context/ThemeContext";
 import { useGameData } from "../../context/GameDataContext";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
@@ -9,7 +10,9 @@ import CollectionsGrid from "./CollectionsGrid";
 import CollectionsModal from "./CollectionsModal";
 import CropLoader from "../CropLoader";
 import CustomButton from "../CustomButton";
+import CursorTooltip from "../CursorTooltip";
 import UpdatesModal from "../UpdatesModal";
+import AccountMenu from "../auth/AccountMenu";
 
 const CROP_COUNT_KEY = "stardewdle-cropCounts";
 
@@ -28,6 +31,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
   const [cropCount, setCropCount] = useState(() => getCachedCropCounts() ?? {});
 
   const { isMuted, toggleMute } = useSound();
+  const { theme, toggleTheme } = useTheme();
   const { crops, isReady, loadError, reloadGameData } = useGameData();
   const [showCollectionsModal, setShowCollectionsModal] = useState(false);
 
@@ -80,6 +84,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
     backgroundPosition: `${x_pos}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (
@@ -136,11 +141,12 @@ export default function CollectionsBox({ isMobilePortrait }) {
                   }}
                 >
                   {selectedCrop && (
-                    <div
-                      style={spriteStyle}
-                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[60%] w-[60%] bg-no-repeat"
-                      title={selectedCrop.name}
-                    />
+                    <CursorTooltip label={formatName(selectedCrop.name)}>
+                      <div
+                        style={spriteStyle}
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[60%] w-[60%] bg-no-repeat"
+                      />
+                    </CursorTooltip>
                   )}
                 </div>
                 <div className="text-4xl text-center text-[#c9ba98] tracking-wide">
@@ -156,28 +162,20 @@ export default function CollectionsBox({ isMobilePortrait }) {
                         ? selectedCrop.season.map((s) => s.toLowerCase())
                         : []
                     ).map((season) => (
-                      <div
+                      <CursorTooltip
                         key={season}
-                        className="relative group flex items-center justify-center gap-3"
+                        label={season.charAt(0).toUpperCase() + season.slice(1)}
+                        backgroundImage="/images/collections/collectionsLabel.webp"
+                        textClassName="text-[#c9ba98]"
                       >
-                        <img
-                          src={`/images/game/${season}.webp`}
-                          alt={season}
-                          className="h-8 w-12"
-                        />
-                        <div
-                          className="absolute -top-8 left-1/2 -translate-x-1/2 px-3 py-1 flex items-center justify-center text-xl font-medium text-[#c9ba98] text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 whitespace-nowrap"
-                          style={{
-                            backgroundImage:
-                              "url('/images/collections/collectionsLabel.webp')",
-                            backgroundSize: "100% 100%",
-                            backgroundRepeat: "no-repeat",
-                            height: "28px",
-                          }}
-                        >
-                          {season.charAt(0).toUpperCase() + season.slice(1)}
+                        <div className="relative group flex items-center justify-center gap-3">
+                          <img
+                            src={`/images/game/${season}.webp`}
+                            alt={season}
+                            className="h-8 w-12"
+                          />
                         </div>
-                      </div>
+                      </CursorTooltip>
                     ))}
                   </div>
                 </div>
@@ -194,12 +192,26 @@ export default function CollectionsBox({ isMobilePortrait }) {
           )}
         </div>
       </div>
-      <div
-        className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}
-      >
+      <div className={`absolute -top-[60px] left-[10px]`}>
+        <AccountMenu isMuted={isMuted} />
+      </div>
+      <div className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}>
         <CustomButton
           variant="icon"
-          icon={isMuted ? "/images/muted.webp" : "/images/unmuted.webp"}
+          icon="/images/buttons/icons/question-mark.webp"
+          label={"Help"}
+          isMuted={isMuted}
+          onClick={() => {
+            setShowCollectionsModal(true);
+          }}
+          showLabel={true}
+          soundPath={"/sounds/modal.mp3"}
+        />
+
+        <CustomButton
+          variant="icon"
+          icon="/images/buttons/icons/volume.webp"
+          showX={isMuted}
           label={isMuted ? "Unmute" : "Mute"}
           isMuted={true}
           onClick={() => {
@@ -213,17 +225,16 @@ export default function CollectionsBox({ isMobilePortrait }) {
 
         <CustomButton
           variant="icon"
-          icon={"/images/question-mark.webp"}
-          label={"Help"}
+          icon="/images/buttons/icons/theme.webp"
+          label={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
           isMuted={isMuted}
-          onClick={() => setShowCollectionsModal(true)}
+          onClick={toggleTheme}
           showLabel={true}
-          soundPath={"/sounds/modal.mp3"}
         />
-        
+
         <CustomButton
           variant="icon"
-          icon="/images/info.webp"
+          icon="/images/buttons/icons/info.webp"
           label="Updates"
           isMuted={isMuted}
           onClick={handleOpenUpdates}
@@ -231,7 +242,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
           showLabel={true}
           isMobilePortrait={isMobilePortrait}
           soundPath={"/sounds/modal.mp3"}
-          />
+        />
       </div>
       {showCollectionsModal && (
         <CollectionsModal
