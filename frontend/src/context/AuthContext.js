@@ -8,10 +8,34 @@ import {
   useState,
 } from "react";
 import { getFirebaseConfig } from "../services/firebaseConfig";
+import { utcDateString } from "../utils/dateUtils";
 
 const AuthContext = createContext(null);
 const { config: firebaseConfig } = getFirebaseConfig(import.meta.env);
 const isFirebaseConfigured = firebaseConfig !== null;
+const LOCAL_DAY_STATE_KEYS = [
+  "stardewdle-guesses",
+  "stardewdle-gameOver",
+  "stardewdle-selectedCrop",
+  "stardewdle-statsBackup",
+];
+
+function captureGuestDayProgress() {
+  if (localStorage.getItem("stardewdle-cloudStatsOwner")) return null;
+
+  return {
+    date: utcDateString(),
+    state: Object.fromEntries(
+      LOCAL_DAY_STATE_KEYS.map((key) => [key, localStorage.getItem(key)])
+    ),
+  };
+}
+
+function saveLocalDayBackup(uid, backup) {
+  if (!backup) return;
+  const key = `stardewdle-local-day-${uid}-${backup.date}`;
+  localStorage.setItem(key, JSON.stringify(backup.state));
+}
 
 function restoreLocalProgress(uid) {
   const statsBackupKey = `stardewdle-local-stats-${uid}`;
@@ -164,22 +188,30 @@ export function AuthProvider({ children }) {
       throw authError;
     }
   }, []);
+  const runSignInAction = useCallback(async (action) => {
+    const guestDayProgress = user ? null : captureGuestDayProgress();
+    const result = await runAuthAction(action);
+    if (result?.user?.uid && guestDayProgress) {
+      saveLocalDayBackup(result.user.uid, guestDayProgress);
+    }
+    return result;
+  }, [runAuthAction, user]);
 
   const signInWithGoogle = useCallback(
-    () => runAuthAction((firebaseServices) => firebaseServices.signInWithGoogle()),
-    [runAuthAction]
+    () => runSignInAction((firebaseServices) => firebaseServices.signInWithGoogle()),
+    [runSignInAction]
   );
   const signInWithEmail = useCallback(
-    (email, password) => runAuthAction((firebaseServices) =>
+    (email, password) => runSignInAction((firebaseServices) =>
       firebaseServices.signInWithEmail(email, password)
     ),
-    [runAuthAction]
+    [runSignInAction]
   );
   const createEmailAccount = useCallback(
-    (email, password) => runAuthAction((firebaseServices) =>
+    (email, password) => runSignInAction((firebaseServices) =>
       firebaseServices.createEmailAccount(email, password)
     ),
-    [runAuthAction]
+    [runSignInAction]
   );
   const signOutUser = useCallback(
     () => runAuthAction((firebaseServices) => firebaseServices.signOutUser()),
