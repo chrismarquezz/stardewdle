@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useResponsiveViewport } from "../../context/ResponsiveContext";
 import { useGameData } from "../../context/GameDataContext";
 import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
@@ -16,6 +17,7 @@ import BundleIcon from "./BundleIcon";
 
 export default function FishingGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { fish, dailyData } = useGameData();
+    const { width } = useResponsiveViewport();
     const { theme } = useTheme();
     const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
     const fishFrameBackground = useThemedAsset("/images/minigames/fishFrame.webp", theme);
@@ -25,6 +27,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
 
     const targetFishIndex = dailyData?.dailyItems?.fish;
     const targetFish = fish?.[targetFishIndex];
+    const targetFishScaleMultiplier = width < 768 ? 1.5 : 1;
 
     const [selectedLetter, setSelectedLetter] = useState(null);
 
@@ -105,12 +108,12 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                     <div className="w-[120px] h-[120px] md:w-20 md:h-20 flex justify-center items-center overflow-hidden">
                                         <div
                                             style={{
-                                                ...getSpriteStyle("fish", targetFish.index, 0, 16, theme),
+                                                ...getSpriteStyle("fish", targetFish.index, 0, 16, theme, targetFishScaleMultiplier),
                                                 filter: gameState.complete || gameState.win
                                                     ? (theme === "dark" ? "brightness(90%)" : "none")
                                                     : "brightness(0)"
                                             }}
-                                            className="scale-[150%] md:scale-[100%] transition-all duration-300"
+                                            className="transition-all duration-300"
                                         />
                                     </div>
                                 ) : (

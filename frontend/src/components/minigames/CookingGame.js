@@ -128,8 +128,8 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                         }}
                       >
                         <div
-                          style={getSpriteStyle("cooking", ingredientIndex, 0, 16, theme)}
-                          className="w-full h-full z-10 scale-[87.5%]"
+                          className="z-10"
+                          style={getSpriteStyle("cooking", ingredientIndex, 0, 16, theme, 0.875)}
                         />
                       </div>
 
@@ -183,8 +183,8 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                   <CursorTooltip label={formatName(guess)}>
                     <div className="group w-[63px] h-[63px] flex items-center justify-center">
                       <div
-                        style={getSpriteStyle("cooking", spriteIndex, 1, 16, theme)}
-                        className="z-10 scale-[87.5%]"
+                        className="z-10"
+                        style={getSpriteStyle("cooking", spriteIndex, 1, 16, theme, 0.875)}
                       />
                     </div>
                   </CursorTooltip>
@@ -234,8 +234,8 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                   {selectedFood ? (
                     <CursorTooltip label={formatName(selectedFood.name)}>
                       <div
-                        style={getSpriteStyle("cooking", selectedFood.index, 1, 16, theme)}
-                        className="z-10 scale-[87.5%] clickable"
+                        className="z-10 clickable"
+                        style={getSpriteStyle("cooking", selectedFood.index, 1, 16, theme, 0.875)}
                       />
                     </CursorTooltip>
                   ) : (
@@ -328,16 +328,14 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                             <div className="relative group flex flex-col items-center">
                               <CursorTooltip label={formatName(food.name)}>
                                 <div
-                                  style={getSpriteStyle("cooking", food.index, 1, 16, theme)}
-                                  className="scale-[87.5%]"
+                                  style={getSpriteStyle("cooking", food.index, 1, 16, theme, 0.875)}
                                 />
                               </CursorTooltip>
                             </div>
                           ) : (
                             <div className="flex justify-start items-center gap-3 w-full">
                               <div
-                                style={getSpriteStyle("cooking", food.index, 1, 16, theme)}
-                                className="scale-[87.5%]"
+                                style={getSpriteStyle("cooking", food.index, 1, 16, theme, 0.875)}
                               />
                               <div className={`w-3/5 text-3xl md:text-xl font-medium ${listSelectorTextClassName} text-left leading-none z-10`}>
                                 {formatName(food.name)}
