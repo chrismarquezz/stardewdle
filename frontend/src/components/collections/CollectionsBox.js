@@ -192,12 +192,10 @@ export default function CollectionsBox({ isMobilePortrait }) {
           )}
         </div>
       </div>
-      <div className="absolute flex gap-[5px] -top-[60px] left-[10px]">
-        <AccountMenu />
+      <div className={`absolute -top-[60px] left-[10px]`}>
+        <AccountMenu isMuted={isMuted} />
       </div>
-      <div
-        className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}
-      >
+      <div className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}>
         <CustomButton
           variant="icon"
           icon="/images/buttons/icons/question-mark.webp"
