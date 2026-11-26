@@ -120,6 +120,22 @@ service cloud.firestore {
         && validMinigamesProgress(progress.minigames);
     }
 
+    function validLatestDayProgressUpdate(progress) {
+      return progress is map
+        && progress.keys().hasAll(['date', 'dailyGame', 'minigames'])
+        && progress.keys().hasOnly(['date', 'dailyGame', 'minigames'])
+        && progress.date is string
+        && progress.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && validDailyGameProgress(progress.dailyGame)
+        && (
+          (resource.data.keys().hasAny(['latestDayProgress'])
+            && resource.data.latestDayProgress is map
+            && progress.date == resource.data.latestDayProgress.date
+            && progress.minigames == resource.data.latestDayProgress.minigames)
+          || validMinigamesProgress(progress.minigames)
+        );
+    }
+
     function validProfile(profile) {
       return profile.keys().hasAll([
           'accountId',
@@ -165,7 +181,7 @@ service cloud.firestore {
         && (request.resource.data.legacyImportComplete == resource.data.legacyImportComplete
           || request.resource.data.legacyImportComplete == true)
         && (!request.resource.data.keys().hasAny(['latestDayProgress'])
-          || validLatestDayProgress(request.resource.data.latestDayProgress))
+          || validLatestDayProgressUpdate(request.resource.data.latestDayProgress))
         && request.resource.data.updatedAt == request.time;
       allow delete: if false;
 
