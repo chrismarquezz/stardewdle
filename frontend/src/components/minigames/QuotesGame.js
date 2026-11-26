@@ -153,8 +153,8 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 <CursorTooltip label={formatName(guess)}>
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", spriteIndex, 0, 64, theme)}
-                                            className="z-10 scale-[78%]"
+                                            className="z-10"
+                                            style={getSpriteStyle("villagers", spriteIndex, 0, 64, theme, 0.78)}
                                         />
                                     </div>
                                 </CursorTooltip>
@@ -204,8 +204,8 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                 {selectedVillager ?
                                     <div className="group w-[128px] h-[128px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64, theme)}
-                                            className="z-10 scale-[78%] clickable"
+                                            className="z-10 clickable"
+                                            style={getSpriteStyle("villagers", selectedVillager.index, 0, 64, theme, 0.78)}
                                         />
                                     </div>
                                     : <img src="/images/minigames/search.webp" className="scale-[4]" />
@@ -279,14 +279,19 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
                                                     <CursorTooltip label={formatName(villager.name)}>
                                                         <div className={`relative group flex flex-col items-center ${theme === " light" ? "" : "-bottom-1 left-0"}`}>
                                                             <div
-                                                                style={getSpriteStyle("villagers", villager.index, 0, 64, theme)}
-                                                                className="scale-[58%]"
+                                                                style={getSpriteStyle("villagers", villager.index, 0, 64, theme, 0.58)}
                                                             />
                                                         </div>
                                                     </CursorTooltip>
                                                 ) : (
                                                     <div className="flex justify-start items-center w-full h-full">
-                                                            <div style={getSpriteStyle("villagers", villager.index, 0, 64, theme)} className={`relative scale-[58%] -ml-3 ${theme === " light" ? "" : "-bottom-0.5 left-0"}`} />
+                                                            <div
+                                                                className={`relative ${theme === " light" ? "" : "-bottom-0.5 left-0"}`}
+                                                                style={{
+                                                                    ...getSpriteStyle("villagers", villager.index, 0, 64, theme, 0.58),
+                                                                    marginLeft: "-0.75rem",
+                                                                }}
+                                                            />
                                                         <div className={`w-1/4 text-3xl md:text-xl font-medium ${listSelectorTextClassName} text-left leading-none z-10`}>{formatName(villager.name)}</div>
                                                     </div>
                                                 )}
