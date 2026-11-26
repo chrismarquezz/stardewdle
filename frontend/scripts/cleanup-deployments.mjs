@@ -22,7 +22,7 @@ async function main() {
     }
 
     const ts = (d) => new Date(d.created_on).getTime();
-    all.sort((a, b) => ts(b) - ts(a)); // newest first
+    all.sort((a, b) => ts(b) - ts(a));
 
     const prod = all.filter((d) => d.environment === "production");
     const previews = all.filter((d) => d.environment === "preview");
