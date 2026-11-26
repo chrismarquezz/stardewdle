@@ -27,7 +27,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
     const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
     const guessesBackground = useThemedAsset("/images/game/guesses.webp", theme);
     const cropGridBackground = useThemedAsset("/images/game/cropgrid-bg.webp", theme);
-    const minigameLargeBoxBackground = useThemedAsset("/images/minigames/boxLarge.webp", theme);
+    const minigameLargeBoxBackground = useThemedAsset("/images/minigames/boxMedium.webp", theme);
     const boxSquareBackground = useThemedAsset("/images/game/boxSquare.webp", theme);
     const nameBannerBackground = useThemedAsset("/images/name-banner.webp", theme);
     const buttonBaseBackground = useThemedAsset("/images/buttons/button-base.webp", theme);
