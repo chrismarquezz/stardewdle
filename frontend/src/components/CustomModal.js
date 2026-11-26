@@ -7,7 +7,7 @@ export default function CustomModal({
   title,
   isMuted,
   onClose,
-  scaleFactor,
+  scaleFactor = 1,
   maxHeightClass = "max-h-[50vh] md:max-h-[70vh]",
   headerContent,
   children,
