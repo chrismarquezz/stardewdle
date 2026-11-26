@@ -12,6 +12,7 @@ import CropLoader from "../CropLoader";
 import CustomButton from "../CustomButton";
 import CursorTooltip from "../CursorTooltip";
 import UpdatesModal from "../UpdatesModal";
+import AccountMenu from "../auth/AccountMenu";
 
 const CROP_COUNT_KEY = "stardewdle-cropCounts";
 
@@ -190,6 +191,9 @@ export default function CollectionsBox({ isMobilePortrait }) {
             </div>
           )}
         </div>
+      </div>
+      <div className="absolute flex gap-[5px] -top-[60px] left-[10px]">
+        <AccountMenu />
       </div>
       <div
         className={`absolute flex gap-[5px] -top-[60px] right-[10px]`}
