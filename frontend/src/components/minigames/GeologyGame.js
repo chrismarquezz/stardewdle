@@ -199,8 +199,8 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                 <CursorTooltip label={formatName(guess)}>
                                     <div className="group w-[108px] h-[108px] flex items-center justify-center">
                                         <div
-                                            style={getSpriteStyle("geology", spriteIndex, 0, 16, theme)}
-                                            className="z-10 scale-[130%]"
+                                            className="z-10"
+                                            style={getSpriteStyle("geology", spriteIndex, 0, 16, theme, 1.3)}
                                         />
                                     </div>
                                 </CursorTooltip>
@@ -329,10 +329,9 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
                                                 <div className="flex justify-start items-center gap-3 w-full h-12">
                                                     {showIcons && <div
                                                         style={{
-                                                            ...getSpriteStyle("geology", item.index, 0, 16, theme),
+                                                            ...getSpriteStyle("geology", item.index, 0, 16, theme, 0.875),
                                                             filter: `grayscale(100%) brightness(50%)${theme === "dark" ? " brightness(90%)" : ""}`,
                                                         }}
-                                                        className="scale-[87.5%]"
                                                     />}
                                                     <div className={`text-3xl md:text-xl font-medium ${listSelectorTextClassName} z-10 ${showIcons ? "w-2/3 text-left" : "w-full text-center"}`}>{item.name}</div>
                                                 </div>
