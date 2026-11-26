@@ -465,6 +465,7 @@ export default function GameBox({ isMobilePortrait }) {
   const syncCompletedResult = async (result, previousStats) => {
     if (!user || progressUserId !== user.uid) return;
 
+    let syncStage = "store the pending daily result";
     try {
       const pending = readPendingProgress().filter((entry) =>
         entry.uid !== user.uid || entry.date !== todayStr
@@ -480,11 +481,13 @@ export default function GameBox({ isMobilePortrait }) {
       savePendingProgress(pending);
       setProgressSyncStatus("syncing");
 
+      syncStage = "save the completed daily result";
       const { recordDailyResult } = await import("../../services/progressStore");
       const recorded = await recordDailyResult(user.uid, todayStr, {
         ...result,
         previousStats,
       });
+      syncStage = "clear the pending daily result";
       const remaining = readPendingProgress().filter((entry) =>
         entry.uid !== user.uid || entry.date !== todayStr
       );
@@ -499,8 +502,9 @@ export default function GameBox({ isMobilePortrait }) {
       }));
       setProgressSyncStatus("synced");
     } catch (error) {
-      console.error("Failed to save completed game to the account:", error);
-      setProgressSyncStatus("error", error.message);
+      const message = `${syncStage}: ${error.message || "The completed game could not be saved."}`;
+      console.error(`Failed to save completed game to the account (${syncStage}):`, error);
+      setProgressSyncStatus("error", message);
     }
   };
 
