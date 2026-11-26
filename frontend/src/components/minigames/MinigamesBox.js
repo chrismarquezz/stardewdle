@@ -548,7 +548,7 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
 
   return (
     <div
-      className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait ? "" : "mt-2"}`} 
+      className={`relative shadow-xl bg-no-repeat bg-center ${isMobilePortrait ? "" : "mt-2"}`}
       style={{
         backgroundImage: `url('${mainBackground}')`,
         backgroundSize: "100% 100%",
@@ -656,8 +656,8 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
 
       </div>
 
-      <div className={`absolute flex gap-[5px] -top-[55px] ${isMobilePortrait ? theme === "light" ? "left-0 -top-28" : "left-4 -top-28" : theme === "light" ? "left-0" : "left-16"}`}>
-        <AccountMenu />
+      <div className={`absolute -top-[58px] md:-top-[55px] ${isMobilePortrait ? theme === "light" ? "-top-28" : "-top-28 left-4" : theme === "light" ? "" : "left-16"}`}>
+        <AccountMenu isMuted={isMuted} />
       </div>
       <div className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? theme === "light" ? "-top-28" : "-top-28 right-4" : theme === "light" ? "" : "right-16"}`}>
         <CustomButton

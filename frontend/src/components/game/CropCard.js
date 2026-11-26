@@ -4,9 +4,11 @@ import { useThemedAsset } from "../../hooks/useThemedAsset";
 import CursorTooltip from "../CursorTooltip";
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
+import { getCorrectGuessOverlayClass } from "../../utils/guessFeedbackStyles";
 
 export default function CropCard({
   crop,
+  isCorrectCrop,
   isSelected,
   onClick,
   isMuted,
@@ -21,10 +23,17 @@ export default function CropCard({
   const [isHovering, setIsHovering] = useState(false);
   const canInteract = interactable ?? guessable;
 
-  const disableColor = guessable ? "" 
-  : manuallyDisabled 
-      ? theme === "light" ? "mix-blend-multiply bg-gray-800 opacity-60 " : "opacity-70 bg-slate-800 mix-blend-multiply" 
-      : theme === "light" ? "mix-blend-multiply bg-gray-400 opacity-60 " : "opacity-40 bg-slate-800 mix-blend-multiply" 
+  const disableColor = isCorrectCrop
+    ? `${getCorrectGuessOverlayClass(theme)} opacity-60`
+    : guessable
+      ? ""
+      : manuallyDisabled
+        ? theme === "light"
+          ? "mix-blend-multiply bg-gray-800 opacity-60"
+          : "opacity-70 bg-slate-800 mix-blend-multiply"
+        : theme === "light"
+          ? "mix-blend-multiply bg-gray-400 opacity-60"
+          : "opacity-40 bg-slate-800 mix-blend-multiply";
 
   async function handleEndHover() {
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -64,7 +73,7 @@ export default function CropCard({
         onMouseLeave={() => handleEndHover()}
       >
         <div
-          className={`absolute mix-blend-screen left-0 bottom-0 ${theme === "light" ? "opacity-60 top-0 right-0" : "opacity-30 top-1 right-1"} ${isSelected ? "bg-yellow-100" : ""}`}
+          className={`absolute mix-blend-screen left-0 bottom-0 ${theme === "light" ? "opacity-60 top-0 right-0" : "opacity-30 top-1 right-1"} ${isSelected && !isCorrectCrop ? "bg-yellow-100" : ""}`}
         />
 
         <div

@@ -43,7 +43,7 @@ export default function Game() {
             label="Stardewdle Home"
             isMuted={isMuted}
             onClick={() => navigate("/")}
-            className={isMobilePortrait ? "mr-[220px] mb-5" : ""}
+            className={isMobilePortrait ? "mr-[136px] mb-5" : ""}
             soundPath={"/sounds/mouseClick.mp3"}
           />
 

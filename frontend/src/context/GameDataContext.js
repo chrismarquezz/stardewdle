@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useRef, useState, useEffect } from "react";
 
 const GameDataContext = createContext();
-const MOST_RECENT_UPDATE = "2026-11-24T00:00:00Z";
+const MOST_RECENT_UPDATE = "2026-11-26T00:00:00Z";
 
 const DATA_FETCH_DATES_KEY = "stardewdle-dataFetchDate";
 const LEGACY_DATA_FETCH_DATE = "2026-10-20";

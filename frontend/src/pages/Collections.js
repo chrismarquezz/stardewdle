@@ -38,15 +38,15 @@ export default function Game() {
             transformOrigin: "center center",
           }}
         >
-            <CustomButton
-              variant="title"
-              icon="/images/stardewdleLogo.webp"
-              label="Stardewdle Home"
-              isMuted={isMuted}
-              onClick={() => navigate("/")}
-              className={isMobilePortrait ? "mr-[180px] mb-2" : ""}
-              soundPath={"/sounds/mouseClick.mp3"}
-            />
+          <CustomButton
+            variant="title"
+            icon="/images/stardewdleLogo.webp"
+            label="Stardewdle Home"
+            isMuted={isMuted}
+            onClick={() => navigate("/")}
+            className={isMobilePortrait ? "mr-[184px] mb-2" : ""}
+            soundPath={"/sounds/mouseClick.mp3"}
+          />
           <CollectionsBox isMobilePortrait={isMobilePortrait} />
         </div>
       </div>

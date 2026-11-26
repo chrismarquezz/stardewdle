@@ -65,6 +65,9 @@ export default function CropGrid({
       gridAutoRows: "60px",
     };
 
+  const correctCropWasGuessed = correctCrop
+    && guesses.some(({ crop: guess }) => guess.name === correctCrop.name);
+
   return (
     <div
       className={`flex justify-center items-center bg-center bg-no-repeat ${theme === "light"
@@ -90,6 +93,7 @@ export default function CropGrid({
             <CropCard
               key={crop.name}
               crop={crop}
+              isCorrectCrop={correctCropWasGuessed && crop.name === correctCrop.name}
               isSelected={selectedCrop?.name === crop.name}
               onClick={disableMode ? onToggleDisable : onSelect}
               isMuted={isMuted}

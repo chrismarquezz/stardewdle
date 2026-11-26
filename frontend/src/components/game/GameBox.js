@@ -799,10 +799,8 @@ export default function GameBox({ isMobilePortrait }) {
           </div>
         </div>
       </div>
-      <div
-        className={`absolute flex gap-[5px] -top-[55px] ${isMobilePortrait ? "left-0 -top-[112px]" : theme === "light" ? "left-0" : "left-16"}`}
-      >
-        <AccountMenu />
+      <div className={`absolute -top-[58px] md:-top-[55px] ${isMobilePortrait ? "left-8" : theme === "light" ? "left-0" : "left-16"}`}>
+        <AccountMenu isMuted={isMuted}/>
       </div>
       <div
         className={`absolute flex gap-[5px] -top-[112px] md:-top-[55px] right-0 ${isMobilePortrait ? "flex-wrap w-[200px]" : theme === "light" ? "" : "right-16"}`}

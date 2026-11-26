@@ -44,7 +44,7 @@ export default function CustomModal({
         >
           <button
             onClick={playCloseSound}
-            className="clickable absolute top-0 left-3 md:left-6 text-main text-4xl md:text-7xl hover:text-wrong"
+            className="clickable absolute top-0 left-3 md:left-6 text-alternative-dark text-4xl md:text-7xl hover:text-wrong"
           >
             x
           </button>

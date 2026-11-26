@@ -23,6 +23,7 @@ export default function AccountMenu() {
     syncStatus,
     syncError,
     retryProgressSync,
+    isMuted
   } = useAuth();
   const { isMobilePortrait } = useResponsiveLayout();
   const { theme } = useTheme();
@@ -148,11 +149,10 @@ export default function AccountMenu() {
                 : "Account sync is on"
               : "Sign in to sync progress"
         }
-        isMuted={true}
+        isMuted={isMuted}
         onClick={openAccountMenu}
         showLabel={true}
-        mobilePortrait={isMobilePortrait}
-        className="cursor-pointer"
+        isMobilePortrait={isMobilePortrait}
       />
 
       {isOpen && (

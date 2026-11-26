@@ -6,13 +6,19 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
     <CustomModal title="What's New" isMuted={isMuted} onClose={onClose} scaleFactor={scaleFactor}>
       <div className={`space-y-2 md:space-y-4 text-main text-justify text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
         <div>
-          <p className="font-semibold">v1.7 — November 2026</p>
+          <p className="font-semibold">v1.7 — November 2026 — Accounts and Dark Mode</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
-              There is now a dark mode!
+              There is now account syncing and dark mode!
             </li>
             <li>
-              It should be right next to this updates button.
+              On the left there should now be an accounts button. There you can now sign in with Google or email. We may add more options in the future.
+            </li>
+            <li>
+              Now you can play across browsers and sync your streaks and statistics.
+            </li>
+            <li>
+              Next to this updates button there is now a dark mode toggle.
             </li>
             <li>
               If you think there is anything too hard to read or distinguish with this new theming, do not hesitate to let us know in the <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a>.
@@ -21,7 +27,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
         
         <div>
-          <p className="font-semibold">v1.6 — September 2026</p>
+          <p className="font-semibold">v1.6 — September 2026 — Minigames</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               There are new games!
@@ -45,7 +51,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.5 — August 2026</p>
+          <p className="font-semibold">v1.5 — August 2026 — Eliminations</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               There is now a custom eliminations feature! You can narrow down your options as you'd like.
@@ -60,7 +66,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.4 — June 2026</p>
+          <p className="font-semibold">v1.4 — June 2026 — Statistics</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               We've added statistics!
@@ -81,7 +87,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.3.1 — February 2026</p>
+          <p className="font-semibold">v1.3.1 — February 2026 — Discord</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               We decided to create a <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a> server!
@@ -99,7 +105,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.3 — December 2025</p>
+          <p className="font-semibold">v1.3 — December 2025 — Hints</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               Overhauled the hint system to provide useful hints
@@ -114,7 +120,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.2 — October 2025</p>
+          <p className="font-semibold">v1.2 — October 2025 — Updates</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               Implemented a "What's New" button to inform players of updates
@@ -133,7 +139,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.1 — June 2025</p>
+          <p className="font-semibold">v1.1 — June 2025 — Collections</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>
               Added the Collections page, where you can refresh your memory on crop
@@ -147,7 +153,7 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
         </div>
 
         <div>
-          <p className="font-semibold">v1.0 — May 2025</p>
+          <p className="font-semibold">v1.0 — May 2025 — Release</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>Released the first version of Stardewdle</li>
           </ul>
