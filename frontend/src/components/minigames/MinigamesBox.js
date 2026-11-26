@@ -241,7 +241,6 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
       } catch (error) {
         console.error("Failed to sync minigame progress:", error);
         if (active) {
-          setProgressUserId(user.uid);
           setProgressLoading(false);
           setMinigameSyncState({
             status: "error",
