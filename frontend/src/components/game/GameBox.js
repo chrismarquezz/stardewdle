@@ -577,7 +577,7 @@ export default function GameBox({ isMobilePortrait }) {
 
     const guessCount = isWin ? updatedGuesses.length : 0;
 
-    // Snapshot the pre-game stats so /reset-guess can undo today's result.
+    // Keep a pre-game snapshot for safe stats rollback if needed.
     localStorage.setItem(
       "stardewdle-statsBackup",
       JSON.stringify({ date: currentDateStr, stats: storedStats })

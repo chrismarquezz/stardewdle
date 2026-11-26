@@ -15,7 +15,6 @@ import Minigames from "./pages/Minigames";
 
 const Collections = lazy(() => import("./pages/Collections"));
 const Count = lazy(() => import("./pages/Count"));
-const ResetGuess = lazy(() => import("./pages/ResetGuess"));
 const Debug = lazy(() => import("./pages/Debug"));
 
 export default function App() {
@@ -46,7 +45,6 @@ export default function App() {
                   <Route path="/collections" element={<Collections />} />
                   <Route path="/count" element={<Count />} />
                   <Route path="/minigames" element={<Minigames />} />
-                  <Route path="/reset-guess" element={<ResetGuess />} />
                 </Route>
               </Routes>
             </Suspense>
