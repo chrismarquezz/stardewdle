@@ -6,6 +6,21 @@ export default function UpdatesModal({ isMuted, onClose, scaleFactor }) {
     <CustomModal title="What's New" isMuted={isMuted} onClose={onClose} scaleFactor={scaleFactor}>
       <div className={`space-y-2 md:space-y-4 text-main text-justify text-md sm:text-2xl md:text-3xl leading-none overflow-y-auto max-h-[70vh] pr-2 ${scrollbarStyles}`}>
         <div>
+          <p className="font-semibold">v1.7 — November 2026</p>
+          <ul className="list-disc ml-6 md:ml-10">
+            <li>
+              There is now a dark mode!
+            </li>
+            <li>
+              It should be right next to this updates button.
+            </li>
+            <li>
+              If you think there is anything too hard to read or distinguish with this new theming, do not hesitate to let us know in the <a href="https://discord.gg/Fg56gpXXBK" className="underline clickable">Discord</a>.
+            </li>
+          </ul>
+        </div>
+        
+        <div>
           <p className="font-semibold">v1.6 — September 2026</p>
           <ul className="list-disc ml-6 md:ml-10">
             <li>

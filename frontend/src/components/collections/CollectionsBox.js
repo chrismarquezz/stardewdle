@@ -83,6 +83,7 @@ export default function CollectionsBox({ isMobilePortrait }) {
     backgroundPosition: `${x_pos}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (

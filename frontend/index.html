@@ -21,6 +21,10 @@
   <meta name="keywords"
     content="Stardew Valley, Wordle, Stardewdle, crops, guessing game, daily game, regrowth, farming game, game" />
   <link rel="manifest" href="/manifest.json" />
+  <script>
+    document.documentElement.dataset.theme =
+      localStorage.getItem("stardewdle-theme") === "dark" ? "dark" : "light";
+  </script>
   <title>Stardewdle</title>
 </head>
 

@@ -40,6 +40,7 @@ export default function CropCard({
     width: "48px",
     height: "48px",
     imageRendering: "pixelated",
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (
