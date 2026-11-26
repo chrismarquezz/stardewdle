@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useTheme } from "../../context/ThemeContext";
 import { formatName } from "../../utils/formatString";
 import { useGameData } from "../../context/GameDataContext";
+import { useAuth } from "../../context/AuthContext";
 import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
 import { isFullCropMatch, seasonSet } from "../../utils/cropCompare";
+import { serializeDailyGuesses } from "../../services/latestDayProgress";
 
 import CropGrid from "./CropGrid";
 import GuessGrid from "./GuessGrid";
@@ -19,8 +21,64 @@ import UpdatesModal from "../UpdatesModal";
 import HintsModal from "./HintsModal";
 import CustomButton from "../CustomButton";
 import CursorTooltip from "../CursorTooltip";
+import AccountMenu from "../auth/AccountMenu";
 
 const DARK_SELECTED_FRAME_BACKGROUND_SCALE = (58 / 41) / (205 / 164);
+const PENDING_PROGRESS_KEY = "stardewdle-pendingProgress";
+const PENDING_RESET_KEY = "stardewdle-pendingProgressResets";
+const CLOUD_STATS_OWNER_KEY = "stardewdle-cloudStatsOwner";
+const CLOUD_COMPLETION_OWNER_KEY = "stardewdle-cloudCompletionOwner";
+
+function readPendingProgress() {
+  const raw = localStorage.getItem(PENDING_PROGRESS_KEY);
+  if (!raw) return [];
+
+  let pending;
+  try {
+    pending = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`Pending cloud progress is invalid JSON: ${error.message}`);
+  }
+  if (!Array.isArray(pending)) {
+    throw new Error("Pending cloud progress has an invalid format.");
+  }
+  return pending;
+}
+
+function savePendingProgress(pending) {
+  localStorage.setItem(PENDING_PROGRESS_KEY, JSON.stringify(pending));
+}
+
+function readPendingResets() {
+  const raw = localStorage.getItem(PENDING_RESET_KEY);
+  if (!raw) return [];
+
+  let pending;
+  try {
+    pending = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`Pending cloud resets are invalid JSON: ${error.message}`);
+  }
+  if (!Array.isArray(pending)) {
+    throw new Error("Pending cloud resets have an invalid format.");
+  }
+  return pending;
+}
+
+function savePendingResets(pending) {
+  localStorage.setItem(PENDING_RESET_KEY, JSON.stringify(pending));
+}
+
+function saveLocalDayBackup(uid, date) {
+  const key = `stardewdle-local-day-${uid}-${date}`;
+  if (localStorage.getItem(key)) return;
+
+  const dayState = Object.fromEntries(
+    ["stardewdle-guesses", "stardewdle-gameOver", "stardewdle-selectedCrop", "stardewdle-statsBackup"]
+      .map((stateKey) => [stateKey, localStorage.getItem(stateKey)])
+  );
+  localStorage.setItem(key, JSON.stringify(dayState));
+}
 
 export default function GameBox({ isMobilePortrait }) {
   const {
@@ -36,6 +94,14 @@ export default function GameBox({ isMobilePortrait }) {
   } = useGameData();
 
   const { isMuted, toggleMute } = useSound();
+  const {
+    user,
+    loading: authLoading,
+    syncRetryToken,
+    setAccountId,
+    setProgressSyncStatus,
+  } = useAuth();
+  const previousUserId = useRef(user?.uid ?? null);
   const { theme, toggleTheme } = useTheme();
   const boxBackground = useThemedAsset(`/images/game/box-bg${isMobilePortrait ? "-sm" : ""}.webp`, theme);
   const guessBackground = useThemedAsset(`/images/game/guesses.webp`, theme);
@@ -60,6 +126,9 @@ export default function GameBox({ isMobilePortrait }) {
     "stardewdle-gameOver",
     () => false
   );
+  const [progressUserId, setProgressUserId] = useState(null);
+  const [cloudDailyResult, setCloudDailyResult] = useState(null);
+  const accountProgressLoading = Boolean(user && progressUserId !== user.uid);
 
   const [storedStats, setStoredStats] = useLocalStorage(
     "stardewdle-stats",
@@ -117,12 +186,314 @@ export default function GameBox({ isMobilePortrait }) {
     () => false
   );
 
+  useEffect(() => {
+    if (user?.uid) {
+      previousUserId.current = user.uid;
+      return;
+    }
+    if (!previousUserId.current) return;
+
+    try {
+      const savedStats = localStorage.getItem("stardewdle-stats");
+      const savedGuesses = localStorage.getItem("stardewdle-guesses");
+      const savedCrop = localStorage.getItem("stardewdle-selectedCrop");
+      setStoredStats(savedStats
+        ? JSON.parse(savedStats)
+        : {
+            streak: 0,
+            total: 0,
+            lastPlayedDate: null,
+            accuracy: { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
+          });
+      setGuesses(savedGuesses ? JSON.parse(savedGuesses) : []);
+      setSelectedCrop(savedCrop ? JSON.parse(savedCrop) : null);
+      setGameOver(localStorage.getItem("stardewdle-gameOver") === "true");
+      previousUserId.current = null;
+    } catch (error) {
+      setProgressSyncStatus("error", `Local guest progress could not be restored: ${error.message}`);
+    }
+  }, [
+    setGameOver,
+    setGuesses,
+    setProgressSyncStatus,
+    setSelectedCrop,
+    setStoredStats,
+    user?.uid,
+  ]);
+
+  useEffect(() => {
+    if (authLoading) return undefined;
+    if (!user) {
+      setProgressUserId(null);
+      setCloudDailyResult(null);
+      return undefined;
+    }
+    if (!isReady || !correctCrop) return undefined;
+
+    let active = true;
+    setProgressUserId(null);
+    setProgressSyncStatus("syncing");
+
+    const synchronizeProgress = async () => {
+      try {
+        const [
+          { initializeAccountProgress, getLocalCompletedResult },
+          { recordDailyResult, undoDailyResult },
+        ] = await Promise.all([
+          import("../../services/progressMigration"),
+          import("../../services/progressStore"),
+        ]);
+        let progress = await initializeAccountProgress(user.uid, todayStr, correctCrop);
+        let pendingResets = readPendingResets();
+        const accountResets = pendingResets
+          .filter((entry) => entry.uid === user.uid && entry.date <= todayStr)
+          .sort((left, right) => left.date.localeCompare(right.date));
+        let pending = readPendingProgress();
+        for (const entry of accountResets) {
+          const reset = await undoDailyResult(user.uid, entry.date, entry.streakOverride);
+          pendingResets = pendingResets.filter((saved) =>
+            saved.uid !== entry.uid || saved.date !== entry.date
+          );
+          savePendingResets(pendingResets);
+          pending = pending.filter((saved) =>
+            saved.uid !== entry.uid || saved.date !== entry.date
+          );
+          savePendingProgress(pending);
+
+          if (entry.date === todayStr) {
+            progress = {
+              ...progress,
+              stats: reset.stats ?? progress.stats,
+              dailyResult: null,
+              latestDayProgress: reset.latestDayProgress,
+            };
+            localStorage.removeItem(CLOUD_COMPLETION_OWNER_KEY);
+            setGameOver(false);
+            setGuesses([]);
+            setSelectedCrop(null);
+            setCloudDailyResult(null);
+          }
+        }
+
+        const currentStatsOwnerRaw = localStorage.getItem(CLOUD_STATS_OWNER_KEY);
+        const currentStatsOwner = currentStatsOwnerRaw
+          ? JSON.parse(currentStatsOwnerRaw)
+          : null;
+        const localStats = localStorage.getItem("stardewdle-stats");
+        if (!currentStatsOwner) saveLocalDayBackup(user.uid, todayStr);
+        const backupOwnerUid = currentStatsOwner?.uid
+          && currentStatsOwner.uid !== user.uid
+          ? currentStatsOwner.uid
+          : currentStatsOwner?.uid
+            ? null
+            : user.uid;
+        if (localStats && backupOwnerUid) {
+          const localStatsBackupKey = `stardewdle-local-stats-${backupOwnerUid}`;
+          if (!localStorage.getItem(localStatsBackupKey)) {
+            localStorage.setItem(localStatsBackupKey, localStats);
+          }
+        }
+
+        const accountPending = pending
+          .filter((entry) => entry.uid === user.uid && entry.date <= todayStr)
+          .sort((left, right) => left.date.localeCompare(right.date));
+        for (const entry of accountPending) {
+          if (progress.created && entry.date < todayStr) {
+            pending = pending.filter((saved) =>
+              saved.uid !== entry.uid || saved.date !== entry.date
+            );
+            savePendingProgress(pending);
+            continue;
+          }
+
+          const recorded = await recordDailyResult(user.uid, entry.date, {
+            outcome: entry.outcome,
+            guessCount: entry.guessCount,
+            guesses: entry.guesses,
+            previousStats: entry.previousStats,
+          });
+          progress = {
+            ...progress,
+            stats: recorded.stats,
+            dailyResult: entry.date === todayStr
+              ? recorded.dailyResult
+              : progress.dailyResult,
+            latestDayProgress: entry.date === todayStr
+              ? recorded.latestDayProgress
+              : progress.latestDayProgress,
+          };
+          pending = pending.filter((saved) =>
+            saved.uid !== entry.uid || saved.date !== entry.date
+          );
+          savePendingProgress(pending);
+        }
+
+        if (!progress.dailyResult) {
+          const localResult = getLocalCompletedResult(correctCrop, todayStr, user.uid);
+          if (localResult) {
+            const recorded = await recordDailyResult(user.uid, todayStr, {
+              ...localResult,
+              previousStats: progress.stats,
+            });
+            progress = {
+              ...progress,
+              stats: recorded.stats,
+              dailyResult: recorded.dailyResult,
+              latestDayProgress: recorded.latestDayProgress,
+            };
+          }
+        }
+
+        if (!active) return;
+
+        localStorage.setItem(CLOUD_STATS_OWNER_KEY, JSON.stringify({
+          uid: user.uid,
+          accountId: progress.accountId,
+        }));
+        setAccountId(progress.accountId);
+        setStoredStats(progress.stats);
+        setProgressUserId(user.uid);
+
+        if (progress.dailyResult) {
+          const localResult = getLocalCompletedResult(correctCrop, todayStr, user.uid);
+          const localMatchesCloud = localResult
+            && localResult.outcome === progress.dailyResult.outcome
+            && localResult.guessCount === progress.dailyResult.guessCount;
+          const cloudDayProgress = progress.latestDayProgress?.date === todayStr
+            ? progress.latestDayProgress
+            : null;
+          const cloudDailyGame = cloudDayProgress?.dailyGame;
+          if (
+            cloudDailyGame
+            && cloudDailyGame.outcome === progress.dailyResult.outcome
+            && cloudDailyGame.guessCount === progress.dailyResult.guessCount
+          ) {
+            const restoredGuesses = cloudDailyGame.guesses.map((cropName) => {
+              const crop = crops.find((candidate) => String(candidate.crop_index) === cropName);
+              if (!crop) {
+                throw new Error(`Saved crop guess "${cropName}" is no longer available.`);
+              }
+              return { crop };
+            });
+            setGuesses(restoredGuesses);
+            setGameOver(true);
+          } else if (!localMatchesCloud) {
+            setGuesses([]);
+            setSelectedCrop(null);
+            setGameOver(true);
+          }
+          localStorage.setItem(CLOUD_COMPLETION_OWNER_KEY, JSON.stringify({
+            uid: user.uid,
+            date: todayStr,
+          }));
+          setCloudDailyResult(progress.dailyResult);
+        } else {
+          const completionOwner = localStorage.getItem(CLOUD_COMPLETION_OWNER_KEY);
+          if (completionOwner) {
+            const owner = JSON.parse(completionOwner);
+            if (owner.uid !== user.uid || owner.date === todayStr) {
+              localStorage.removeItem(CLOUD_COMPLETION_OWNER_KEY);
+              setGameOver(false);
+              setGuesses([]);
+              setSelectedCrop(null);
+            }
+          }
+          setCloudDailyResult(null);
+        }
+
+        const hasUnsentOlderResult = pending.some((entry) =>
+          entry.uid === user.uid && entry.date < todayStr
+        );
+        if (hasUnsentOlderResult) {
+          setProgressSyncStatus(
+            "error",
+            "A previous day's result is still waiting to sync. It has been kept on this device."
+          );
+        } else {
+          setProgressSyncStatus("synced");
+        }
+      } catch (error) {
+        console.error("Failed to sync account progress:", error);
+        if (active) setProgressSyncStatus("error", error.message);
+      }
+    };
+
+    const retryWhenAvailable = () => {
+      if (!document.hidden) synchronizeProgress();
+    };
+    synchronizeProgress();
+    window.addEventListener("online", retryWhenAvailable);
+    document.addEventListener("visibilitychange", retryWhenAvailable);
+
+    return () => {
+      active = false;
+      window.removeEventListener("online", retryWhenAvailable);
+      document.removeEventListener("visibilitychange", retryWhenAvailable);
+    };
+  }, [
+    authLoading,
+    correctCrop,
+    crops,
+    isReady,
+    setAccountId,
+    setGameOver,
+    setGuesses,
+    setProgressSyncStatus,
+    setSelectedCrop,
+    setStoredStats,
+    syncRetryToken,
+    todayStr,
+    user,
+  ]);
+
   const toggleManualDisable = (crop) => {
     setManualDisables((prev) =>
       prev.includes(crop.name)
         ? prev.filter((name) => name !== crop.name)
         : [...prev, crop.name]
     );
+  };
+
+  const syncCompletedResult = async (result, previousStats) => {
+    if (!user || progressUserId !== user.uid) return;
+
+    try {
+      const pending = readPendingProgress().filter((entry) =>
+        entry.uid !== user.uid || entry.date !== todayStr
+      );
+      pending.push({
+        uid: user.uid,
+        date: todayStr,
+        outcome: result.outcome,
+        guessCount: result.guessCount,
+        guesses: result.guesses,
+        previousStats,
+      });
+      savePendingProgress(pending);
+      setProgressSyncStatus("syncing");
+
+      const { recordDailyResult } = await import("../../services/progressStore");
+      const recorded = await recordDailyResult(user.uid, todayStr, {
+        ...result,
+        previousStats,
+      });
+      const remaining = readPendingProgress().filter((entry) =>
+        entry.uid !== user.uid || entry.date !== todayStr
+      );
+      savePendingProgress(remaining);
+      setStoredStats(recorded.stats);
+      setAccountId(recorded.accountId);
+      setProgressUserId(user.uid);
+      setCloudDailyResult(recorded.dailyResult);
+      localStorage.setItem(CLOUD_COMPLETION_OWNER_KEY, JSON.stringify({
+        uid: user.uid,
+        date: todayStr,
+      }));
+      setProgressSyncStatus("synced");
+    } catch (error) {
+      console.error("Failed to save completed game to the account:", error);
+      setProgressSyncStatus("error", error.message);
+    }
   };
 
   useMidnightRefresh();
@@ -169,7 +540,13 @@ export default function GameBox({ isMobilePortrait }) {
   }, [showShareModal, guesses, correctCrop, storedStats.streak]);
 
   const handleSubmit = async () => {
-    if (!selectedCrop || guesses.length >= 6 || gameOver || !correctCrop) return;
+    if (
+      !selectedCrop
+      || guesses.length >= 6
+      || gameOver
+      || !correctCrop
+      || accountProgressLoading
+    ) return;
 
     const currentDateStr = utcDateString();
 
@@ -219,6 +596,13 @@ export default function GameBox({ isMobilePortrait }) {
     // Ending the game must not depend on the reporting call succeeding.
     setGameOver(true);
     setShowShareModal(true);
+    if (user) {
+      void syncCompletedResult({
+        outcome: isWin ? "win" : "loss",
+        guessCount: isWin ? updatedGuesses.length : 6,
+        guesses: serializeDailyGuesses(updatedGuesses),
+      }, storedStats);
+    }
 
     try {
       await fetch(import.meta.env.VITE_API_URL + "/guess", {
@@ -241,6 +625,7 @@ export default function GameBox({ isMobilePortrait }) {
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
   };
+  const completedOnAnotherDevice = Boolean(cloudDailyResult && guesses.length === 0);
 
   return (
     <div
@@ -265,18 +650,22 @@ export default function GameBox({ isMobilePortrait }) {
         <CropGrid
           selectedCrop={selectedCrop}
           onSelect={
-            !gameOver && guesses.length < 6 ? setSelectedCrop : () => { }
+            !gameOver && guesses.length < 6 && !accountProgressLoading
+              ? setSelectedCrop
+              : () => { }
           }
           crops={crops}
-          isMuted={!gameOver && guesses.length < 6 ? isMuted : true}
+          isMuted={!gameOver && guesses.length < 6 && !accountProgressLoading ? isMuted : true}
           isMobilePortrait={isMobilePortrait}
           hints={hints}
           guesses={guesses}
           correctCrop={correctCrop}
-          disableMode={!gameOver && guesses.length < 6 ? disableMode : false}
+          disableMode={!gameOver && guesses.length < 6 && !accountProgressLoading ? disableMode : false}
           manualDisables={manualDisables}
           onToggleDisable={
-            !gameOver && guesses.length < 6 ? toggleManualDisable : () => { }
+            !gameOver && guesses.length < 6 && !accountProgressLoading
+              ? toggleManualDisable
+              : () => { }
           }
         />
       </div>
@@ -333,26 +722,36 @@ export default function GameBox({ isMobilePortrait }) {
             </div>
             {gameOver ? (
               <div className="mt-4 flex items-center justify-center gap-4">
-                {isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop) ? (
-                  <p className="text-correct text-5xl font-bold whitespace-nowrap">
-                    You guessed it!
+                {completedOnAnotherDevice ? (
+                  <p className={`text-4xl font-bold whitespace-nowrap ${cloudDailyResult.outcome === "win" ? "text-correct" : "text-wrong"}`}>
+                    {cloudDailyResult.outcome === "win"
+                      ? "You solved today's game on another device."
+                      : "You played today's game on another device."}
                   </p>
                 ) : (
-                  <p className="text-wrong text-5xl font-bold whitespace-nowrap">
-                    Better luck next time!
-                  </p>
+                  <>
+                    {isFullCropMatch(guesses[guesses.length - 1]?.crop, correctCrop) ? (
+                      <p className="text-correct text-5xl font-bold whitespace-nowrap">
+                        You guessed it!
+                      </p>
+                    ) : (
+                      <p className="text-wrong text-5xl font-bold whitespace-nowrap">
+                        Better luck next time!
+                      </p>
+                    )}
+                    <CustomButton
+                      variant="share"
+                      icon={"/images/game/share-button.webp"}
+                      label={"Share"}
+                      soundPath={"/sounds/modal.mp3"}
+                      isMuted={isMuted}
+                      onClick={() => {
+                        setShowShareModal(true);
+                      }}
+                      isMobilePortrait={isMobilePortrait}
+                    />
+                  </>
                 )}
-                <CustomButton
-                  variant="share"
-                  icon={"/images/game/share-button.webp"}
-                  label={"Share"}
-                  soundPath={"/sounds/modal.mp3"}
-                  isMuted={isMuted}
-                  onClick={() => {
-                    setShowShareModal(true);
-                  }}
-                  isMobilePortrait={isMobilePortrait}
-                />
               </div>
             ) : (
               <CustomButton
@@ -366,7 +765,7 @@ export default function GameBox({ isMobilePortrait }) {
                 }}
                 isMobilePortrait={isMobilePortrait}
                 className={`${theme === "light" ? "mt-4" : "mt-2 z-10"} 
-                  ${!selectedCrop || guesses.length >= 6 || gameOver
+                  ${!selectedCrop || guesses.length >= 6 || gameOver || accountProgressLoading
                     ? "opacity-40 pointer-events-none"
                     : ""
                   }`
@@ -398,6 +797,11 @@ export default function GameBox({ isMobilePortrait }) {
             <GuessGrid guesses={guesses} answer={correctCrop} isMobilePortrait={isMobilePortrait} />
           </div>
         </div>
+      </div>
+      <div
+        className={`absolute flex gap-[5px] -top-[55px] ${isMobilePortrait ? "left-0 -top-[112px]" : theme === "light" ? "left-0" : "left-16"}`}
+      >
+        <AccountMenu />
       </div>
       <div
         className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? " flex-wrap w-[200px] -top-[112px] " : theme === "light" ? "" : " right-16 "}}`}

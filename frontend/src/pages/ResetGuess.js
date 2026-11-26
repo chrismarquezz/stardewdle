@@ -2,6 +2,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import { useSound } from "../context/SoundContext";
 import { useResponsiveLayout } from "../hooks/useResponsiveScale";
+import { useAuth } from "../context/AuthContext";
 
 import CustomButton from "../components/CustomButton";
 
@@ -24,6 +25,29 @@ const DEFAULT_STATS = {
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 // Stardewdle's first daily crop; a streak can't be longer than the days played since then.
 const LAUNCH_DATE = "2026-06-18";
+const PENDING_PROGRESS_KEY = "stardewdle-pendingProgress";
+const PENDING_RESET_KEY = "stardewdle-pendingProgressResets";
+const CLOUD_COMPLETION_OWNER_KEY = "stardewdle-cloudCompletionOwner";
+
+function readPendingArray(key, label) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return [];
+
+  let value;
+  try {
+    value = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`${label} is invalid JSON: ${error.message}`);
+  }
+  if (!Array.isArray(value)) {
+    throw new Error(`${label} has an invalid format.`);
+  }
+  return value;
+}
+
+function savePendingArray(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
 
 function maxStreakFor(todayStr) {
   const days = Math.round(
@@ -84,6 +108,7 @@ function rollbackStats(todayStr) {
 
 export default function ResetGuess() {
   const { isMuted } = useSound();
+  const { user, loading: authLoading, setProgressSyncStatus } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { width, height, scaleFactor } = useResponsiveLayout();
@@ -99,13 +124,15 @@ export default function ResetGuess() {
     () => (parseStreak(searchParams.get("streak"), maxStreak) ?? "").toString()
   );
   const [status, setStatus] = useState(null);
+  const [isResetting, setIsResetting] = useState(false);
 
   const streakOverride = parseStreak(streakInput, maxStreak);
   const streakInvalid = streakInput.trim() !== "" && streakOverride === null;
 
-  const handleReset = () => {
+  const handleReset = async () => {
     const outcome = rollbackStats(todayStr);
     DAY_KEYS.forEach((key) => localStorage.removeItem(key));
+    localStorage.removeItem("stardewdle-cloudCompletionOwner");
 
     if (streakOverride !== null) {
       const current = { ...DEFAULT_STATS, ...readJSON("stardewdle-stats", DEFAULT_STATS) };
@@ -125,9 +152,59 @@ export default function ResetGuess() {
           ? "Today's guesses were cleared and your stats were restored to before today's game."
           : "Today's guesses were cleared and today's result was subtracted from your stats.";
 
-    setStatus(
-      streakOverride !== null ? `${base} Your streak was set to ${streakOverride}.` : base
-    );
+    const localStatus = streakOverride !== null
+      ? `${base} Your streak was set to ${streakOverride}.`
+      : base;
+    setStatus(user ? `${localStatus} Cloud reset is pending...` : localStatus);
+
+    if (!user) return;
+
+    setIsResetting(true);
+    setProgressSyncStatus("syncing");
+    let resetQueued = false;
+    try {
+      let pendingResets = readPendingArray(PENDING_RESET_KEY, "Pending cloud resets");
+      pendingResets = pendingResets.filter((entry) =>
+        entry.uid !== user.uid || entry.date !== todayStr
+      );
+      pendingResets.push({
+        uid: user.uid,
+        date: todayStr,
+        streakOverride,
+      });
+      savePendingArray(PENDING_RESET_KEY, pendingResets);
+      resetQueued = true;
+
+      const pendingResults = readPendingArray(PENDING_PROGRESS_KEY, "Pending cloud progress")
+        .filter((entry) => entry.uid !== user.uid || entry.date !== todayStr);
+      savePendingArray(PENDING_PROGRESS_KEY, pendingResults);
+
+      const { undoDailyResult } = await import("../services/progressStore");
+      const reset = await undoDailyResult(user.uid, todayStr, streakOverride);
+      const remainingResets = readPendingArray(PENDING_RESET_KEY, "Pending cloud resets")
+        .filter((entry) => entry.uid !== user.uid || entry.date !== todayStr);
+      savePendingArray(PENDING_RESET_KEY, remainingResets);
+      localStorage.removeItem(CLOUD_COMPLETION_OWNER_KEY);
+
+      if (reset.reset && reset.stats) {
+        localStorage.setItem("stardewdle-stats", JSON.stringify(reset.stats));
+        setStats(reset.stats);
+      }
+
+      setProgressSyncStatus("synced");
+      setStatus(reset.reset
+        ? `${localStatus} Cloud progress was also reset.`
+        : `${localStatus} No cloud result existed to undo.`);
+    } catch (error) {
+      setProgressSyncStatus("error", error.message);
+      setStatus(
+        `${localStatus} Cloud reset failed: ${error.message}.${resetQueued
+          ? " It has been queued to retry when the game is reopened."
+          : " It could not be queued; please try again when online."}`
+      );
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   return (
@@ -199,9 +276,9 @@ export default function ResetGuess() {
 
           <button
             type="button"
-            onClick={handleReset}
-            disabled={streakInvalid}
-            className={`clickable self-center px-6 py-3 text-5xl bg-main text-white transition-transform duration-200 hover:scale-105 active:scale-95 ${streakInvalid ? "opacity-40 pointer-events-none" : ""
+            onClick={() => void handleReset()}
+            disabled={streakInvalid || authLoading || isResetting}
+            className={`clickable self-center px-6 py-3 text-5xl bg-main text-white transition-transform duration-200 hover:scale-105 active:scale-95 ${streakInvalid || authLoading || isResetting ? "opacity-40 pointer-events-none" : ""
               }`}
           >
             Reset today's guesses
