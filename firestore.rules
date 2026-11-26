@@ -1,0 +1,221 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function validStats(stats) {
+      return stats is map
+        && stats.keys().hasAll(['streak', 'total', 'lastPlayedDate', 'accuracy'])
+        && stats.keys().hasOnly(['streak', 'total', 'lastPlayedDate', 'accuracy'])
+        && stats.streak is int
+        && stats.streak >= 0
+        && stats.total is int
+        && stats.total >= 0
+        && (stats.lastPlayedDate == null
+          || (stats.lastPlayedDate is string
+            && stats.lastPlayedDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')))
+        && stats.accuracy is map
+        && stats.accuracy.keys().hasAll(['0', '1', '2', '3', '4', '5', '6'])
+        && stats.accuracy.keys().hasOnly(['0', '1', '2', '3', '4', '5', '6'])
+        && stats.accuracy['0'] is int
+        && stats.accuracy['0'] >= 0
+        && stats.accuracy['1'] is int
+        && stats.accuracy['1'] >= 0
+        && stats.accuracy['2'] is int
+        && stats.accuracy['2'] >= 0
+        && stats.accuracy['3'] is int
+        && stats.accuracy['3'] >= 0
+        && stats.accuracy['4'] is int
+        && stats.accuracy['4'] >= 0
+        && stats.accuracy['5'] is int
+        && stats.accuracy['5'] >= 0
+        && stats.accuracy['6'] is int
+        && stats.accuracy['6'] >= 0;
+    }
+
+    function validGuessList(guesses, maximum) {
+      return guesses is list
+        && guesses.size() >= 1
+        && guesses.size() <= maximum;
+    }
+
+    function validCropId(cropId) {
+      return cropId is string
+        && cropId.matches('^([0-9]|[1-6][0-9]|7[01])$');
+    }
+
+    function validCropIdList(guesses) {
+      return validGuessList(guesses, 6)
+        && (guesses.size() < 1 || validCropId(guesses[0]))
+        && (guesses.size() < 2 || validCropId(guesses[1]))
+        && (guesses.size() < 3 || validCropId(guesses[2]))
+        && (guesses.size() < 4 || validCropId(guesses[3]))
+        && (guesses.size() < 5 || validCropId(guesses[4]))
+        && (guesses.size() < 6 || validCropId(guesses[5]));
+    }
+
+    function validTextGuessList(guesses, maximum) {
+      return validGuessList(guesses, maximum)
+        && (guesses.size() < 1 || (guesses[0] is string && guesses[0].size() >= 1 && guesses[0].size() <= 100))
+        && (guesses.size() < 2 || (guesses[1] is string && guesses[1].size() >= 1 && guesses[1].size() <= 100))
+        && (guesses.size() < 3 || (guesses[2] is string && guesses[2].size() >= 1 && guesses[2].size() <= 100))
+        && (guesses.size() < 4 || (guesses[3] is string && guesses[3].size() >= 1 && guesses[3].size() <= 100))
+        && (guesses.size() < 5 || (guesses[4] is string && guesses[4].size() >= 1 && guesses[4].size() <= 100))
+        && (guesses.size() < 6 || (guesses[5] is string && guesses[5].size() >= 1 && guesses[5].size() <= 100));
+    }
+
+    function validDailyGameProgress(dailyGame) {
+      return dailyGame == null
+        || (dailyGame is map
+          && dailyGame.keys().hasAll(['guesses', 'outcome', 'guessCount'])
+          && dailyGame.keys().hasOnly(['guesses', 'outcome', 'guessCount'])
+          && validCropIdList(dailyGame.guesses)
+          && dailyGame.outcome in ['win', 'loss']
+          && dailyGame.guessCount is int
+          && dailyGame.guessCount == dailyGame.guesses.size()
+          && (dailyGame.outcome == 'win' || dailyGame.guessCount == 6));
+    }
+
+    function validMinigameProgress(minigame, maximum) {
+      return minigame is map
+        && minigame.keys().hasAll(['guesses', 'outcome'])
+        && minigame.keys().hasOnly(['guesses', 'outcome'])
+        && validTextGuessList(minigame.guesses, maximum)
+        && minigame.outcome in ['win', 'loss'];
+    }
+
+    function validFishGuessList(guesses) {
+      return validGuessList(guesses, 26)
+        && guesses.hasOnly([
+          'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+          'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
+        ]);
+    }
+
+    function validMinigamesProgress(minigames) {
+      return minigames == null
+        || (minigames is map
+          && minigames.keys().hasAll(['food', 'npc', 'minerals', 'fish'])
+          && minigames.keys().hasOnly(['food', 'npc', 'minerals', 'fish'])
+          && validMinigameProgress(minigames.food, 6)
+          && validMinigameProgress(minigames.npc, 6)
+          && validMinigameProgress(minigames.minerals, 6)
+          && minigames.fish is map
+          && minigames.fish.keys().hasAll(['guesses', 'outcome'])
+          && minigames.fish.keys().hasOnly(['guesses', 'outcome'])
+          && validFishGuessList(minigames.fish.guesses)
+          && minigames.fish.outcome in ['win', 'loss']);
+    }
+
+    function validLatestDayProgress(progress) {
+      return progress is map
+        && progress.keys().hasAll(['date', 'dailyGame', 'minigames'])
+        && progress.keys().hasOnly(['date', 'dailyGame', 'minigames'])
+        && progress.date is string
+        && progress.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && validDailyGameProgress(progress.dailyGame)
+        && validMinigamesProgress(progress.minigames);
+    }
+
+    function validProfile(profile) {
+      return profile.keys().hasAll([
+          'accountId',
+          'schemaVersion',
+          'stats',
+          'legacyImportComplete',
+          'createdAt',
+          'updatedAt'
+        ])
+        && profile.keys().hasOnly([
+          'accountId',
+          'schemaVersion',
+          'stats',
+          'legacyImportComplete',
+          'createdAt',
+          'updatedAt',
+          'latestDayProgress'
+        ])
+        && profile.accountId is string
+        && profile.accountId.matches('^[0-9a-fA-F-]{36}$')
+        && profile.schemaVersion == 1
+        && validStats(profile.stats)
+        && profile.legacyImportComplete is bool
+        && (!profile.keys().hasAny(['latestDayProgress'])
+          || validLatestDayProgress(profile.latestDayProgress))
+        && profile.createdAt == request.time
+        && profile.updatedAt == request.time;
+    }
+
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && validProfile(request.resource.data);
+      allow update: if isOwner(userId)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly([
+            'stats',
+            'legacyImportComplete',
+            'latestDayProgress',
+            'updatedAt'
+          ])
+        && validStats(request.resource.data.stats)
+        && request.resource.data.legacyImportComplete is bool
+        && (request.resource.data.legacyImportComplete == resource.data.legacyImportComplete
+          || request.resource.data.legacyImportComplete == true)
+        && (!request.resource.data.keys().hasAny(['latestDayProgress'])
+          || validLatestDayProgress(request.resource.data.latestDayProgress))
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+
+      match /dailyResults/{dateId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && dateId.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+          && request.resource.data.keys().hasAll([
+            'date',
+            'completed',
+            'outcome',
+            'guessCount',
+            'previousStreak',
+            'previousLastPlayedDate',
+            'createdAt',
+            'updatedAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'date',
+            'completed',
+            'outcome',
+            'guessCount',
+            'previousStreak',
+            'previousLastPlayedDate',
+            'createdAt',
+            'updatedAt'
+          ])
+          && request.resource.data.date == dateId
+          && request.resource.data.completed == true
+          && request.resource.data.outcome in ['win', 'loss']
+          && request.resource.data.guessCount is int
+          && request.resource.data.guessCount >= 1
+          && request.resource.data.guessCount <= 6
+          && (request.resource.data.outcome == 'win'
+            || request.resource.data.guessCount == 6)
+          && request.resource.data.previousStreak is int
+          && request.resource.data.previousStreak >= 0
+          && (request.resource.data.previousLastPlayedDate == null
+            || (request.resource.data.previousLastPlayedDate is string
+              && request.resource.data.previousLastPlayedDate
+                .matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')))
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+        allow update: if false;
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useSound } from "../../context/SoundContext";
 import { useTheme } from "../../context/ThemeContext";
 import { useGameData } from "../../context/GameDataContext";
-import { todaysDate } from "../../utils/dateUtils";
+import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
+import { useAuth } from "../../context/AuthContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
@@ -20,6 +21,24 @@ import UpdatesModal from "../UpdatesModal";
 import MinigamesShareModal from "./MinigamesShareModal";
 import BundleButton from "./BundleButton";
 import GiftIcon from "./GiftIcon";
+import CustomModal from "../CustomModal";
+import AccountMenu from "../auth/AccountMenu";
+import {
+  restoreMinigameState,
+  serializeCompletedMinigames,
+} from "../../services/latestDayProgress";
+
+const MINIGAME_DATA_KEY = "stardewdle-game-data";
+const MINIGAME_OWNER_KEY = "stardewdle-cloudMinigameOwner";
+
+function createDefaultGameData() {
+  return {
+    food: { complete: false, win: false, guesses: [], animationSeen: false },
+    npc: { complete: false, win: false, guesses: [], animationSeen: false },
+    minerals: { complete: false, win: false, guesses: [], animationSeen: false },
+    fish: { complete: false, win: false, guesses: [], animationSeen: false },
+  };
+}
 
 const staticGameData = [
   {
@@ -89,7 +108,7 @@ function migrateLegacyHelpFlags() {
   return seen;
 }
 
-export default function MinigamesBox({ isMobilePortrait }) {
+export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
   const {
     isReady,
     loadError,
@@ -104,6 +123,13 @@ export default function MinigamesBox({ isMobilePortrait }) {
     shouldPulse,
     handleOpenUpdates,
   } = useGameData();
+  const {
+    user,
+    loading: authLoading,
+    syncRetryToken,
+    setAccountId,
+    setProgressSyncStatus,
+  } = useAuth();
 
   const { isMuted, toggleMute } = useSound();
   const { theme, toggleTheme } = useTheme();
@@ -112,6 +138,16 @@ export default function MinigamesBox({ isMobilePortrait }) {
   const [showHelp, setShowHelp] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareText, setShareText] = useState("");
+  const [progressUserId, setProgressUserId] = useState(null);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const [minigameSyncState, setMinigameSyncState] = useState({
+    status: "idle",
+    error: null,
+  });
+  const [showMinigameErrorModal, setShowMinigameErrorModal] = useState(false);
+  const [errorCopyStatus, setErrorCopyStatus] = useState("");
+  const [minigameSyncRetryToken, setMinigameSyncRetryToken] = useState(0);
+  const todayStr = utcDateString();
 
   const [selectedGame, setSelectedGame] = useState("");
   const [selectedGameData, setSelectedGameData] = useState(null);
@@ -131,40 +167,180 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
 
   const [gameData, setGameData] = useState(() => {
-    const defaultGameData = {
-      food: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      //map: { complete: true, win: false, guesses: [], animationSeen: false },
-      npc: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      minerals: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-      fish: {
-        complete: false,
-        win: false,
-        guesses: [],
-        animationSeen: false,
-      },
-    };
-
-    const saved = localStorage.getItem("stardewdle-game-data");
-    return saved ? JSON.parse(saved) : defaultGameData;
+    const saved = localStorage.getItem(MINIGAME_DATA_KEY);
+    return saved ? JSON.parse(saved) : createDefaultGameData();
   });
 
   const allBundlesFinished = bundleGameKeys.every((key) => gameData[key]?.complete);
   const allBundlesSuccessful = bundleGameKeys.every((key) => gameData[key]?.win);
+
+  useEffect(() => {
+    if (authLoading) return undefined;
+    if (!user) {
+      setProgressUserId(null);
+      setProgressLoading(false);
+      setMinigameSyncState({ status: "idle", error: null });
+      setShowMinigameErrorModal(false);
+      return undefined;
+    }
+    if (!isReady || !dailyData?.correctCrop) return undefined;
+
+    let active = true;
+    setProgressLoading(true);
+    setProgressSyncStatus("syncing");
+
+    const synchronizeMinigames = async () => {
+      try {
+        const ownerRaw = localStorage.getItem(MINIGAME_OWNER_KEY);
+        const currentOwner = ownerRaw ? JSON.parse(ownerRaw) : null;
+        if (currentOwner?.uid && currentOwner.uid !== user.uid) {
+          throw new Error("Sign out of the other account before syncing minigames.");
+        }
+
+        const localStateRaw = localStorage.getItem(MINIGAME_DATA_KEY);
+        const localState = localStateRaw
+          ? JSON.parse(localStateRaw)
+          : createDefaultGameData();
+        const backupKey = `stardewdle-local-minigames-${user.uid}-${todayStr}`;
+        if (!currentOwner && !localStorage.getItem(backupKey)) {
+          localStorage.setItem(backupKey, JSON.stringify(localState));
+        }
+
+        const [
+          { initializeAccountProgress },
+        ] = await Promise.all([
+          import("../../services/progressMigration"),
+        ]);
+        const progress = await initializeAccountProgress(
+          user.uid,
+          todayStr,
+          dailyData.correctCrop
+        );
+        if (!active) return;
+
+        const latestDayProgress = progress.latestDayProgress?.date === todayStr
+          ? progress.latestDayProgress
+          : null;
+        if (latestDayProgress?.minigames) {
+          const restoredState = restoreMinigameState(latestDayProgress.minigames);
+          localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(restoredState));
+          setGameData(restoredState);
+          setMinigameSyncState({ status: "synced", error: null });
+        } else {
+          setMinigameSyncState({ status: "waiting", error: null });
+        }
+
+        localStorage.setItem(MINIGAME_OWNER_KEY, JSON.stringify({
+          uid: user.uid,
+          accountId: progress.accountId,
+        }));
+        setAccountId(progress.accountId);
+        setProgressUserId(user.uid);
+        setProgressLoading(false);
+        setProgressSyncStatus("synced");
+      } catch (error) {
+        console.error("Failed to sync minigame progress:", error);
+        if (active) {
+          setProgressUserId(user.uid);
+          setProgressLoading(false);
+          setMinigameSyncState({
+            status: "error",
+            error: error.message || "Account progress could not be loaded.",
+          });
+          setErrorCopyStatus("");
+          setShowMinigameErrorModal(true);
+          setProgressSyncStatus("error", error.message);
+        }
+      }
+    };
+
+    const retryWhenAvailable = () => {
+      if (!document.hidden) {
+        setMinigameSyncRetryToken((current) => current + 1);
+        synchronizeMinigames();
+      }
+    };
+    synchronizeMinigames();
+    window.addEventListener("online", retryWhenAvailable);
+    document.addEventListener("visibilitychange", retryWhenAvailable);
+
+    return () => {
+      active = false;
+      window.removeEventListener("online", retryWhenAvailable);
+      document.removeEventListener("visibilitychange", retryWhenAvailable);
+    };
+  }, [
+    authLoading,
+    dailyData?.correctCrop,
+    isReady,
+    setAccountId,
+    setProgressSyncStatus,
+    syncRetryToken,
+    todayStr,
+    user,
+  ]);
+
+  useEffect(() => {
+    if (!user || progressUserId !== user.uid || !allBundlesFinished) return;
+
+    const minigames = serializeCompletedMinigames(gameData);
+    if (!minigames) return;
+
+    let active = true;
+    setMinigameSyncState({ status: "syncing", error: null });
+    setProgressSyncStatus("syncing");
+    const syncCompletedMinigames = async () => {
+      try {
+        const { saveCompletedMinigames } = await import("../../services/progressStore");
+        const result = await saveCompletedMinigames(user.uid, todayStr, minigames);
+        if (!active) return;
+        setAccountId(result.accountId);
+        setProgressUserId(user.uid);
+        setMinigameSyncState({ status: "synced", error: null });
+        setProgressSyncStatus("synced");
+      } catch (error) {
+        console.error("Failed to save completed minigames:", error);
+        if (active) {
+          setMinigameSyncState({
+            status: "error",
+            error: error.message || "Completed minigames could not be saved.",
+          });
+          setErrorCopyStatus("");
+          setShowMinigameErrorModal(true);
+          setProgressSyncStatus("error", error.message);
+        }
+      }
+    };
+
+    syncCompletedMinigames();
+    return () => {
+      active = false;
+    };
+  }, [
+    allBundlesFinished,
+    gameData,
+    progressUserId,
+    minigameSyncRetryToken,
+    setAccountId,
+    setProgressSyncStatus,
+    todayStr,
+    user,
+  ]);
+
+  const copyMinigameSyncError = async () => {
+    try {
+      await navigator.clipboard.writeText(minigameSyncState.error);
+      setErrorCopyStatus("Error copied to clipboard.");
+    } catch {
+      setErrorCopyStatus("Clipboard access failed. Select and copy the error text above.");
+    }
+  };
+
+  const retryMinigameSync = () => {
+    setShowMinigameErrorModal(false);
+    setErrorCopyStatus("");
+    setMinigameSyncRetryToken((current) => current + 1);
+  };
 
   const [globalBundleStats, setGlobalBundleStats] = useState({
     attempts: 0,
@@ -208,7 +384,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
             setGameData((prev) => {
               const updated = { ...prev, apiSynced: true };
               localStorage.setItem(
-                "stardewdle-game-data",
+                MINIGAME_DATA_KEY,
                 JSON.stringify(updated),
               );
               return updated;
@@ -301,7 +477,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
   const updateGameState = (gameName, newState) => {
     setGameData((prev) => {
       const updated = { ...prev, [gameName]: newState };
-      localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
+      localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(updated));
       return updated;
     });
   };
@@ -312,7 +488,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
         ...prev,
         [gameName]: { ...prev[gameName], animationSeen: true },
       };
-      localStorage.setItem("stardewdle-game-data", JSON.stringify(updated));
+      localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(updated));
       return updated;
     });
   };
@@ -366,7 +542,7 @@ export default function MinigamesBox({ isMobilePortrait }) {
     }
   };
 
-  if (!isReady) {
+  if (!isReady || progressLoading) {
     return <CropLoader error={loadError} onRetry={() => reloadGameData()} />;
   }
 
@@ -480,6 +656,9 @@ export default function MinigamesBox({ isMobilePortrait }) {
 
       </div>
 
+      <div className={`absolute flex gap-[5px] -top-[55px] ${isMobilePortrait ? theme === "light" ? "left-0 -top-28" : "left-4 -top-28" : theme === "light" ? "left-0" : "left-16"}`}>
+        <AccountMenu />
+      </div>
       <div className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? theme === "light" ? "-top-28" : "-top-28 right-4" : theme === "light" ? "" : "right-16"}`}>
         <CustomButton
           variant="icon"
@@ -541,6 +720,44 @@ export default function MinigamesBox({ isMobilePortrait }) {
           onClose={() => setShowHelp(false)}
           selectedGame={selectedGame}
         />
+      )}
+      {showMinigameErrorModal && minigameSyncState.error && (
+        <CustomModal
+          title="Minigame sync failed"
+          isMuted={isMuted}
+          onClose={() => setShowMinigameErrorModal(false)}
+          scaleFactor={scaleFactor}
+          maxHeightClass="max-h-[80vh]"
+        >
+          <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4 text-main">
+            <p className="text-center text-xl">
+              Your completed minigames are still saved on this device. Copy this error if you
+              need help troubleshooting the account sync.
+            </p>
+            <pre className="max-h-[35vh] overflow-auto whitespace-pre-wrap break-words border-2 border-main bg-white/80 p-3 text-left text-base">
+              {minigameSyncState.error}
+            </pre>
+            {errorCopyStatus && (
+              <p role="status" className="text-center text-base">{errorCopyStatus}</p>
+            )}
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
+                onClick={copyMinigameSyncError}
+              >
+                Copy error
+              </button>
+              <button
+                type="button"
+                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
+                onClick={retryMinigameSync}
+              >
+                Retry sync
+              </button>
+            </div>
+          </div>
+        </CustomModal>
       )}
       {showShareModal && (
         <MinigamesShareModal

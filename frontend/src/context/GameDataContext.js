@@ -70,7 +70,11 @@ const KEYS_TO_KEEP = [
     "stardewdle-fish",
     "stardewdle-quotes",
     "stardewdle-hints",
-    "stardewdle-dataFetchDate"
+    "stardewdle-dataFetchDate",
+    "stardewdle-pendingProgress",
+    "stardewdle-pendingProgressResets",
+    "stardewdle-cloudStatsOwner",
+    "stardewdle-cloudCompletionOwner"
 ];
 
 // Must run before any component reads its day-scoped state, so this is called at import time
@@ -84,7 +88,12 @@ function resetDailyStorageIfNeeded() {
     Object.keys(localStorage).forEach((key) => {
         // Legacy per-minigame help flags are kept until MinigamesBox migrates them.
         const isLegacyMinigameHelpFlag = key.startsWith("stardewdle-hasSeenMinigame");
-        if (!KEYS_TO_KEEP.includes(key) && !isLegacyMinigameHelpFlag) {
+        const isLocalStatsBackup = key.startsWith("stardewdle-local-stats-");
+        if (
+            !KEYS_TO_KEEP.includes(key)
+            && !isLegacyMinigameHelpFlag
+            && !isLocalStatsBackup
+        ) {
             localStorage.removeItem(key);
         }
     });
