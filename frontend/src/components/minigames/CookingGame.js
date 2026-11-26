@@ -108,7 +108,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
             <h3 className={`text-5xl ${titleTextClassName} pb-8 md:pb-4`}>
               Ingredients Needed:
             </h3>
-            <div className={`flex flex-row gap-24 md:gap-8 pt-8 pb-[100px] md:pt-0 md:pb-0 px-12 md:px-4 overflow-x-auto md:overflow-visible min-w-[25%] md:min-w-full max-w-full md:justify-center items-center ${scrollbarStyles}`}>
+            <div className={`flex flex-row gap-24 md:gap-8 pt-6 pb-[120px] md:pt-0 md:pb-0 px-16 md:px-4 overflow-x-auto md:overflow-visible min-w-[25%] md:min-w-full max-w-full md:justify-center items-center ${scrollbarStyles}`}>
               {Object.entries(targetFood.ingredients).map(
                 ([ingName, count]) => {
                   const ingredientIndex = masterIngredientList.indexOf(ingName);
@@ -133,7 +133,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                         />
                       </div>
 
-                      <div className="absolute top-[116px] md:top-20 text-4xl md:text-xl font-medium text-main text-center leading-none w-[180px] md:w-[100px]">
+                      <div className="absolute top-[100px] md:top-20 text-4xl md:text-xl font-medium text-main text-center leading-none w-[180px] md:w-[100px]">
                         {count}x {formatName(ingName)}
                       </div>
                     </div>
