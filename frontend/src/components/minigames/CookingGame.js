@@ -6,10 +6,15 @@ import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { playSound } from "../../utils/playSound";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import CustomButton from "../CustomButton";
 import CursorTooltip from "../CursorTooltip";
 import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 
 export default function CookingGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { cooking, dailyData } = useGameData();
@@ -89,13 +94,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
               theme={theme}
               scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
             />
-            <div
-              style={{
-                backgroundImage: `url('/images/minigames/bundleIcons/homeCook.webp')`,
-                imageRendering: "pixelated",
-              }}
-              className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
-            />
+            <BundleIcon icon="/images/minigames/bundleIcons/homeCook.webp" theme={theme} />
           </div>
           <div
             className="relative isolate flex flex-col justify-center items-center p-8 md:p-4 aspect-[5/3] w-[95%]"
@@ -129,7 +128,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                         }}
                       >
                         <div
-                          style={getSpriteStyle("cooking", ingredientIndex, 0)}
+                          style={getSpriteStyle("cooking", ingredientIndex, 0, 16, theme)}
                           className="w-full h-full z-10 scale-[87.5%]"
                         />
                       </div>
@@ -179,12 +178,12 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                   key={idx}
                 >
                   <div
-                    className={`w-[75%] h-[75%] absolute z-0 opacity-90 mix-blend-multiply ${isCorrect ? "bg-cyan-500" : "bg-red-700"}`}
+                    className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${isCorrect ? getCorrectGuessOverlayClass(theme) : getWrongGuessOverlayClass(theme)}`}
                   />
                   <CursorTooltip label={formatName(guess)}>
                     <div className="group w-[63px] h-[63px] flex items-center justify-center">
                       <div
-                        style={getSpriteStyle("cooking", spriteIndex, 1)}
+                        style={getSpriteStyle("cooking", spriteIndex, 1, 16, theme)}
                         className="z-10 scale-[87.5%]"
                       />
                     </div>
@@ -235,7 +234,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                   {selectedFood ? (
                     <CursorTooltip label={formatName(selectedFood.name)}>
                       <div
-                        style={getSpriteStyle("cooking", selectedFood.index, 1)}
+                        style={getSpriteStyle("cooking", selectedFood.index, 1, 16, theme)}
                         className="z-10 scale-[87.5%] clickable"
                       />
                     </CursorTooltip>
@@ -329,7 +328,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                             <div className="relative group flex flex-col items-center">
                               <CursorTooltip label={formatName(food.name)}>
                                 <div
-                                  style={getSpriteStyle("cooking", food.index, 1)}
+                                  style={getSpriteStyle("cooking", food.index, 1, 16, theme)}
                                   className="scale-[87.5%]"
                                 />
                               </CursorTooltip>
@@ -337,7 +336,7 @@ export default function CookingGame({ gameState, updateGameState, isMobilePortra
                           ) : (
                             <div className="flex justify-start items-center gap-3 w-full">
                               <div
-                                style={getSpriteStyle("cooking", food.index, 1)}
+                                style={getSpriteStyle("cooking", food.index, 1, 16, theme)}
                                 className="scale-[87.5%]"
                               />
                               <div className={`w-3/5 text-3xl md:text-xl font-medium ${listSelectorTextClassName} text-left leading-none z-10`}>

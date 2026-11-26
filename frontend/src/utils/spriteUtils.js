@@ -1,4 +1,10 @@
-export const getSpriteStyle = (sheetName, colIndex, rowIndex = 0, spriteSize = 16) => {
+export const getSpriteStyle = (
+    sheetName,
+    colIndex,
+    rowIndex = 0,
+    spriteSize = 16,
+    theme = "light"
+) => {
     const displayScale = sheetName === "villagers" ? 2 : 3;
 
     return {
@@ -8,6 +14,7 @@ export const getSpriteStyle = (sheetName, colIndex, rowIndex = 0, spriteSize = 1
         height: `${spriteSize}px`,
         zoom: displayScale,
         imageRendering: 'pixelated',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
     };
 };

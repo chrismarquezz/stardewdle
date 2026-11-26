@@ -1,5 +1,6 @@
 import { formatName } from "../../utils/formatString";
 import { playSound } from "../../utils/playSound";
+import { useTheme } from "../../context/ThemeContext";
 import CursorTooltip from "../CursorTooltip";
 
 export default function CollectionsCard({
@@ -8,6 +9,7 @@ export default function CollectionsCard({
   onClick,
   isMuted,
 }) {
+  const { theme } = useTheme();
   const formattedName = formatName(crop.name);
 
   const x_pos = parseInt(crop.crop_index) * 48;
@@ -19,6 +21,7 @@ export default function CollectionsCard({
     width: '48px',
     height: '48px',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (

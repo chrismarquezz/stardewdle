@@ -10,30 +10,20 @@ export function getThemedAssetPath(path, theme) {
 }
 
 export function useThemedAsset(path, theme) {
-  const [resolvedPath, setResolvedPath] = useState(path);
+  const [fallbackPath, setFallbackPath] = useState(null);
+  const themedPath = getThemedAssetPath(path, theme);
 
   useEffect(() => {
-    if (theme !== "dark") {
-      setResolvedPath(path);
-      return undefined;
-    }
-
-    const themedPath = getThemedAssetPath(path, theme);
-    if (themedPath === path) {
-      setResolvedPath(path);
-      return undefined;
-    }
+    if (theme !== "dark" || themedPath === path) return undefined;
 
     const image = new Image();
-    image.onload = () => setResolvedPath(themedPath);
-    image.onerror = () => setResolvedPath(path);
+    image.onerror = () => setFallbackPath(themedPath);
     image.src = themedPath;
 
     return () => {
-      image.onload = null;
       image.onerror = null;
     };
-  }, [path, theme]);
+  }, [path, theme, themedPath]);
 
-  return resolvedPath;
+  return theme === "dark" && fallbackPath === themedPath ? path : themedPath;
 }

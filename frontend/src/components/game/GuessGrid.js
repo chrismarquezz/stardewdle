@@ -2,6 +2,11 @@ import { formatName } from "../../utils/formatString";
 import { ATTRIBUTE_KEYS, isFullCropMatch, seasonSet } from "../../utils/cropCompare";
 import { useTheme } from "../../context/ThemeContext";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getPartialGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 import CursorTooltip from "../CursorTooltip";
 
 const ATTRIBUTE_LABELS = ["Growth", "Price", "Regrow", "Type", "Season"];
@@ -25,16 +30,10 @@ const W_STRETCH_MAP = {
 const VALIDATION_OVERLAY_STYLES = {
   light: {
     blend: "mix-blend-multiply",
-    green: "bg-cyan-500",
-    yellow: "bg-amber-300",
-    red: "bg-red-700",
     neutral: "bg-white",
   },
   dark: {
     blend: "mix-blend-overlay",
-    green: "bg-green-400",
-    yellow: "bg-yellow-100",
-    red: "bg-red-400",
     neutral: "",
   },
 };
@@ -116,7 +115,14 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
       width: '40px',
       height: '40px',
       imageRendering: 'pixelated',
+      ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
     };
+    const cropOverlayClass =
+      cropColor === "green"
+        ? getCorrectGuessOverlayClass(theme)
+        : cropColor === "red"
+          ? getWrongGuessOverlayClass(theme)
+          : `${validationOverlayStyles.blend} ${validationOverlayStyles.neutral}`;
 
     return (
       <div
@@ -136,7 +142,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
         >
           {/* Color overlay */}
           <div
-            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${validationOverlayStyles.blend} ${validationOverlayStyles[cropColor] ?? validationOverlayStyles.neutral}`}
+            className={`w-[75%] h-[75%] absolute z-0 opacity-90 ${cropOverlayClass}`}
           />
 
           {/* Crop image */}
@@ -162,6 +168,14 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
           const arrow = guessEntry
             ? getArrow(key, value, correctValue)
             : "null";
+          const overlayClass =
+            color === "red"
+              ? getWrongGuessOverlayClass(theme)
+              : color === "green"
+                ? getCorrectGuessOverlayClass(theme)
+                : color === "yellow"
+                  ? getPartialGuessOverlayClass(theme)
+                  : `${validationOverlayStyles.blend} ${validationOverlayStyles.neutral}`;
 
           return (
             <div
@@ -176,7 +190,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
             >
               {/* Color Overlay */}
               <div
-                className={`h-[75%] absolute z-0 opacity-90 ${validationOverlayStyles.blend} ${validationOverlayStyles[color] ?? validationOverlayStyles.neutral}`}
+                className={`h-[75%] absolute z-0 opacity-90 ${overlayClass}`}
                 style={{ width: W_STRETCH_MAP[key] }}
               />
 

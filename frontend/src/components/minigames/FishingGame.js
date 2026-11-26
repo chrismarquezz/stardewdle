@@ -5,9 +5,14 @@ import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { playSound } from "../../utils/playSound";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
+import {
+  getCorrectGuessOverlayClass,
+  getWrongGuessOverlayClass,
+} from "../../utils/guessFeedbackStyles";
 
 import CustomButton from "../CustomButton";
 import ThemedBackground, { MINIGAME_DARK_BACKGROUND_SCALE } from "./ThemedBackground";
+import BundleIcon from "./BundleIcon";
 
 export default function FishingGame({ gameState, updateGameState, isMobilePortrait, isMuted }) {
     const { fish, dailyData } = useGameData();
@@ -89,13 +94,7 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                 theme={theme}
                                 scale={MINIGAME_DARK_BACKGROUND_SCALE.selectedFrame}
                             />
-                            <div
-                                style={{
-                                    backgroundImage: `url('/images/minigames/bundleIcons/qualityFish.webp')`,
-                                    imageRendering: 'pixelated',
-                                }}
-                                className="absolute top-[24px] md:top-[16px] left-1/2 -translate-x-1/2 bg-cover h-[192px] md:h-[128px] aspect-square bg-no-repeat"
-                            />
+                            <BundleIcon icon="/images/minigames/bundleIcons/qualityFish.webp" theme={theme} />
                         </div>
                         <div className="flex w-60 h-60 md:w-40 md:h-40 items-center justify-center bg-[url('/images/minigames/fishCloud.webp')] bg-contain bg-center bg-no-repeat">
                             <div
@@ -106,8 +105,10 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                     <div className="w-[120px] h-[120px] md:w-20 md:h-20 flex justify-center items-center overflow-hidden">
                                         <div
                                             style={{
-                                                ...getSpriteStyle("fish", targetFish.index, 0),
-                                                filter: gameState.complete || gameState.win ? 'none' : 'brightness(0)'
+                                                ...getSpriteStyle("fish", targetFish.index, 0, 16, theme),
+                                                filter: gameState.complete || gameState.win
+                                                    ? (theme === "dark" ? "brightness(90%)" : "none")
+                                                    : "brightness(0)"
                                             }}
                                             className="scale-[150%] md:scale-[100%] transition-all duration-300"
                                         />
@@ -193,8 +194,8 @@ export default function FishingGame({ gameState, updateGameState, isMobilePortra
                                         >
                                             <div
                                                 className={`absolute -translate-y-[6px] md:-translate-y-[2px] w-[60px] md:w-10 aspect-square z-0 
-                                                    ${isCorrect ? "bg-cyan-500 opacity-40 mix-blend-multiply"
-                                                        : isWrong ? "bg-red-700 opacity-40 mix-blend-multiply"
+                                                    ${isCorrect ? `${getCorrectGuessOverlayClass(theme)} opacity-40`
+                                                        : isWrong ? `${getWrongGuessOverlayClass(theme)} opacity-40`
                                                             : isSelected ? "bg-yellow-100 mix-blend-screen opacity-60"
                                                                 : ""}`
                                                 }

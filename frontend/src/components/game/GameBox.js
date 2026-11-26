@@ -240,6 +240,7 @@ export default function GameBox({ isMobilePortrait }) {
     backgroundPosition: `${selectionOffset}% 0%`,
     backgroundSize: '7200% 100%',
     imageRendering: 'pixelated',
+    ...(theme === "dark" ? { filter: "brightness(90%)" } : {}),
   };
 
   return (
@@ -400,7 +401,7 @@ export default function GameBox({ isMobilePortrait }) {
         </div>
       </div>
       <div
-        className={`absolute flex gap-[5px] -top-[55px] right-0 ${isMobilePortrait ? " flex-wrap w-[200px] -top-[112px] " : theme === "light" ? "" : " right-16 "}}`}
+        className={`absolute flex gap-[5px] -top-[112px] md:-top-[55px] right-0 ${isMobilePortrait ? "flex-wrap w-[200px]" : theme === "light" ? "" : "right-16"}`}
       >
         <CustomButton
           variant="icon"
