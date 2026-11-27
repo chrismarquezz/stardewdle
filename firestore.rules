@@ -126,7 +126,11 @@ service cloud.firestore {
         && progress.keys().hasOnly(['date', 'dailyGame', 'minigames'])
         && progress.date is string
         && progress.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
-        && validDailyGameProgress(progress.dailyGame)
+        && ((resource.data.keys().hasAny(['latestDayProgress'])
+            && resource.data.latestDayProgress is map
+            && progress.date == resource.data.latestDayProgress.date
+            && progress.dailyGame == resource.data.latestDayProgress.dailyGame)
+          || validDailyGameProgress(progress.dailyGame))
         && (
           (resource.data.keys().hasAny(['latestDayProgress'])
             && resource.data.latestDayProgress is map
@@ -176,7 +180,8 @@ service cloud.firestore {
             'latestDayProgress',
             'updatedAt'
           ])
-        && validStats(request.resource.data.stats)
+        && (request.resource.data.stats == resource.data.stats
+          || validStats(request.resource.data.stats))
         && request.resource.data.legacyImportComplete is bool
         && (request.resource.data.legacyImportComplete == resource.data.legacyImportComplete
           || request.resource.data.legacyImportComplete == true)

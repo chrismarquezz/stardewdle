@@ -21,7 +21,6 @@ import UpdatesModal from "../UpdatesModal";
 import MinigamesShareModal from "./MinigamesShareModal";
 import BundleButton from "./BundleButton";
 import GiftIcon from "./GiftIcon";
-import CustomModal from "../CustomModal";
 import AccountMenu from "../auth/AccountMenu";
 import {
   restoreMinigameState,
@@ -108,7 +107,7 @@ function migrateLegacyHelpFlags() {
   return seen;
 }
 
-export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
+export default function MinigamesBox({ isMobilePortrait }) {
   const {
     isReady,
     loadError,
@@ -140,12 +139,6 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
   const [shareText, setShareText] = useState("");
   const [progressUserId, setProgressUserId] = useState(null);
   const [progressLoading, setProgressLoading] = useState(false);
-  const [minigameSyncState, setMinigameSyncState] = useState({
-    status: "idle",
-    error: null,
-  });
-  const [showMinigameErrorModal, setShowMinigameErrorModal] = useState(false);
-  const [errorCopyStatus, setErrorCopyStatus] = useState("");
   const [minigameSyncRetryToken, setMinigameSyncRetryToken] = useState(0);
   const todayStr = utcDateString();
 
@@ -179,14 +172,13 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
     if (!user) {
       setProgressUserId(null);
       setProgressLoading(false);
-      setMinigameSyncState({ status: "idle", error: null });
-      setShowMinigameErrorModal(false);
       return undefined;
     }
     if (!isReady || !dailyData?.correctCrop) return undefined;
 
     let active = true;
     setProgressLoading(true);
+    setProgressUserId(null);
     setProgressSyncStatus("syncing");
 
     const synchronizeMinigames = async () => {
@@ -225,9 +217,6 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
           const restoredState = restoreMinigameState(latestDayProgress.minigames);
           localStorage.setItem(MINIGAME_DATA_KEY, JSON.stringify(restoredState));
           setGameData(restoredState);
-          setMinigameSyncState({ status: "synced", error: null });
-        } else {
-          setMinigameSyncState({ status: "waiting", error: null });
         }
 
         localStorage.setItem(MINIGAME_OWNER_KEY, JSON.stringify({
@@ -237,18 +226,14 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
         setAccountId(progress.accountId);
         setProgressUserId(user.uid);
         setProgressLoading(false);
-        setProgressSyncStatus("synced");
+        if (latestDayProgress?.minigames || !bundleGameKeys.every((key) => localState[key]?.complete)) {
+          setProgressSyncStatus("synced");
+        }
       } catch (error) {
         console.error("Failed to sync minigame progress:", error);
         if (active) {
           setProgressLoading(false);
-          setMinigameSyncState({
-            status: "error",
-            error: error.message || "Account progress could not be loaded.",
-          });
-          setErrorCopyStatus("");
-          setShowMinigameErrorModal(true);
-          setProgressSyncStatus("error", error.message);
+          setProgressSyncStatus("error", error.message || "Account progress could not be loaded.");
         }
       }
     };
@@ -280,13 +265,12 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
   ]);
 
   useEffect(() => {
-    if (!user || progressUserId !== user.uid || !allBundlesFinished) return;
+    if (!user || progressLoading || progressUserId !== user.uid || !allBundlesFinished) return;
 
     const minigames = serializeCompletedMinigames(gameData);
     if (!minigames) return;
 
     let active = true;
-    setMinigameSyncState({ status: "syncing", error: null });
     setProgressSyncStatus("syncing");
     const syncCompletedMinigames = async () => {
       try {
@@ -295,18 +279,11 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
         if (!active) return;
         setAccountId(result.accountId);
         setProgressUserId(user.uid);
-        setMinigameSyncState({ status: "synced", error: null });
         setProgressSyncStatus("synced");
       } catch (error) {
         console.error("Failed to save completed minigames:", error);
         if (active) {
-          setMinigameSyncState({
-            status: "error",
-            error: error.message || "Completed minigames could not be saved.",
-          });
-          setErrorCopyStatus("");
-          setShowMinigameErrorModal(true);
-          setProgressSyncStatus("error", error.message);
+          setProgressSyncStatus("error", error.message || "Completed minigames could not be saved.");
         }
       }
     };
@@ -318,28 +295,15 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
   }, [
     allBundlesFinished,
     gameData,
+    progressLoading,
     progressUserId,
     minigameSyncRetryToken,
+    syncRetryToken,
     setAccountId,
     setProgressSyncStatus,
     todayStr,
     user,
   ]);
-
-  const copyMinigameSyncError = async () => {
-    try {
-      await navigator.clipboard.writeText(minigameSyncState.error);
-      setErrorCopyStatus("Error copied to clipboard.");
-    } catch {
-      setErrorCopyStatus("Clipboard access failed. Select and copy the error text above.");
-    }
-  };
-
-  const retryMinigameSync = () => {
-    setShowMinigameErrorModal(false);
-    setErrorCopyStatus("");
-    setMinigameSyncRetryToken((current) => current + 1);
-  };
 
   const [globalBundleStats, setGlobalBundleStats] = useState({
     attempts: 0,
@@ -719,44 +683,6 @@ export default function MinigamesBox({ isMobilePortrait, scaleFactor }) {
           onClose={() => setShowHelp(false)}
           selectedGame={selectedGame}
         />
-      )}
-      {showMinigameErrorModal && minigameSyncState.error && (
-        <CustomModal
-          title="Minigame sync failed"
-          isMuted={isMuted}
-          onClose={() => setShowMinigameErrorModal(false)}
-          scaleFactor={scaleFactor}
-          maxHeightClass="max-h-[80vh]"
-        >
-          <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-4 text-main">
-            <p className="text-center text-xl">
-              Your completed minigames are still saved on this device. Copy this error if you
-              need help troubleshooting the account sync.
-            </p>
-            <pre className="max-h-[35vh] overflow-auto whitespace-pre-wrap break-words border-2 border-main bg-white/80 p-3 text-left text-base">
-              {minigameSyncState.error}
-            </pre>
-            {errorCopyStatus && (
-              <p role="status" className="text-center text-base">{errorCopyStatus}</p>
-            )}
-            <div className="flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
-                onClick={copyMinigameSyncError}
-              >
-                Copy error
-              </button>
-              <button
-                type="button"
-                className="clickable border-2 border-main bg-white/80 px-4 py-2 text-xl"
-                onClick={retryMinigameSync}
-              >
-                Retry sync
-              </button>
-            </div>
-          </div>
-        </CustomModal>
       )}
       {showShareModal && (
         <MinigamesShareModal

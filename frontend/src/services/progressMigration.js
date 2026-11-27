@@ -7,6 +7,7 @@ import {
 import {
   createInitialProgress,
   getAccountProgress,
+  saveCompletedMinigames,
 } from "./progressStore";
 import {
   serializeDailyGuesses,
@@ -93,7 +94,24 @@ function readDailyResult(today, correctCrop, uid, stats) {
 
 export async function initializeAccountProgress(uid, today, correctCrop) {
   const existing = await getAccountProgress(uid, today);
-  if (existing) return { ...existing, created: false };
+  if (existing?.latestDayProgress?.date > today
+    || (existing?.latestDayProgress?.date === today && existing.latestDayProgress.minigames)) {
+    return { ...existing, created: false };
+  }
+
+  const minigameOwner = readLocalJSON("stardewdle-cloudMinigameOwner", null);
+  const belongsToAnotherMinigameAccount = (
+    minigameOwner?.uid && minigameOwner.uid !== uid
+  );
+  const minigames = belongsToAnotherMinigameAccount
+    ? null
+    : serializeCompletedMinigames(readLocalJSON("stardewdle-game-data", null));
+
+  if (existing) {
+    if (!minigames) return { ...existing, created: false };
+    const saved = await saveCompletedMinigames(uid, today, minigames);
+    return { ...existing, latestDayProgress: saved.latestDayProgress, created: false };
+  }
 
   const statsOwner = readLocalJSON("stardewdle-cloudStatsOwner", null);
   const belongsToAnotherAccount = statsOwner?.uid && statsOwner.uid !== uid;
@@ -103,13 +121,7 @@ export async function initializeAccountProgress(uid, today, correctCrop) {
   const normalizedStats = normalizeStats(localStats, today);
   const dailyResult = readDailyResult(today, correctCrop, uid, normalizedStats);
   const initialStats = dailyResult?.stats ?? normalizedStats;
-  const minigameOwner = readLocalJSON("stardewdle-cloudMinigameOwner", null);
-  const belongsToAnotherMinigameAccount = (
-    minigameOwner?.uid && minigameOwner.uid !== uid
-  );
-  const minigames = belongsToAnotherMinigameAccount
-    ? null
-    : serializeCompletedMinigames(readLocalJSON("stardewdle-game-data", null));
+  // Keep the first write within Firestore's rules budget; retry imports minigames below.
   const latestDayProgress = dailyResult || minigames
     ? {
         date: today,
@@ -120,11 +132,11 @@ export async function initializeAccountProgress(uid, today, correctCrop) {
               guessCount: dailyResult.guessCount,
             }
           : null,
-        minigames,
+        minigames: null,
       }
     : null;
 
-  return createInitialProgress(
+  const progress = await createInitialProgress(
     uid,
     today,
     initialStats,
@@ -138,4 +150,8 @@ export async function initializeAccountProgress(uid, today, correctCrop) {
       : null,
     latestDayProgress
   );
+
+  if (!minigames) return progress;
+  const saved = await saveCompletedMinigames(uid, today, minigames);
+  return { ...progress, latestDayProgress: saved.latestDayProgress };
 }

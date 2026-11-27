@@ -45,6 +45,10 @@ export default function CursorTooltip({
     <div
       className="contents"
       onPointerEnter={(event) => {
+        if (event.pointerType === "touch") {
+          setIsVisible(false);
+          return;
+        }
         updatePosition(event);
         setIsVisible(true);
       }}
