@@ -5,6 +5,7 @@ import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { playSound } from "../../utils/playSound";
+import { GUESSES_BACKGROUND } from "../../utils/gameAssets";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
 import {
   getCorrectGuessOverlayClass,
@@ -25,7 +26,7 @@ export default function GeologyGame({ gameState, updateGameState, isMobilePortra
     const titleTextClassName = theme === "dark" ? "text-alternative-dark" : "text-main";
     const listSelectorTextClassName = theme === "dark" ? "text-alternative-dark" : "text-main";
     const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
-    const guessesBackground = useThemedAsset("/images/game/guesses.webp", theme);
+    const guessesBackground = useThemedAsset(GUESSES_BACKGROUND, theme);
     const cropGridBackground = useThemedAsset("/images/game/cropgrid-bg.webp", theme);
     const minigameLargeBoxBackground = useThemedAsset("/images/minigames/boxMedium.webp", theme);
     const boxSquareBackground = useThemedAsset("/images/game/boxSquare.webp", theme);
