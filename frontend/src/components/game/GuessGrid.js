@@ -90,7 +90,7 @@ export default function GuessGrid({ guesses, answer, className, isMobilePortrait
   const { theme } = useTheme();
   const validationOverlayStyles = VALIDATION_OVERLAY_STYLES[theme];
   const boxImages = {
-    Small: useThemedAsset("/images/game/boxSmall.webp", theme),
+    Small: useThemedAsset("/images/game/boxSmall.webp?v=fe8637d9297e", theme),
     Square: useThemedAsset("/images/game/boxSquare.webp", theme),
     Medium: useThemedAsset("/images/game/boxMedium.webp", theme),
     Large: useThemedAsset("/images/game/boxLarge.webp", theme),
