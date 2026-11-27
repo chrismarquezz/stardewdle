@@ -48,7 +48,7 @@ export default function Minigames() {
             className={isMobilePortrait ? "mr-[180px] mb-2" : ""}
             soundPath={"/sounds/mouseClick.mp3"}
           />
-          <MinigamesBox isMobilePortrait={isMobilePortrait} scaleFactor={scaleFactor} />
+          <MinigamesBox isMobilePortrait={isMobilePortrait} />
         </div>
       </div>
     </div>

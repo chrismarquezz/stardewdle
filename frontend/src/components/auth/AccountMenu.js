@@ -48,6 +48,7 @@ export default function AccountMenu() {
   const [resetReason, setResetReason] = useState("");
   const [resetConfirmation, setResetConfirmation] = useState("");
   const [supportCopyMessage, setSupportCopyMessage] = useState("");
+  const [syncErrorCopyMessage, setSyncErrorCopyMessage] = useState("");
   const [resetMessage, setResetMessage] = useState("");
 
   const runAction = async (action) => {
@@ -83,6 +84,15 @@ export default function AccountMenu() {
     }
   };
 
+  const copySyncError = async () => {
+    try {
+      await navigator.clipboard.writeText(syncError);
+      setSyncErrorCopyMessage("Error copied.");
+    } catch {
+      setSyncErrorCopyMessage("Could not copy the error. Select and copy the text instead.");
+    }
+  };
+
   const handleAdminReset = async (event) => {
     event.preventDefault();
     setError("");
@@ -108,6 +118,7 @@ export default function AccountMenu() {
     setIsCreatingAccount(false);
     setIsAdminPage(false);
     setError("");
+    setSyncErrorCopyMessage("");
     setIsOpen(true);
   };
 
@@ -140,6 +151,7 @@ export default function AccountMenu() {
       <CustomButton
         variant="icon"
         icon={`/images/buttons/icons/${user ? "sync-on" : "sync-off"}.webp`}
+        showX={Boolean(user && syncStatus === "error")}
         label={
           loading
             ? "Loading account..."
@@ -260,15 +272,31 @@ export default function AccountMenu() {
                   {syncStatus === "idle" && "Progress sync will start when the game is ready."}
                 </p>
                 {syncError && (
-                  <p role="alert" className="break-words text-center text-sm md:text-lg text-wrong">
-                    {syncError}
-                  </p>
+                  <>
+                    <p role="alert" className="break-words text-center text-sm md:text-lg text-wrong">
+                      {syncError}
+                    </p>
+                    <CustomButton
+                      variant="share"
+                      icon="/images/buttons/copy.webp"
+                      label="Copy sync error"
+                      isMuted={true}
+                      onClick={copySyncError}
+                      isMobilePortrait={isMobilePortrait}
+                    />
+                    {syncErrorCopyMessage && (
+                      <p role="status" className="text-center text-sm md:text-lg">{syncErrorCopyMessage}</p>
+                    )}
+                  </>
                 )}
                 {syncStatus === "error" && (
                   <button
                     type="button"
                     className={actionButtonClassName}
-                    onClick={retryProgressSync}
+                    onClick={() => {
+                      setSyncErrorCopyMessage("");
+                      retryProgressSync();
+                    }}
                   >
                     Retry sync
                   </button>
