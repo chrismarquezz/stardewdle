@@ -6,6 +6,7 @@ import { useGameData } from "../../context/GameDataContext";
 import { useAuth } from "../../context/AuthContext";
 import { todaysDate, utcDateString } from "../../utils/dateUtils";
 import { playSound } from "../../utils/playSound";
+import { GUESSES_BACKGROUND } from "../../utils/gameAssets";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
 import { useMidnightRefresh } from "../../hooks/useMidnightRefresh";
@@ -104,7 +105,7 @@ export default function GameBox({ isMobilePortrait }) {
   const previousUserId = useRef(user?.uid ?? null);
   const { theme, toggleTheme } = useTheme();
   const boxBackground = useThemedAsset(`/images/game/box-bg${isMobilePortrait ? "-sm" : ""}.webp`, theme);
-  const guessBackground = useThemedAsset(`/images/game/guesses.webp`, theme);
+  const guessBackground = useThemedAsset(GUESSES_BACKGROUND, theme);
   const selectedImage = useThemedAsset(`/images/selected-frame.webp`, theme);
   const nameBannerImage = useThemedAsset(`/images/name-banner.webp`, theme);
 

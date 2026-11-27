@@ -5,6 +5,7 @@ import { formatName } from "../../utils/formatString";
 import { getSpriteStyle } from "../../utils/spriteUtils";
 import { scrollbarStyles } from "../../utils/scrollbarStyles";
 import { playSound } from "../../utils/playSound";
+import { GUESSES_BACKGROUND } from "../../utils/gameAssets";
 import { useThemedAsset } from "../../hooks/useThemedAsset";
 import {
   getCorrectGuessOverlayClass,
@@ -30,7 +31,7 @@ export default function QuotesGame({ gameState, updateGameState, isMobilePortrai
     const [showPicker, setShowPicker] = useState(false);
     const [viewMode, setViewMode] = useState("grid");
     const selectedFrame = useThemedAsset("/images/selected-frame.webp", theme);
-    const guessesBackground = useThemedAsset("/images/game/guesses.webp", theme);
+    const guessesBackground = useThemedAsset(GUESSES_BACKGROUND, theme);
     const cropGridBackground = useThemedAsset("/images/game/cropgrid-bg.webp", theme);
     const minigameMediumBoxBackground = useThemedAsset("/images/minigames/boxMedium.webp", theme);
     const nameBannerBackground = useThemedAsset("/images/name-banner.webp", theme);
