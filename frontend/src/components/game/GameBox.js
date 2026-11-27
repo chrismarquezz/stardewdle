@@ -734,7 +734,7 @@ export default function GameBox({ isMobilePortrait }) {
               </p>
             </div>
             {gameOver ? (
-              <div className="mt-4 flex items-center justify-center gap-4">
+              <div className={`flex items-center justify-center gap-4 ${isMobilePortrait && theme === "dark" ? "mt-2" : "mt-4"}`}>
                 {completedOnAnotherDevice ? (
                   <p className={`text-4xl font-bold whitespace-nowrap ${cloudDailyResult.outcome === "win" ? "text-correct" : "text-wrong"}`}>
                     {cloudDailyResult.outcome === "win"

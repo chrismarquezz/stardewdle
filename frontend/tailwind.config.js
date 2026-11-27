@@ -4,7 +4,7 @@ const mainColor = '#BC6131';
 const mainDarkColor = '#984318';
 const alternativeDarkColor = '#391D0B';
 const correctColor = '#1E9365';
-const correctDarkColor = '#31610d';
+const correctDarkColor = '#3b6a17';
 const wrongColor = '#BE2617';
 const wrongDarkColor = '#9B2A1D';
 
